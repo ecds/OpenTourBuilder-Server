@@ -1,0 +1,3 @@
+# requirements/common.txt
+Django==1.4
+South==0.7.6
