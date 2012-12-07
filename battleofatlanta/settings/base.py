@@ -1,4 +1,7 @@
 # Django settings for battleofatlanta project.
+import os
+
+BASE_DIR = os.path.abspath(os.path.dirname(__file__) + "/../")
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -106,6 +109,7 @@ ROOT_URLCONF = 'battleofatlanta.urls'
 WSGI_APPLICATION = 'battleofatlanta.wsgi.application'
 
 TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'templates'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -119,9 +123,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admindocs',
+
+    'battleofatlanta.apps.common',
 )
 
 # A sample logging configuration. The only tangible logging
