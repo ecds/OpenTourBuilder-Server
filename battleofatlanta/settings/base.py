@@ -122,12 +122,17 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # bootstrapped admin
+    'django_admin_bootstrapped',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
 
+    'south',
+
     'battleofatlanta.apps.common',
+    'battleofatlanta.apps.tour',
 )
 
 # A sample logging configuration. The only tangible logging
