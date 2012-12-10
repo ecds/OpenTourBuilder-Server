@@ -4,23 +4,27 @@
   <title>Hello</title>
   <meta name="viewport" content="width=640px; initial-scale=1.0">
 
-  <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
-  <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
+  <link href="{{ STATIC_URL }}css/jquery.mobile-1.2.0.min.css" rel="stylesheet">
   <link href="{{ STATIC_URL }}css/structure.css" rel="stylesheet">
+  {% block extracss %}
+  {% endblock extracss %}
 
   <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.8.3.min.js"></script>
-  <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.mobile-1.2.0.min.js"></script>
+  {% block extrajs %}
+  {% endblock extrajs %}
 </head>
-<body>
-  <div class="navbar navbar-inverse">
-      <div class="navbar-inner">
-        <a class="brand" href="{% url site_index %}">Battle of Atlanta</a>
-        <ul class="nav">
-          <li class="active"><a href="javascript:void(0);">Home</a></li>
-        </div>
-      </div>
+<body style="position:relative;">
+  <div {% block page_attributes %}{% endblock %} data-role="page">
+    <div data-role="header">
+    {% block header %}
+      <h1>Battle of Atlanta</h1>
+    {% endblock header %}
     </div>
-  <div class="container-fluid">
+    <div {% block content_attributes %}{% endblock %} data-role="content">
+      {% block content %}
+      {% endblock content %}
+    </div>
   </div>
 </body>
 </html>
