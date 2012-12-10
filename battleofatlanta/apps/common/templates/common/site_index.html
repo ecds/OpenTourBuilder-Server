@@ -1,5 +1,45 @@
 {% extends "site_base.html" %}
 
+{% block extrajs %}
+<script type="text/javascript">
+  $(document).delegate('.ui-navbar ul li > a', 'click', function() {
+    //un-highlight and highlight only the buttons in the same navbar widget
+    $(this).closest('.ui-navbar').find('a').removeClass('ui-btn-active');
+
+    //this bit is the same, you could chain it off of the last call by using two `.end()`s
+    $(this).addClass('ui-btn-active');
+
+    //this starts the same but then only selects the sibling `.content_div` elements to hide rather than all in the DOM
+    $('#' + $(this).attr('data-href')).show().siblings('.tab-content').hide();
+
+    return false;
+  });
+</script>
+{% endblock extrajs %}
+
 {% block content %}
-Site Index
+<div class="lead-media">
+  <img data-src="holder.js/100%x200/industrial" />
+</div>
+<div data-role="navbar">
+  <ul>
+    <li><a href="#" class="ui-btn-active" data-href="description" data-theme="a">Description</a></li>
+    <li><a href="#" data-href="options" data-theme="a">Options</a></li>
+  </ul>
+</div>
+<div class="tab-container">
+  <div id="description" class="tab-content">
+    <article>
+      Description
+    </article>
+  </div>
+  <div id="options" class="tab-content">
+    Options
+  </div>
+</div>
+
 {% endblock content %}
+
+{% block footer %}
+
+{% endblock footer %}

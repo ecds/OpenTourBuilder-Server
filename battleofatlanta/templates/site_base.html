@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <title>Hello</title>
-  <meta name="viewport" content="width=640px; initial-scale=1.0">
+  <meta name="viewport" content="width=320px;max-height:480px; initial-scale=1.0">
 
   <link href="{{ STATIC_URL }}css/jquery.mobile-1.2.0.min.css" rel="stylesheet">
   <link href="{{ STATIC_URL }}css/structure.css" rel="stylesheet">
@@ -11,6 +11,7 @@
 
   <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.8.3.min.js"></script>
   <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.mobile-1.2.0.min.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/holder.js"></script>
   {% block extrajs %}
   {% endblock extrajs %}
 </head>
@@ -24,6 +25,11 @@
     <div {% block content_attributes %}{% endblock %} data-role="content">
       {% block content %}
       {% endblock content %}
+    </div>
+    <div data-role="footer" data-position="fixed">
+      {% block footer %}
+
+      {% endblock footer %}
     </div>
   </div>
 </body>
