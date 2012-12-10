@@ -1,8 +1,26 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <title>Hello</title>
+  <meta name="viewport" content="width=640px; initial-scale=1.0">
+
+  <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
+  <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
+  <link href="{{ STATIC_URL }}css/structure.css" rel="stylesheet">
+
+  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.js"></script>
 </head>
 <body>
-  Hello
+  <div class="navbar navbar-inverse">
+      <div class="navbar-inner">
+        <a class="brand" href="{% url site_index %}">Battle of Atlanta</a>
+        <ul class="nav">
+          <li class="active"><a href="javascript:void(0);">Home</a></li>
+        </div>
+      </div>
+    </div>
+  <div class="container-fluid">
+  </div>
 </body>
 </html>
