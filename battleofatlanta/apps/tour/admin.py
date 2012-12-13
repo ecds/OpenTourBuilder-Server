@@ -11,7 +11,9 @@ class TourAdmin(admin.ModelAdmin):
 
     # collapse our stacked inlines by default
     class Media:
-        js = ('/static/js/admin/collapse-inlines.js',)
+        js = (
+            '/static/js/admin/collapse-inlines.js',
+        )
 
 admin.site.register(Tour, TourAdmin)
 admin.site.register(TourStop)
