@@ -18,9 +18,13 @@ class TourStop(models.Model):
     tour = models.ForeignKey(Tour)
     name = models.CharField(max_length=50)
 
+    position = models.PositiveSmallIntegerField("Position")
+
     class Meta:
         verbose_name = _('Tour Stop')
         verbose_name_plural = _('Tour Stops')
+
+        ordering = ['position']
 
     def __unicode__(self):
         return "%s - %s" % (self.name, self.tour.name)

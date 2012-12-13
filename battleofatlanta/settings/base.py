@@ -123,6 +123,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'grappelli',
     # bootstrapped admin
     'django_admin_bootstrapped',
     # Uncomment the next line to enable the admin:
