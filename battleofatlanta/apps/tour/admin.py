@@ -1,12 +1,13 @@
 from django.contrib import admin
 
+from django_admin_bootstrapped.admin.models import SortableInline
+
 from battleofatlanta.apps.tour.models import Tour, TourStop
 
-class TourStopInline(admin.StackedInline):
+# class TourStopInline(admin.TabularInline, SortableInline):
+class TourStopInline(admin.StackedInline, SortableInline):
     model = TourStop
     extra = 1
-
-    sortable_field_name = "position"
 
 class TourAdmin(admin.ModelAdmin):
     inlines = ( TourStopInline, )
@@ -14,7 +15,6 @@ class TourAdmin(admin.ModelAdmin):
     # collapse our stacked inlines by default
     class Media:
         js = (
-            '/static/admin/js/jquery-ui-1.9.2.custom.min.js',
             '/static/admin/js/collapse-inlines.js',
         )
 
