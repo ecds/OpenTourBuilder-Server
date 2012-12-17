@@ -1,11 +1,13 @@
 from django.db import models
 
 from django.utils.translation import ugettext_lazy as _
+from django.template.defaultfilters import slugify
 
 # Create your models here.
 class Tour(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
+    slug = models.SlugField(editable=False)
 
     class Meta:
         verbose_name = _('Tour')
@@ -13,6 +15,12 @@ class Tour(models.Model):
 
     def __unicode__(self):
         return "%s" % (self.name)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.slug = slugify(self.name)
+
+        super(Tour, self).save(*args, **kwargs)
 
 class TourStop(models.Model):
     tour = models.ForeignKey(Tour)
