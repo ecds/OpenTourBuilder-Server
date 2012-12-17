@@ -1,0 +1,12 @@
+{% extends "site_base.html" %}
+
+{% block header %}
+<h1>{{ tour.name }}</h1>
+{% endblock header %}
+
+{% block content %}
+
+  {% for ts in tour_stops %}
+    <div><a href="{{ ts.get_absolute_url }}" data-transition="flip">{{ ts }}</a></div>
+  {% endfor %}
+{% endblock content %}
