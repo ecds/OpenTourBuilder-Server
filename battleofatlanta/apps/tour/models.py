@@ -17,6 +17,9 @@ class Tour(models.Model):
     def __unicode__(self):
         return "%s" % (self.name)
 
+    def get_absolute_url(self):
+        return reverse('tour-detail', kwargs={'slug': self.slug})
+
 class TourStop(models.Model):
     tour = models.ForeignKey(Tour)
     name = models.CharField(max_length=50)
