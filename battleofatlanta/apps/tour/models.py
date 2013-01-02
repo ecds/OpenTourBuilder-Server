@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from autoslug import AutoSlugField
+from geoposition.fields import GeopositionField
 
 # Create your models here.
 class Tour(models.Model):
@@ -23,7 +24,10 @@ class Tour(models.Model):
 class TourStop(models.Model):
     tour = models.ForeignKey(Tour)
     name = models.CharField(max_length=50)
+    lat = models.FloatField()
+    lng = models.FloatField()
 
+    # used in drag and drop reodering as well as tour stop order
     position = models.PositiveSmallIntegerField("Position")
 
     class Meta:
