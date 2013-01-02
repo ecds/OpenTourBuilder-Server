@@ -3,7 +3,6 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from autoslug import AutoSlugField
-from geoposition.fields import GeopositionField
 
 # Create your models here.
 class Tour(models.Model):
@@ -40,4 +39,4 @@ class TourStop(models.Model):
         return "%s - %s" % (self.name, self.tour.name)
 
     def get_absolute_url(self):
-        return reverse('tour:tour-stop-detail', kwargs={"slug":  self.tour.slug, "id": self.id})
+        return reverse('tour:tour-stop-detail', kwargs={"slug":  self.tour.slug, "page": self.position + 1})

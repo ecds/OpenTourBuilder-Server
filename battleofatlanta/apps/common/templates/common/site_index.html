@@ -9,7 +9,7 @@
     //this bit is the same, you could chain it off of the last call by using two `.end()`s
     $(this).addClass('ui-btn-active');
 
-    //this starts the same but then only selects the sibling `.content_div` elements to hide rather than all in the DOM
+    //this starts the same but then only selects the sibling `.tab_content` elements to hide rather than all in the DOM
     $('#' + $(this).attr('data-href')).show().siblings('.tab-content').hide();
 
     return false;
@@ -19,7 +19,7 @@
 
 {% block content %}
 <div class="lead-media">
-  <img data-src="holder.js/100%x200/industrial" />
+  <img data-src="holder.js/100%x150/industrial" />
 </div>
 <div data-role="navbar">
   <ul>
@@ -30,7 +30,7 @@
 <div class="tab-container">
   <div id="description" class="tab-content">
     <article>
-      Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
     </article>
   </div>
   <div id="options" class="tab-content">
@@ -40,8 +40,11 @@
   </div>
 </div>
 
+ <a href="{% url tour:tour-detail 'battle-of-atlanta' %}" data-role="button" data-icon="arrow-r">Start Tour</a>
+
 {% endblock content %}
 
-{% block footer %}
+{% block footer_class %}{% endblock footer_class %}
 
+{% block footer %}
 {% endblock footer %}
