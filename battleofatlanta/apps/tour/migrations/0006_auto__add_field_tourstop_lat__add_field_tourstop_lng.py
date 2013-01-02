@@ -10,12 +10,12 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'TourStop.lat'
         db.add_column('tour_tourstop', 'lat',
-                      self.gf('django.db.models.fields.FloatField')(default=0),
+                      self.gf('django.db.models.fields.FloatField')(null=True, blank=True),
                       keep_default=False)
 
         # Adding field 'TourStop.lng'
         db.add_column('tour_tourstop', 'lng',
-                      self.gf('django.db.models.fields.FloatField')(default=0),
+                      self.gf('django.db.models.fields.FloatField')(null=True, blank=True),
                       keep_default=False)
 
 
@@ -38,8 +38,8 @@ class Migration(SchemaMigration):
         'tour.tourstop': {
             'Meta': {'ordering': "['position']", 'object_name': 'TourStop'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'lat': ('django.db.models.fields.FloatField', [], {}),
-            'lng': ('django.db.models.fields.FloatField', [], {}),
+            'lat': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
+            'lng': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'position': ('django.db.models.fields.PositiveSmallIntegerField', [], {}),
             'tour': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tour.Tour']"})
