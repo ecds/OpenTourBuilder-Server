@@ -7,6 +7,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'battleofatlanta.apps.common.views.site_index', name='site_index'),
+
+    url(r'^tour/', include('battleofatlanta.apps.tour.urls', namespace="tour")),
     # url(r'^battleofatlanta/', include('battleofatlanta.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

@@ -18,7 +18,7 @@
 </head>
 <body style="position:relative;">
   <div {% block page_attributes %}{% endblock %} data-role="page">
-    <div data-role="header">
+    <div data-role="header" data-position="fixed">
     {% block header %}
       <h1>Battle of Atlanta</h1>
     {% endblock header %}
@@ -27,7 +27,7 @@
       {% block content %}
       {% endblock content %}
     </div>
-    <div data-role="footer" data-position="fixed">
+    <div class="{% block footer_class %}{% endblock %}" data-role="footer" data-position="fixed">
       {% block footer %}
 
       {% endblock footer %}
