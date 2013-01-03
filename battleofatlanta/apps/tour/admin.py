@@ -7,7 +7,7 @@ from battleofatlanta.apps.tour.models import Tour, TourStop
 # class TourStopInline(admin.TabularInline, SortableInline):
 class TourStopInline(admin.StackedInline, SortableInline, CollapsibleInline):
     model = TourStop
-    extra = 1
+    extra = 0
     start_collapsed = True
 
 class TourAdmin(admin.ModelAdmin):
