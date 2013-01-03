@@ -23,6 +23,9 @@ class Tour(models.Model):
 class TourStop(models.Model):
     tour = models.ForeignKey(Tour)
     name = models.CharField(max_length=50)
+    description = models.TextField(blank=True, default='')
+
+    # geo fields
     lat = models.FloatField(null=True, blank=True)
     lng = models.FloatField(null=True, blank=True)
 
@@ -33,6 +36,7 @@ class TourStop(models.Model):
         verbose_name = _('Tour Stop')
         verbose_name_plural = _('Tour Stops')
 
+        #set default ordering for the manager
         ordering = ['position']
 
     def __unicode__(self):

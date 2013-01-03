@@ -1,7 +1,9 @@
 {% extends "site_base.html" %}
 
 {% block header %}
-  <a href="#" data-mini="true" data-rel="back" data-transition="slide">Back</a>
+  <div class="ui-btn-left" data-role="controlgroup" data-type="horizontal">
+    <a href="#" data-role="button" data-rel="back" data-transition="slide">Back</a>
+  </div>
   <span class="ui-title" />
   <div class="ui-btn-right" data-role="controlgroup" data-type="horizontal">
     {% if page.has_previous %}
@@ -15,5 +17,8 @@
 {% endblock header %}
 
 {% block content %}
-{{ tour_stop.name}}
+<h4>{{ tour_stop.name}}</h4>
+<div>
+  {{ tour_stop.description }}
+</div>
 {% endblock content %}
