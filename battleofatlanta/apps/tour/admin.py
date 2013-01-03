@@ -19,4 +19,4 @@ class TourAdmin(admin.ModelAdmin):
     #     )
 
 admin.site.register(Tour, TourAdmin)
-admin.site.register(TourStop)
+# admin.site.register(TourStop)
