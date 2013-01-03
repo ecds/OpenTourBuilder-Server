@@ -39,12 +39,12 @@
     </article>
   </div>
 </div>
-  <div data-role="controlgroup">
-    <a href="{% url tour:tour-detail 'battle-of-atlanta' %}" data-role="button" data-icon="arrow-r">Start Tour</a>
-  </div>
 {% endblock content %}
 
 {% block footer_class %}{% endblock footer_class %}
 
 {% block footer %}
+<div id="start_tour_btn" data-role="controlgroup">
+  <a href="{% url tour:tour-detail 'battle-of-atlanta' %}" data-role="button" data-icon="arrow-r">Start Tour</a>
+</div>
 {% endblock footer %}

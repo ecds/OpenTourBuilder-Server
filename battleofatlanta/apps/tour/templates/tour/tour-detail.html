@@ -7,7 +7,8 @@
 
 {% block content %}
 
-  {% for ts in tour_stops %}
-    <div><a href="{{ ts.get_absolute_url }}" data-transition="flip">{{ ts }}</a></div>
+  {% for tour_stop in tour_stops %}
+    <div>{{ forloop.counter }}. <a href="{{ tour_stop.get_absolute_url }}" data-transition="flip">{{ tour_stop.name }}</a></div>
   {% endfor %}
+
 {% endblock content %}
