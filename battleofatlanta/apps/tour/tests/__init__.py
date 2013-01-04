@@ -1,0 +1,1 @@
+from battleofatlanta.apps.tour.tests.models import *

@@ -124,18 +124,24 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tinymce',
-    # bootstrapped admin
+
+    # admin apps
     'django_admin_bootstrapped',
-    # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
 
     'south',
 
+    # testing apps
+    # TODO: figure out how to move this into a settings/test.py
+    'django_nose',
+
+    # project apps
     'battleofatlanta.apps.common',
     'battleofatlanta.apps.tour',
 )
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
