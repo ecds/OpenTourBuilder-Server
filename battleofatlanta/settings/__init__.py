@@ -1,4 +1,4 @@
-""" Settings for Battle of Atlanta """
+# file battleofatlanta/settings/__init__.py
 
 from .base import *
 try:

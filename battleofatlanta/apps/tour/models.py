@@ -1,11 +1,14 @@
+# file battleofatlanta/apps/tour/models.py
+
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
+# third party imports
 from autoslug import AutoSlugField
 from tinymce.models import HTMLField
 
-# Create your models here.
+
 class Tour(models.Model):
     name = models.CharField(max_length=50)
     description = HTMLField()
