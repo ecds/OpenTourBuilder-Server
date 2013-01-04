@@ -3,11 +3,12 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from autoslug import AutoSlugField
+from tinymce.models import HTMLField
 
 # Create your models here.
 class Tour(models.Model):
     name = models.CharField(max_length=50)
-    description = models.TextField()
+    description = HTMLField()
     slug = AutoSlugField(populate_from='name', unique=True)
 
     class Meta:
@@ -23,7 +24,7 @@ class Tour(models.Model):
 class TourStop(models.Model):
     tour = models.ForeignKey(Tour)
     name = models.CharField(max_length=50)
-    description = models.TextField(blank=True, default='')
+    description = HTMLField(blank=True, default='')
 
     # geo fields
     lat = models.FloatField(null=True, blank=True)

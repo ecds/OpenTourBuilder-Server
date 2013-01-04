@@ -3,3 +3,4 @@ Django==1.4
 South==0.7.6
 django-admin-bootstrapped
 django-autoslug
+django-tinymce
