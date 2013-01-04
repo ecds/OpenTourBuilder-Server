@@ -1,3 +1,5 @@
+# file battleofatlanta/settings/base.py
+#
 # Django settings for battleofatlanta project.
 import os
 

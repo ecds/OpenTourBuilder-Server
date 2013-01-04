@@ -1,3 +1,5 @@
+# file battleofatlanta/apps/common/views.py
+
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 

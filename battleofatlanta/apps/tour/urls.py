@@ -1,3 +1,5 @@
+# file battleofatlanta/apps/tour/urls.py
+
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('battleofatlanta.apps.tour.views',

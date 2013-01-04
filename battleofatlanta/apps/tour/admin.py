@@ -1,3 +1,5 @@
+# file battleofatlanta/apps/tour/admin.py
+
 from django.contrib import admin
 
 from django_admin_bootstrapped.admin.models import SortableInline, CollapsibleInline
