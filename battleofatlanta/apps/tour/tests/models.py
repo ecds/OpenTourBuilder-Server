@@ -10,14 +10,18 @@ from django.core import management
 from django.template import RequestContext, Template
 from django.test import TestCase as DjangoTestCase
 
+import logging
 import nose.tools as nt
 
 from battleofatlanta.apps.tour.models import Tour, TourStop
+
+logger = logging.getLogger(__name__)
 
 class TourTestCase(DjangoTestCase):
     fixtures = ["tours.json"]
 
     def setUp(self):
+        logger.info("Setting up Tour TestCase")
         management.call_command('loaddata', 'tours.json', verbosity='0')
 
         self.tour = Tour()
@@ -28,9 +32,6 @@ class TourTestCase(DjangoTestCase):
         nt.assert_true(isinstance(self.tour, Tour))
         nt.assert_equal(self.tour.name, "Battle of Atlanta")
         nt.assert_equal(self.tour.description, "A tour of the Battle of Atlanta")
-
-    def teardown(self):
-        self.tour = None
 
 class TourStopTestCase(object):
     def setup(self):
