@@ -1,6 +1,6 @@
 [
     {
-        "model": "tour.tour",
+        "model": "tour.Tour",
         "pk": 1,
         "fields": {
             "name" : "Battle of Atlanta",

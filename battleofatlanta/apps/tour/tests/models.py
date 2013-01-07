@@ -21,14 +21,14 @@ class TourTestCase(DjangoTestCase):
     fixtures = ["tours.json"]
 
     def setUp(self):
-        logger.info("Setting up Tour TestCase")
-        management.call_command('loaddata', 'tours.json', verbosity='0')
+        logger.info("Tours: %s" % Tour.objects.all().count())
 
         self.tour = Tour()
         self.tour.name = "Battle of Atlanta"
         self.tour.description = "A tour of the Battle of Atlanta"
 
     def test_init(self):
+        logger.info("Tours: %s" % Tour.objects.all().count())
         nt.assert_true(isinstance(self.tour, Tour))
         nt.assert_equal(self.tour.name, "Battle of Atlanta")
         nt.assert_equal(self.tour.description, "A tour of the Battle of Atlanta")
