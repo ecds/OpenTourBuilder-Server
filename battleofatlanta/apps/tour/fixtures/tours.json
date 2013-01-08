@@ -1,0 +1,11 @@
+[
+    {
+        "model": "tour.Tour",
+        "pk": 1,
+        "fields": {
+            "name" : "Battle of Atlanta",
+            "description": "A tour of the Battle of Atlanta",
+            "slug": "battle-of-atlanta"
+        }
+    }
+]

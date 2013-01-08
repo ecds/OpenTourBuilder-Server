@@ -1,5 +1,9 @@
 {% extends "site_base.html" %}
 
+{% block extrajs %}
+<script type="text/javascript" src="{{ STATIC_URL }}jq/jqm.navtabs.js"></script>
+{% endblock extrajs %}
+
 {% block header %}
   <div class="ui-btn-left" data-role="controlgroup" data-type="horizontal">
     <a href="#" data-role="button" data-rel="back" data-transition="slide">Back</a>
@@ -17,8 +21,26 @@
 {% endblock header %}
 
 {% block content %}
-<h4>{{ tour_stop.name}}</h4>
-<div>
-  {{ tour_stop.description }}
+<div id="details" class="tab-content">
+  <h4>{{ tour_stop.name}}</h4>
+  <div>
+    {{ tour_stop.description }}
+  </div>
+</div>
+<div id="media" class="tab-content">
+  media
+</div>
+<div id="map" class="tab-content">
+  maps
 </div>
 {% endblock content %}
+
+{% block footer %}
+<div data-role="navbar" data-iconpos="bottom">
+  <ul>
+    <li><a href="#" class="ui-btn-active" data-icon="bars" data-href="details">Details</a></li>
+    <li><a href="#" data-icon="grid" data-href="media">Media</a></li>
+    <li><a href="#" data-icon="stars" data-href="map">Map</a></li>
+  </ul>
+</div>
+{% endblock footer %}
