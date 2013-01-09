@@ -11,10 +11,12 @@
   {% endblock extracss %}
 
   <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.8.3.min.js"></script>
-  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.mobile-1.2.0.min.js"></script>
-  <script type="text/javascript" src="{{ STATIC_URL }}js/holder.js"></script>
+  {# extrajs block for jquery mobile events has to be before jquery mobile script tag #}
   {% block extrajs %}
   {% endblock extrajs %}
+  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.mobile-1.2.0.min.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/holder.js"></script>
+
 </head>
 <body style="position:relative;">
   <div {% block page_attributes %}{% endblock %} data-role="page">
