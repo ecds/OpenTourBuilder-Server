@@ -24,7 +24,7 @@
 <div id="details" class="tab-content">
   <h4>{{ tour_stop.name}}</h4>
   <div>
-    {{ tour_stop.description }}
+    {{ tour_stop.description|safe }}
   </div>
 </div>
 <div id="media" class="tab-content">
