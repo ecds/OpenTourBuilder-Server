@@ -6,13 +6,13 @@
 {% endblock header %}
 
 {% block content %}
-  {{ tour.description }}
+  {{ tour.description|safe }}
   <div data-role="collapsible-set" data-corners="false" data-theme="b" data-content-theme="d">
     {% for tour_stop in tour_stops %}
     <div data-role="collapsible">
       <h3>{{ forloop.counter }}. {{ tour_stop.name }}</h3>
       <div>
-        {{ tour_stop.description|truncatechars:140 }}
+        {{ tour_stop.description|truncatechars:140}}
         <div><a href="{{ tour_stop.get_absolute_url }}" data-transition="flip">Read More</a></div>
       </div>
     </div>
