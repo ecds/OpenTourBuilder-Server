@@ -1,5 +1,5 @@
 {% extends "site_base.html" %}
-
+{% load truncate_html %}
 {% block header %}
 <h1>{{ tour.name }}</h1>
 <a href="#" class="ui-btn-right" data-mini="true" data-rel="back" data-transition="slide">Back</a>
@@ -12,11 +12,10 @@
     <div data-role="collapsible">
       <h3>{{ forloop.counter }}. {{ tour_stop.name }}</h3>
       <div>
-        {{ tour_stop.description|truncatechars:140}}
+        {{ tour_stop.description|truncate_html:140|safe }}
         <div><a href="{{ tour_stop.get_absolute_url }}" data-transition="flip">Read More</a></div>
       </div>
     </div>
     {% endfor %}
   </div>
-
 {% endblock content %}
