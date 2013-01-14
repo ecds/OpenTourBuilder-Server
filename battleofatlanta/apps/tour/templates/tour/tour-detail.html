@@ -13,7 +13,7 @@
       <h3>{{ forloop.counter }}. {{ tour_stop.name }}</h3>
       <div>
         {{ tour_stop.description|truncate_html:140|safe }}
-        <div><a href="{{ tour_stop.get_absolute_url }}" data-transition="flip" data-ajax="false">Read More</a></div>
+        <div><a href="{{ tour_stop.get_absolute_url }}" data-transition="flip">Read More</a></div>
       </div>
     </div>
     {% endfor %}

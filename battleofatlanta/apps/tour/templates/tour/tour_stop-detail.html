@@ -1,22 +1,25 @@
 {% extends "site_base.html" %}
 
-{% block extrajs %}
+{% block page_scripts %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
 <script type="text/javascript" src="{{ STATIC_URL }}js/gmap3.jquery.js"></script>
 <script type="text/javascript">
-  $(document).live('pagecreate', function() {
-    $('#map_container').gmap3();
-  });
-</script>
-
-<style>
-  #map_container {
-    width: 200px;
-    height: 200px;
+  function initializeMap() {
+    map_options = {
+      marker: {
+        latLng:[{{tour_stop.lat}}, {{tour_stop.lng}}]
+      },
+      map: {
+        options: {
+          center: [{{tour_stop.lat}}, {{tour_stop.lng}}],
+        }
+      }
+    };
+    $('#map_container').width("290px").height("400px").gmap3(map_options, 'autofit');
   }
-</style>
-{% endblock extrajs %}
+</script>
+{% endblock page_scripts %}
 
 {% block header %}
   <div class="ui-btn-left" data-role="controlgroup" data-type="horizontal">
@@ -40,13 +43,12 @@
   <div>
     {{ tour_stop.description|safe }}
   </div>
-
-  <div id="map_container"></div>
 </div>
 <div id="media" class="tab-content">
   media
 </div>
 <div id="map" class="tab-content">
+  <div id="map_container"></div>
 </div>
 {% endblock content %}
 
@@ -55,7 +57,7 @@
   <ul>
     <li><a href="#" class="ui-btn-active" data-icon="bar" data-href="details">Details</a></li>
     <li><a href="#" data-icon="grid" data-href="media">Media</a></li>
-    <li><a href="#" data-icon="star" data-href="map">Map</a></li>
+    <li><a href="#" data-icon="star" data-href="map" onclick="initializeMap();">Map</a></li>
   </ul>
 </div>
 {% endblock footer %}
