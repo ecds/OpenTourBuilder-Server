@@ -1,11 +1,33 @@
 {% extends "site_base.html" %}
 {% load truncate_html %}
+
+{% block page_scripts %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/gmap3.jquery.js"></script>
+<script type="text/javascript">
+  function initializeMap() {
+    var map_options = {
+      marker: {
+        values: [
+          {% for ts in tour_stops %}
+            {latLng: [{{ts.lat}}, {{ts.lng}}]}{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        ]
+      }
+    };
+
+    var map = $("#map_container").width("290px").height("400px").gmap3(map_options);
+  }
+</script>
+{% endblock page_scripts %}
+
 {% block header %}
 <h1>{{ tour.name }}</h1>
 <a href="#" class="ui-btn-right" data-mini="true" data-rel="back" data-transition="slide">Back</a>
 {% endblock header %}
 
 {% block content %}
+<div id="details" class="tab-content">
   {{ tour.description|safe }}
   <div data-role="collapsible-set" data-corners="false" data-theme="b" data-content-theme="d">
     {% for tour_stop in tour_stops %}
@@ -18,4 +40,17 @@
     </div>
     {% endfor %}
   </div>
+</div>
+<div id="map" class="tab-content">
+  <div id="map_container"></div>
+</div>
 {% endblock content %}
+
+{% block footer %}
+<div data-role="navbar" data-iconpos="bottom">
+  <ul>
+    <li><a href="#" class="ui-btn-active" data-icon="bar" data-href="details">Details</a></li>
+    <li><a href="#" data-icon="star" data-href="map" onclick="initializeMap();">Map</a></li>
+  </ul>
+</div>
+{% endblock footer %}

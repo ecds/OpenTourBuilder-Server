@@ -1,12 +1,18 @@
 {% extends "site_base.html" %}
 
+{% comment %}
+  The page_scripts block is where you add scripts to ajax loaded pages.
+  This is necessary due to the nature of jquery mobiles ajax page loading.
+  JQM only looks at data-role="page" elements in the ajax response data, 
+  which means that scripts outside that element get thrown away.
+{% endcomment %}
 {% block page_scripts %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
 
 <script type="text/javascript" src="{{ STATIC_URL }}js/gmap3.jquery.js"></script>
 <script type="text/javascript">
   function initializeMap() {
-    map_options = {
+    var map_options = {
       marker: {
         latLng:[{{tour_stop.lat}}, {{tour_stop.lng}}]
       },
