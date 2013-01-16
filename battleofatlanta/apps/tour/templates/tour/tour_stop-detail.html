@@ -9,31 +9,30 @@
 {% block page_scripts %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
 
-<script type="text/javascript" src="{{ STATIC_URL }}js/gmap3.jquery.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.ui.map.js"></script>
+
 <script type="text/javascript">
   function initializeMap() {
-    var map_options = {
-      map: {
-        options: {
-          center: [{{tour_stop.lat}}, {{tour_stop.lng}}],
-          zoom: 1
-        }
-      },
-      marker: {
-        values: [
-          {
-            latLng:[{{tour_stop.lat}}, {{tour_stop.lng}}],
-            events: {
-              click: function(marker, event, context) {
-                //insert click event here
-              }
-            }
-          }
-        ]
-      }
-    };
-    $('#map_container').width("290px").height("400px").gmap3(map_options, 'autofit');
+    if (!window.mapInitialized) {
+      $('#map_stop_container').show().width('290px').height('250px').gmap({
+        center: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
+        zoom: 5
+      }).bind('init', function() {
+          var self = this;
+          $('#map_stop_container').gmap('addMarker', {
+            position: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
+            bounds: true
+          });
+      });
+    }
+    window.mapInitialized = true;
   }
+
+  $(document).on('pageshow', function() {
+    $('#map').bind('init-tab', function() {
+      initializeMap();
+    });
+  });
 </script>
 {% endblock page_scripts %}
 
@@ -64,7 +63,7 @@
   media
 </div>
 <div id="map" class="tab-content">
-  <div id="map_container"></div>
+  <div id="map_stop_container"></div>
 </div>
 {% endblock content %}
 
@@ -73,7 +72,7 @@
   <ul>
     <li><a href="#" class="ui-btn-active" data-icon="bar" data-href="details">Details</a></li>
     <li><a href="#" data-icon="grid" data-href="media">Media</a></li>
-    <li><a href="#" data-icon="star" data-href="map" onclick="initializeMap();">Map</a></li>
+    <li><a href="#" data-icon="star" data-href="map">Map</a></li>
   </ul>
 </div>
 {% endblock footer %}

@@ -3,36 +3,35 @@
 
 {% block page_scripts %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/gmap3.jquery.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.ui.map.js"></script>
 <script type="text/javascript">
+
+  /*
+  click on marker loads data per stop and changes color of marker.
+  get directions.
+  */
+  function addMarker(map, lat, lng) {
+    map.addMarker({
+      position: new google.maps.LatLng(lat, lng),
+      bounds: true
+    }).click(function() {
+      alert('click');
+    });
+  }
+
   function initializeMap() {
     /**
       Initialize markers separately to slightly improve readability
     */
-    var markers = [
-      {% for ts in tour_stops %}
-        {
-          latLng: [{{ts.lat}}, {{ts.lng}}],
-          events: {
-            click: function(marker, event, context) {
-              // insert click events
-              // maybe prompt to goto that stop
-            }
-          }
-        }{% if not forloop.last %},{% endif %}
-      {% endfor %}
-    ];
-
-    /**
-      gmap 3 initialization options
-    **/
-    var map_options = {
-      marker: {
-        values: markers
+    $("#map_container").width('290px').height('250px').gmap({
+      zoom: 5,
+      callback: function(map) {
+        var self = this;
+        {% for ts in tour_stops %}
+        addMarker(this, {{ts.lat}}, {{ts.lng}});
+        {% endfor %}
       }
-    };
-
-    var map = $("#map_container").width("290px").height("250px").gmap3(map_options);
+    });
   }
 </script>
 {% endblock page_scripts %}
