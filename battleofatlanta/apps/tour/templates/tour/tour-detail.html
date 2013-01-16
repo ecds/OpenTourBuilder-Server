@@ -6,17 +6,33 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/gmap3.jquery.js"></script>
 <script type="text/javascript">
   function initializeMap() {
+    /**
+      Initialize markers separately to slightly improve readability
+    */
+    var markers = [
+      {% for ts in tour_stops %}
+        {
+          latLng: [{{ts.lat}}, {{ts.lng}}],
+          events: {
+            click: function(marker, event, context) {
+              // insert click events
+              // maybe prompt to goto that stop
+            }
+          }
+        }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ];
+
+    /**
+      gmap 3 initialization options
+    **/
     var map_options = {
       marker: {
-        values: [
-          {% for ts in tour_stops %}
-            {latLng: [{{ts.lat}}, {{ts.lng}}]}{% if not forloop.last %},{% endif %}
-          {% endfor %}
-        ]
+        values: markers
       }
     };
 
-    var map = $("#map_container").width("290px").height("400px").gmap3(map_options);
+    var map = $("#map_container").width("290px").height("250px").gmap3(map_options);
   }
 </script>
 {% endblock page_scripts %}

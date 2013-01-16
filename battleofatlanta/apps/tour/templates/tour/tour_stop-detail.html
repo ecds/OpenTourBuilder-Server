@@ -13,13 +13,23 @@
 <script type="text/javascript">
   function initializeMap() {
     var map_options = {
-      marker: {
-        latLng:[{{tour_stop.lat}}, {{tour_stop.lng}}]
-      },
       map: {
         options: {
           center: [{{tour_stop.lat}}, {{tour_stop.lng}}],
+          zoom: 1
         }
+      },
+      marker: {
+        values: [
+          {
+            latLng:[{{tour_stop.lat}}, {{tour_stop.lng}}],
+            events: {
+              click: function(marker, event, context) {
+                //insert click event here
+              }
+            }
+          }
+        ]
       }
     };
     $('#map_container').width("290px").height("400px").gmap3(map_options, 'autofit');
