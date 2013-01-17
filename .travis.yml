@@ -8,6 +8,9 @@ python:
 install:
   - "pip install -r requirements/test.txt --use-mirrors"
 
+before_script:
+    - mysql -e 'create database boa_test;'
+
 script: 
     - python manage.py syncdb --noinput
     - python manage.py test
