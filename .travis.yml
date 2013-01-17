@@ -1,12 +1,15 @@
 language: python
 
 python:
-  - "2.7"
-  - "2.6"
+    - "2.7"
+    - "2.6"
+
+env:
+    - USE_TEST_SETTINGS=1
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
-  - "pip install -r requirements/test.txt --use-mirrors"
+    - "pip install -r requirements/test.txt --use-mirrors"
 
 before_script:
     - mysql -e 'create database boa_test;'

@@ -1,16 +1,16 @@
 # file battleofatlanta/settings/__init__.py
+import os
 
 from .base import *
 
-if not 'test' in sys.argv:
-    try:
-        from .local import *
-    except ImportError, exc:
-        exc.args = tuple(
-            ['%s (did you rename settings/local-dist.py?)' % exc.args[0]])
-        raise exc
+try:
+    from .local import *
+except ImportError, exc:
+    exc.args = tuple(
+        ['%s (did you rename settings/local-dist.py?)' % exc.args[0]])
+    raise exc
 
-if 'test' in sys.argv:
+if os.environ.get('USE_TEST_SETTINGS'):
     try:
         from .test import *
     except ImportError, exc:
