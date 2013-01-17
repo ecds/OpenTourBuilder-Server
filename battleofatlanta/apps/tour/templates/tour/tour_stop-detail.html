@@ -1,8 +1,40 @@
 {% extends "site_base.html" %}
 
-{% block extrajs %}
+{% comment %}
+  The page_scripts block is where you add scripts to ajax loaded pages.
+  This is necessary due to the nature of jquery mobiles ajax page loading.
+  JQM only looks at data-role="page" elements in the ajax response data, 
+  which means that scripts outside that element get thrown away.
+{% endcomment %}
+{% block page_scripts %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
-{% endblock extrajs %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.ui.map.js"></script>
+
+<script type="text/javascript">
+  function initializeMap() {
+    if (!window.mapInitialized) {
+      $('#map_stop_container').show().width('290px').height('250px').gmap({
+        center: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
+        zoom: 5
+      }).bind('init', function() {
+          var self = this;
+          $('#map_stop_container').gmap('addMarker', {
+            position: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
+            bounds: true
+          });
+      });
+    }
+    window.mapInitialized = true;
+  }
+
+  $(document).on('pageshow', function() {
+    $('#map').bind('init-tab', function() {
+      initializeMap();
+    });
+  });
+</script>
+{% endblock page_scripts %}
 
 {% block header %}
   <div class="ui-btn-left" data-role="controlgroup" data-type="horizontal">
@@ -31,7 +63,7 @@
   media
 </div>
 <div id="map" class="tab-content">
-  maps
+  <div id="map_stop_container"></div>
 </div>
 {% endblock content %}
 

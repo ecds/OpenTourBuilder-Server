@@ -8,5 +8,7 @@ $(document).delegate('.ui-navbar ul li > a', 'click', function() {
   //hide the siblings
   $('#' + $(this).attr('data-href')).show().siblings('.tab-content').hide();
 
+  $('#' + $(this).attr('data-href')).trigger('init-tab');
+
   return false;
 });
