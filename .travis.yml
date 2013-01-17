@@ -1,11 +1,13 @@
 language: python
+
 python:
   - "2.7"
   - "2.6"
+
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
-  - "pip install -r requirements/test.txt"
-# not running coverage or building docs and mock is pre-installed, so dev reqs probably aren't needed
-# - "pip install -r pip-dev-req.txt --use-mirrors"
-# command to run tests, e.g. python setup.py test
-script: manage.py test
+  - "pip install -r requirements/test.txt --use-mirrors"
+
+script: 
+    - python manage.py syncdb --noinput
+    - python manage.py test
