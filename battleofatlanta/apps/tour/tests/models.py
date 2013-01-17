@@ -27,11 +27,12 @@ class TourTestCase(DjangoTestCase):
     def test_init(self):
         logger.info("Tours: %s" % Tour.objects.all().count())
         nt.assert_true(isinstance(self.tour, Tour))
-        nt.assert_equal(self.tour.name, "Battle of Atlanta")
-        nt.assert_equal(self.tour.description, "A tour of the Battle of Atlanta")
+        nt.eq_(self.tour.name, "Battle of Atlanta")
+        nt.eq_(self.tour.description, "A tour of the Battle of Atlanta")
 
     def test_tour_stops(self):
-        nt.assert_true(self.tour.tourstop_set.all().count > 0)
+        nt.eq_(self.tour.tourstop_set.all().count(), 3, msg="The tour fixture should have 3 tour stops.")
+
 
 
 class TourStopTestCase(object):
