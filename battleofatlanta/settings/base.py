@@ -184,7 +184,7 @@ LOGGING = {
     'loggers': {
         'battleofatlanta': {
             'handlers': ['console', 'debug'],
-            'level': 'INFO',
+            'level': 'DEBUG',
             'propagate': True,
         },
         'django.request': {
