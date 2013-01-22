@@ -13,7 +13,7 @@
 
 <script type="text/javascript">
   function initializeMap() {
-    $('.ui-page-active .map_stop_container').show().width('290px').height('250px').gmap({
+    $('.ui-page-active .map_stop_container').show().width('90%').height('250px').gmap({
       center: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
       zoom: 5
     }).bind('init', function() {
