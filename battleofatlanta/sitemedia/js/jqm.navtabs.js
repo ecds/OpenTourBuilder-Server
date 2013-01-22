@@ -6,9 +6,9 @@ $(document).delegate('.ui-navbar ul li > a', 'click', function() {
   $(this).addClass('ui-btn-active');
 
   //hide the siblings
-  $('#' + $(this).attr('data-href')).show().siblings('.tab-content').hide();
+  $('div:jqmData(id="' + $(this).data('href') + '")').show().siblings('.tab-content').hide();
 
-  $('#' + $(this).attr('data-href')).trigger('init-tab');
+  $('div:jqmData(id="' + $(this).data('href') + '")').trigger('init-tab');
 
   return false;
 });
