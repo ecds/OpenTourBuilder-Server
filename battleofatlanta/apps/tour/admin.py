@@ -14,11 +14,6 @@ class TourStopInline(admin.StackedInline, SortableInline, CollapsibleInline):
 
 class TourAdmin(admin.ModelAdmin):
     inlines = ( TourStopInline, )
-    # collapse our stacked inlines by default
-    # class Media:
-    #     js = (
-    #         '/static/admin/js/collapse-inlines.js',
-    #     )
 
 admin.site.register(Tour, TourAdmin)
-# admin.site.register(TourStop)
+admin.site.register(TourStop)
