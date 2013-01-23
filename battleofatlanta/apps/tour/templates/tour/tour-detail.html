@@ -23,7 +23,7 @@
     /**
       Initialize markers separately to slightly improve readability
     */
-    $("#map_container").width('290px').height('250px').gmap({
+    $("#map_container").width('90%').height('250px').gmap({
       zoom: 5,
       callback: function(map) {
         var self = this;
@@ -33,6 +33,12 @@
       }
     });
   }
+
+  $("div:jqmData(role='page'):last").on('pageshow', function() {
+    $('div:jqmData(id="map")').bind('init-tab', function() {
+      initializeMap();
+    });
+  });
 </script>
 {% endblock page_scripts %}
 
@@ -42,7 +48,7 @@
 {% endblock header %}
 
 {% block content %}
-<div id="details" class="tab-content">
+<div data-id="details" class="tab-content">
   {{ tour.description|safe }}
   <div data-role="collapsible-set" data-corners="false" data-theme="b" data-content-theme="d">
     {% for tour_stop in tour_stops %}
@@ -56,7 +62,7 @@
     {% endfor %}
   </div>
 </div>
-<div id="map" class="tab-content">
+<div data-id="map" class="tab-content">
   <div id="map_container"></div>
 </div>
 {% endblock content %}
@@ -65,7 +71,7 @@
 <div data-role="navbar" data-iconpos="bottom">
   <ul>
     <li><a href="#" class="ui-btn-active" data-icon="bar" data-href="details">Details</a></li>
-    <li><a href="#" data-icon="star" data-href="map" onclick="initializeMap();">Map</a></li>
+    <li><a href="#" data-icon="star" data-href="map">Map</a></li>
   </ul>
 </div>
 {% endblock footer %}
