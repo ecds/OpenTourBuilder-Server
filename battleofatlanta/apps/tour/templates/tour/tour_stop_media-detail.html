@@ -1,0 +1,18 @@
+{% extends "site_base.html" %}
+
+{% block header %}
+<div class="ui-btn-left" data-role="controlgroup" data-type="horizontal">
+  <a href="#" data-role="button" data-rel="back" data-transition="slide">Back</a>
+</div>
+<span class="ui-title">{{ tour_stop_media.title }}</span>
+{% endblock header %}
+
+{% block content %}
+<div id="image-detail">
+  <img src="{{tour_stop_media.image.url}}"/>
+  <div class="clearfix"></div>
+  <div class="caption">
+    {{ tour_stop_media.caption }}
+  </div>
+</div>
+{% endblock content %}

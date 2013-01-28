@@ -4,6 +4,9 @@ body {
     height: 480px;
     border: 1px solid gray;
 }
+.clearfix {
+    clear: both;
+}
 
 /* bootstrap navbar resets */
 .navbar-inner {
@@ -33,3 +36,23 @@ body {
 .no-corners {
     border-radius: 0;
 }
+
+/** TourStop Detail styles */
+
+
+.image-well image {
+    
+}
+
+/** /TourStop Detail styles */
+
+/* image detail */
+#image-detail {
+    width: 100%;
+    overflow: hidden;
+    display: block;
+}
+#image-detail img {
+    width: 100%;
+}
+/* /image detail */

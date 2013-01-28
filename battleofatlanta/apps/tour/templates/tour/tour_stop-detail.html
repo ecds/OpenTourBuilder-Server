@@ -58,7 +58,14 @@
   </div>
 </div>
 <div data-id="media" class="tab-content">
-  media
+  <div class="image-grid ui-grid-a">
+  {% for ts_media in media %}
+  <div class="image-well {% cycle "ui-block-a" "ui-block-b" %}">
+    <a href="{% url tour:tour-stop-media-detail tour_stop.tour.slug ts_media.id %}"><img src="{{ts_media.thumbnail.url}}" /></a>
+  </div>
+  {% endfor %}
+  </div>
+  <div class="clearfix"></div>
 </div>
 <div data-id="map" class="tab-content">
   <div class="map_stop_container" data-eul="{{tour_stop}}"></div>
