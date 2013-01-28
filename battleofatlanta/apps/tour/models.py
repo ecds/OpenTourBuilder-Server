@@ -83,6 +83,9 @@ class TourStopMedia(models.Model):
     def __unicode__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse('tour:tour-stop-media-detail', kwargs={"slug":  self.tour_stop.tour.slug, "id": self.id})
+
     def save(self, force_update=False, force_insert=False):
         orig = None
         if self.pk is not None:
