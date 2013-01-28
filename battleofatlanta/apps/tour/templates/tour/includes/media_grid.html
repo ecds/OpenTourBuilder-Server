@@ -1,0 +1,8 @@
+<div class="image-grid ui-grid-a">
+  {% for ts_media in media %}
+    <div class="image-well {% cycle 'ui-block-a' 'ui-block-b' %}">
+      <a href="{% url tour:tour-stop-media-detail tour_stop.tour.slug ts_media.id %}"><img src="{{ts_media.thumbnail.url}}" /></a>
+    </div>
+  {% endfor %}
+</div>
+<div class="clearfix"></div>
