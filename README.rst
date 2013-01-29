@@ -1,7 +1,8 @@
 Battle of Atlanta
 =================
 -----------------
-[![Build Status](https://travis-ci.org/emory-libraries-disc/battleofatlanta.png?branch=develop)](https://travis-ci.org/emory-libraries-disc/battleofatlanta)
+
+.. image:: https://travis-ci.org/emory-libraries-disc/battleofatlanta.png?branch=develop
 
 Overview
 --------
