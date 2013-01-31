@@ -23,7 +23,7 @@ class TourViewsTestCase(DjangoTestCase):
         self.tour = Tour.objects.get(pk=1)
 
     def test_tour_detail_view(self):
-        response = self.client.get(reverse('tour:tour-detail', kwargs={'slug': self.tour.slug}))
+        response = self.client.get(reverse('tour:detail', kwargs={'slug': self.tour.slug}))
 
         nt.eq_(response.status_code, 200, msg="Tour Detail view should respond with 200 for /tour/battle-of-atlanta/")
 

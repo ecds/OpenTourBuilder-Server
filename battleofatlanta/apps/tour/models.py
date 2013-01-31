@@ -28,7 +28,7 @@ class Tour(models.Model):
         return "%s" % (self.name)
 
     def get_absolute_url(self):
-        return reverse('tour-detail', kwargs={'slug': self.slug})
+        return reverse('detail', kwargs={'slug': self.slug})
 
 class TourStop(models.Model):
     tour = models.ForeignKey(Tour)
@@ -53,7 +53,7 @@ class TourStop(models.Model):
         return "%s - %s" % (self.name, self.tour.name)
 
     def get_absolute_url(self):
-        return reverse('tour:tour-stop-detail', kwargs={"slug":  self.tour.slug, "page": self.position + 1})
+        return reverse('tour:stop-detail', kwargs={"slug":  self.tour.slug, "page": self.position + 1})
 
     @property
     def slug(self):
@@ -84,7 +84,7 @@ class TourStopMedia(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('tour:tour-stop-media-detail', kwargs={"slug":  self.tour_stop.tour.slug, "id": self.id})
+        return reverse('tour:stop-media-detail', kwargs={"slug":  self.tour_stop.tour.slug, "id": self.id})
 
     def save(self, force_update=False, force_insert=False):
         orig = None

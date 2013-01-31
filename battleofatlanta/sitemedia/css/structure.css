@@ -1,3 +1,11 @@
+/**
+    File: structure.css
+    Description:
+        This file is used to define structure of the Battle of Atlanta site. Styles appropriate for
+        definition here should be related to appearance and geometry, not dealing with typography. A separate
+        typography.css should be created fonts if needed.
+*/
+
 body {
     max-width: 320px;
     max-height: 480px;
@@ -27,6 +35,7 @@ body {
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
 }
+/* /custom tab control */
 
 #start_tour_btn {
     margin-left: 8px;
@@ -36,15 +45,6 @@ body {
 .no-corners {
     border-radius: 0;
 }
-
-/** TourStop Detail styles */
-
-
-.image-well image {
-    
-}
-
-/** /TourStop Detail styles */
 
 /* image detail */
 #image-detail {

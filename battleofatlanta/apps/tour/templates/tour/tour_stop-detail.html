@@ -8,25 +8,36 @@
 {% endcomment %}
 {% block page_scripts %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
-
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.ui.map.js"></script>
 
 <script type="text/javascript">
   function initializeMap() {
+    /*
+      Initialize the TSD map.
+      We set the width and height here so that the map actually has a width and height before 
+      chaining into the gmap. Also we are constraining to .ui-page-active because if we don't there
+      is the potential for any previous page that had a .map_stop_container to be changed, therefore
+      overwriting that pages map.
+    */
     $('.ui-page-active .map_stop_container').show().width('90%').height('250px').gmap({
       center: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
       zoom: 5
     }).bind('init', function() {
         var self = this;
+        // invoke the admarker callback, see tour-detail for an alternate implementation
         $('.ui-page-active .map_stop_container').gmap('addMarker', {
           position: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
-          bounds: true
+          bounds: true  // zoom and center map so this marker is visible
         });
     });
   }
 
-  // bind to last page shown so that we get proper map
+  /*
+    bind to last page shown so that we get proper map
+  */
   $("div:jqmData(role='page'):last").on('pageshow', function() {
+    // binding to init-tab event in jqm.navtabs so that we are sure the map tab has been shown
+    // before trying to invoke a map on it's map container
     $('div:jqmData(id="map")').bind('init-tab', function() {
       initializeMap();
     });
@@ -41,11 +52,11 @@
   <span class="ui-title" />
   <div class="ui-btn-right" data-role="controlgroup" data-type="horizontal">
     {% if page.has_previous %}
-    <a href="{% url tour:tour-stop-detail tour_stop.tour.slug page.previous_page_number %}" data-role="button" data-icon="arrow-l">Prev</a>
+    <a href="{% url tour:stop-detail tour_stop.tour.slug page.previous_page_number %}" data-role="button" data-icon="arrow-l">Prev</a>
     {% endif %}
 
     {% if page.has_next %}
-    <a href="{% url tour:tour-stop-detail tour_stop.tour.slug page.next_page_number %}" data-role="button" data-icon="arrow-r">Next</a>
+    <a href="{% url tour:stop-detail tour_stop.tour.slug page.next_page_number %}" data-role="button" data-icon="arrow-r">Next</a>
     {% endif %}
   </div>
 {% endblock header %}
