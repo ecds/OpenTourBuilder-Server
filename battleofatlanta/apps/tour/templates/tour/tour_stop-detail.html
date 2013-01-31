@@ -28,6 +28,8 @@
         $('.ui-page-active .map_stop_container').gmap('addMarker', {
           position: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
           bounds: true  // zoom and center map so this marker is visible
+        }).click(function(e) {
+           window.location = get_native_map_link({{tour_stop.lat}}, {{tour_stop.lng}}, "{{tour_stop.name}}");
         });
     });
   }

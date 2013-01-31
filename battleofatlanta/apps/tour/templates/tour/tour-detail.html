@@ -10,12 +10,14 @@
   click on marker loads data per stop and changes color of marker.
   get directions.
   */
-  function addMarker(map, lat, lng) {
+  function addMarker(map, lat, lng, label) {
     map.addMarker({
       position: new google.maps.LatLng(lat, lng),
       bounds: true
     }).click(function() {
-      alert('click');
+      // alert("foo");
+      console.log(get_native_map_link(lat, lng));
+      window.location = get_native_map_link(lat, lng, label);
     });
   }
 
@@ -28,7 +30,7 @@
       callback: function(map) {
         var self = this;
         {% for ts in tour_stops %}
-        addMarker(this, {{ts.lat}}, {{ts.lng}});
+        addMarker(this, {{ts.lat}}, {{ts.lng}}, "{{ts.name}}");
         {% endfor %}
       }
     });
