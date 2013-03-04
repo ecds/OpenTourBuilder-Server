@@ -21,13 +21,12 @@
     */
     $('.ui-page-active .map_stop_container').show().width('90%').height('250px').gmap({
       center: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
-      zoom: 5
+      zoom: 17
     }).bind('init', function() {
         var self = this;
         // invoke the admarker callback, see tour-detail for an alternate implementation
         $('.ui-page-active .map_stop_container').gmap('addMarker', {
           position: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
-          bounds: true  // zoom and center map so this marker is visible
         }).click(function(e) {
            window.location = get_native_map_link({{tour_stop.lat}}, {{tour_stop.lng}}, "{{tour_stop.name}}");
         });
@@ -56,6 +55,8 @@
     {% if page.has_previous %}
     <a href="{% url tour:stop-detail tour_stop.tour.slug page.previous_page_number %}" data-role="button" data-icon="arrow-l">Prev</a>
     {% endif %}
+
+    <a href="/battleofatlanta/tour/battle-of-atlanta" data-role="button" data-icon="home">Home</a>
 
     {% if page.has_next %}
     <a href="{% url tour:stop-detail tour_stop.tour.slug page.next_page_number %}" data-role="button" data-icon="arrow-r">Next</a>
