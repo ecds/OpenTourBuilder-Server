@@ -2,7 +2,7 @@
 
 {% block header %}
 <div class="ui-btn-left" data-role="controlgroup" data-type="horizontal">
-  <a href="#" data-role="button" data-rel="back" data-transition="slide">Back</a>
+<!--  <a href="#" data-role="button" data-rel="back" data-transition="slide">Back</a>-->
 </div>
 <span class="ui-title">{{ tour_stop_media.title }}</span>
 {% endblock header %}
@@ -16,3 +16,13 @@
   </div>
 </div>
 {% endblock content %}
+
+{% block footer %}
+	<div data-role="navbar" data-iconpos="bottom">
+  <ul>
+    <li><a href="#" class="ui-btn-active" data-icon="back" data-rel="back" >Back</a></li>
+  </ul>
+<!--<a href="#" class="ui-btn-right" data-mini="true" data-rel="back" data-transition="slide">Back</a>-->
+	<!--	<a href="#" class="ui-btn-active" data-icon="arrow-l" data-rel="back" id="media_back_button">Back</a>-->
+	</div>
+{% endblock footer %}

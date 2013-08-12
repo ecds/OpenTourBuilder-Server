@@ -10,10 +10,13 @@
   click on marker loads data per stop and changes color of marker.
   get directions.
   */
-  function addMarker(map, lat, lng, label) {
+
+  function addMarker(map, lat, lng, label, num_icon) {
     map.addMarker({
       position: new google.maps.LatLng(lat, lng),
-      bounds: true
+      bounds: true,
+      icon: num_icon,
+      //icon: '{{ STATIC_URL }}markers/marker7.png',
     }).click(function() {
       // alert("foo");
       console.log(get_native_map_link(lat, lng));
@@ -25,13 +28,14 @@
     /**
       Initialize markers separately to slightly improve readability
     */
-    $("#map_container").width('90%').height('250px').gmap({
-      zoom: 5,
-      callback: function(map) {
+    $("#map_container").width('100%').height('350px').gmap({
+      mapTypeId: google.maps.MapTypeId.TERRAIN,
+      zoom: 10,
+	callback: function(map) {
         var self = this;
         {% for ts in tour_stops %}
-        addMarker(this, {{ts.lat}}, {{ts.lng}}, "{{ts.name}}");
-        {% endfor %}
+        addMarker(this, {{ts.lat}}, {{ts.lng}}, "{{ts.name}}", "{{ STATIC_URL }}markers/marker{{ts.position}}.png") 
+	{% endfor %}
       }
     });
   }
@@ -46,7 +50,7 @@
 
 {% block header %}
 <h1>{{ tour.name }}</h1>
-<a href="#" class="ui-btn-right" data-mini="true" data-rel="back" data-transition="slide">Back</a>
+<!--<a href="#" class="ui-btn-right" data-mini="true" data-rel="back" data-transition="slide">Back</a>-->
 {% endblock header %}
 
 {% block content %}
@@ -55,9 +59,13 @@
   <div data-role="collapsible-set" data-corners="false" data-theme="b" data-content-theme="d">
     {% for tour_stop in tour_stops %}
     <div data-role="collapsible">
-      <h3>{{ forloop.counter }}. {{ tour_stop.name }}</h3>
+      <h3>{% if tour_stop.position != 0 %} {{ tour_stop.position }}. {% endif %} {{ tour_stop.name }}</h3>
       <div>
+        {% if tour_version == "full" %}
         {{ tour_stop.description|truncate_html:140|safe }}
+	{% else %}
+	{{ tour_stop.description_brief|truncate_html:140|safe }}
+	{% endif %}
         <div><a href="{{ tour_stop.get_absolute_url }}" data-transition="flip">Read More</a></div>
       </div>
     </div>
@@ -72,7 +80,7 @@
 {% block footer %}
 <div data-role="navbar" data-iconpos="bottom">
   <ul>
-    <li><a href="#" class="ui-btn-active" data-icon="bar" data-href="details">Details</a></li>
+    <li><a href="#" class="ui-btn-active" data-icon="bar" data-href="details">Tour Stops</a></li>
     <li><a href="#" data-icon="star" data-href="map">Map</a></li>
   </ul>
 </div>

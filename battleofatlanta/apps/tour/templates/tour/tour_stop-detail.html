@@ -1,4 +1,5 @@
 {% extends "site_base.html" %}
+{% load thumbnail %}
 
 {% comment %}
   The page_scripts block is where you add scripts to ajax loaded pages.
@@ -6,81 +7,159 @@
   JQM only looks at data-role="page" elements in the ajax response data, 
   which means that scripts outside that element get thrown away.
 {% endcomment %}
+
 {% block page_scripts %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.ui.map.js"></script>
-
-<script type="text/javascript">
-  function initializeMap() {
+  <script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.ui.map.js"></script>
+  <script type="text/javascript" src="http://dev.emorydisc.org/static/swipe/Swipe/swipe.js"></script>
+  <script type="text/javascript">
+    function initializeMap() {
+      /*
+	Initialize the TSD map.
+	We set the width and height here so that the map actually has a width and height before 
+	chaining into the gmap. Also we are constraining to .ui-page-active because if we don't there
+	is the potential for any previous page that had a .map_stop_container to be changed, therefore
+	overwriting that pages map.
+      */
+      $('.ui-page-active .map_stop_container').show().width('100%').height('350px').gmap({
+	center: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
+	zoom: 17,
+	mapTypeId: google.maps.MapTypeId.TERRAIN
+      }).bind('init', function() {
+	  var self = this;
+	  // invoke the admarker callback, see tour-detail for an alternate implementation
+	  $('.ui-page-active .map_stop_container').gmap('addMarker', {
+	    position: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
+	    icon: '{{ STATIC_URL }}markers/marker{{ tour_stop.position }}.png',
+	  }).click(function(e) {
+	     window.location = get_native_map_link({{tour_stop.lat}}, {{tour_stop.lng}}, "{{tour_stop.name}}");
+	  });
+      });
+    }
+  
     /*
-      Initialize the TSD map.
-      We set the width and height here so that the map actually has a width and height before 
-      chaining into the gmap. Also we are constraining to .ui-page-active because if we don't there
-      is the potential for any previous page that had a .map_stop_container to be changed, therefore
-      overwriting that pages map.
+      bind to last page shown so that we get proper map
     */
-    $('.ui-page-active .map_stop_container').show().width('90%').height('250px').gmap({
-      center: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
-      zoom: 17
-    }).bind('init', function() {
-        var self = this;
-        // invoke the admarker callback, see tour-detail for an alternate implementation
-        $('.ui-page-active .map_stop_container').gmap('addMarker', {
-          position: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
-        }).click(function(e) {
-           window.location = get_native_map_link({{tour_stop.lat}}, {{tour_stop.lng}}, "{{tour_stop.name}}");
-        });
+    $("div:jqmData(role='page'):last").on('pageshow', function() {
+      // binding to init-tab event in jqm.navtabs so that we are sure the map tab has been shown
+      // before trying to invoke a map on it's map container
+      $('div:jqmData(id="map")').bind('init-tab', function() {
+	initializeMap();
+      });
     });
-  }
+  </script>
+  <script>
 
-  /*
-    bind to last page shown so that we get proper map
-  */
-  $("div:jqmData(role='page'):last").on('pageshow', function() {
-    // binding to init-tab event in jqm.navtabs so that we are sure the map tab has been shown
-    // before trying to invoke a map on it's map container
-    $('div:jqmData(id="map")').bind('init-tab', function() {
-      initializeMap();
-    });
-  });
-</script>
+    function initializeSwipe() {
+	var elem = document.getElementById('mySwipe');
+	$(elem).addClass("swip-wrap")
+	window.mySwipe = Swipe(elem, {
+		// startSlide: 0,
+		// auto: 3000,
+		// continuous: true,
+		// disableScroll: true,
+		// stopPropagation: true,
+		// callback: function(index, element) {},
+		// transitionEnd: function(index, element) {}
+		callback: function(pos) {
+			var i = bullets.length;
+      			while (i--) {
+        			bullets[i].className = ' ';
+			}
+			bullets[pos].className = 'on';
+
+		}
+	});
+	var bullets = document.getElementById('position').getElementsByTagName('li');
+    }
+    
+    $("div:jqmData(role='page'):last").on('pageshow', function() {
+	initializeSwipe();
+      });
+</script>	
+
 {% endblock page_scripts %}
 
 {% block header %}
-  <div class="ui-btn-left" data-role="controlgroup" data-type="horizontal">
-    <a href="#" data-role="button" data-rel="back" data-transition="slide">Back</a>
+  <div class="ui-btn-left" data-role="controlgroup" data-type="horizontal"><!-- data-position="fixed" data-tap-toggle="false">-->
+    <!--<a href="#" data-role="button" data-rel="back" data-transition="slide">Back</a>-->
+    <a href="/battleofatlanta/tour/battle-of-atlanta" data-role="button" data-icon="home">Home</a>
   </div>
   <span class="ui-title" />
   <div class="ui-btn-right" data-role="controlgroup" data-type="horizontal">
     {% if page.has_previous %}
-    <a href="{% url tour:stop-detail tour_stop.tour.slug page.previous_page_number %}" data-role="button" data-icon="arrow-l">Prev</a>
+    <a href="{% url tour:stop-detail tour_stop.tour.slug page.previous_page_number %}" data-role="button" data-icon="arrow-l">Prev Stop</a>
     {% endif %}
 
-    <a href="/battleofatlanta/tour/battle-of-atlanta" data-role="button" data-icon="home">Home</a>
 
     {% if page.has_next %}
-    <a href="{% url tour:stop-detail tour_stop.tour.slug page.next_page_number %}" data-role="button" data-icon="arrow-r">Next</a>
+    <a href="{% url tour:stop-detail tour_stop.tour.slug page.next_page_number %}" data-role="button" data-icon="arrow-r">Next Stop</a>
     {% endif %}
   </div>
 {% endblock header %}
 
 {% block content %}
 <div data-id="details" class="tab-content">
-  <h4>{{ tour_stop.name}}</h4>
-  <div>
-    {{ tour_stop.description|safe }}
-  </div>
+	<article>
+	<h4>{{ tour_stop.name}}</h4>
+	<!--<form action = "/battleofatlanta/tour/battle-of-atlanta/switch_version/{{ page.number }}" methon="post">
+		<input type="submit" data-mini="true" data-inline="true" value="Switch to {{ switch }} Version" />
+	</form>-->
+
+    <div data-role="content" id="contentSlider">
+        <div id='mySwipe' style='min-width:110%; margin:0 auto' class='swipe'>
+            <div class='swipe-wrap'>
+                {% if images %}
+		{% for ts_image in images %}
+		<div>
+			<a href="{% url tour:stop-media-detail tour_stop.tour.slug ts_image.id %}">
+				<img src="{{ts_image.image|thumbnail:"0x190"}}" />
+			</a>
+			<div class="swipe-caption">
+				{{ ts_image.caption }}
+			</div>
+		</div> 
+		{% endfor %}
+		{% else %}
+		<div><img src="http://dev.emorydisc.org/battleofatlanta/static/images/BOfAtlantaTroupHurtHouse.jpg"></div>
+		{% endif %}
+            </div>
+                <nav>
+                        <ul id="position">
+                        {% for ts_image in images %}
+                        <li></li>
+                        {% endfor %}
+                        </ul>
+                </nav>
+        </div>
+        <!--<div style='text-align:center;padding-top:20px;'>
+            <button onclick='mySwipe.prev()'>prev</button>
+            <button onclick='mySwipe.next()'>next</button>
+        </div>-->
+    </div>
+
+
+	<div>
+		{% if tour_version == "full" %}
+		{{ tour_stop.description|safe }}
+		{% else %}
+		{{ tour_stop.description_brief|safe }}
+		{% endif %}
+	</div>
+	</article>
 </div>
+
 <div data-id="media" class="tab-content">
   {% include "tour/includes/media_grid.html" %}
 </div>
+
 <div data-id="map" class="tab-content">
   <div class="map_stop_container" data-eul="{{tour_stop}}"></div>
 </div>
 {% endblock content %}
 
 {% block footer %}
-<div data-role="navbar" data-iconpos="bottom">
+<div data-role="navbar" data-iconpos="bottom" data-position="fixed" data-tap-toggle="false">
   <ul>
     <li><a href="#" class="ui-btn-active" data-icon="bar" data-href="details">Details</a></li>
     <li><a href="#" data-icon="grid" data-href="media">Media</a></li>

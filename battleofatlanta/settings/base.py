@@ -4,6 +4,7 @@
 import os
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__) + "/../")
+#BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -58,7 +59,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = '/media/'
+MEDIA_URL = '/battleofatlanta/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -68,7 +69,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
+STATIC_URL = '/battleofatlanta/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -143,6 +144,9 @@ INSTALLED_APPS = (
 
     'south',
 
+    # frontend apps
+    'leaflet',
+
     # testing apps
     # TODO: figure out how to move this into a settings/test.py
     'django_nose',
@@ -202,4 +206,12 @@ LOGGING = {
             'propagate': True,
         },
     }
+}
+
+TINYMCE_DEFAULT_CONFIG = {
+    'plugins': "table,xhtmlxtras,paste,searchreplace",
+    'theme': "advanced",
+    "theme_advanced_buttons3_add" : "cite,abbr",
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 10,
 }

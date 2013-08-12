@@ -1,8 +1,27 @@
 <div class="image-grid ui-grid-a">
-  {% for ts_media in media %}
-    <div class="image-well {% cycle 'ui-block-a' 'ui-block-b' %}">
-      <a href="{% url tour:stop-media-detail tour_stop.tour.slug ts_media.id %}"><img src="{{ts_media.thumbnail.url}}" /></a>
-    </div>
-  {% endfor %}
+  {% if images %}
+    <h3>Images</h3>
+    {% for ts_image in images %}
+      <div class="image-well {% cycle 'ui-block-a' 'ui-block-b' %}">
+        <a href="{% url tour:stop-media-detail tour_stop.tour.slug ts_image.id %}"><img src="{{ts_image.thumbnail.url}}" /></a>
+      </div>
+    {% endfor %}
+  {% endif %}
+  {% if audio %}
+    <h3>Audio</h3>
+    {% for ts_audio in audio %}
+      <div class="image-well {% cycle 'ui-block-a' 'ui-block-b' %}">
+        <a href="{% url tour:stop-media-detail tour_stop.tour.slug ts_audio.id %}">{{ts_audio.title.url}}</a>
+      </div>
+    {% endfor %}
+  {% endif %}
+  {% if videos %}
+    <h3>Viedo</h3>
+    {% for ts_video in videos %}
+      <div class="image-well {% cycle 'ui-block-a' 'ui-block-b' %}">
+        <a href="{% url tour:stop-media-detail tour_stop.tour.slug ts_video.id %}">{{ts_video.title}}</a>
+      </div>
+    {% endfor %}
+  {% endif %}
 </div>
 <div class="clearfix"></div>

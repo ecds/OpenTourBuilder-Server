@@ -2,26 +2,30 @@
 <html lang="en">
 <head>
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="viewport" content="width=320,height=480,initial-scale=1.0">
-
-  <title>Battle of Atlanta</title>
-
+  <!--<meta name="viewport" content="width=320,height=480,initial-scale=1.0"><!--,maximum-scale=1">-->
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">  
+<title>Battle of Atlanta</title>
+  <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css: rel="stylesheet">
   <link href="{{ STATIC_URL }}css/jquery.mobile-1.2.0.min.css" rel="stylesheet">
   <link href="{{ STATIC_URL }}css/structure.css" rel="stylesheet">
   <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.8.3.min.js"></script>
-  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.mobile-1.2.0.min.js"></script>
-  <script type="text/javascript" src="{{ STATIC_URL }}js/local.js"></script>
+  <!--<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.8.3.min.js"></script>-->
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-migrate-1.1.0.js"></script>
+<script type="text/javascript">
+$(document).bind("mobileinit", function () {
+    $.mobile.ajaxEnabled = false;
+});
+</script>
+  <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
 
-  {# this is a development dependency and should be removed once images are here #}
-  <script type="text/javascript" src="{{ STATIC_URL }}js/holder.js"></script>
-
+  {% block head_scripts %}
+  {% endblock head_scripts %} 
 </head>
 <body style="position:relative;">
   <div {% block page_attributes %}{% endblock %} data-role="page">
     {% block page_scripts %}
     {% endblock page_scripts %}
-    
     <div data-role="header" data-position="fixed">
     {% block header %}
       <h1>Battle of Atlanta</h1>
