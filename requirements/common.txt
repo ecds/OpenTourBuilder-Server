@@ -5,5 +5,3 @@ django-admin-bootstrapped
 django-autoslug
 django-tinymce
 PIL
-django-nose
-django-leaflet
