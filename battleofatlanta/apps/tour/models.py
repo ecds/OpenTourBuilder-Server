@@ -6,6 +6,9 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 from django.conf import settings
+from django.db.models import Max
+from django import forms
+from django.core.validators import MaxLengthValidator
 
 # third party imports
 from autoslug import AutoSlugField
@@ -15,6 +18,7 @@ from PIL import Image
 import re
 import os
 import magic
+
 from cStringIO import StringIO
 
 class Tour(models.Model):
@@ -32,24 +36,47 @@ class Tour(models.Model):
     def get_absolute_url(self):
         return reverse('detail', kwargs={'slug': self.slug})
 
-class TourStopMediaType(models.Model):
-    title = models.CharField(max_length=50)
+#class TourStopMediaType(models.Model):
+#    title = models.CharField(max_length=50)
 
     def __unicode__(self):
         return "%s" % (self.title)
+
+def new_position():
+    return TourStop.objects.count()
+
+# callback for tour_stop image name
+def tour_stop_image_filename(instance, filename):
+    fname, ext = os.path.splitext(filename)
+    return '/'.join(['tour_stops', instance.tour_stop.slug, "%s%s" % (slugify(fname), ext)])
+
+# callback for the inline path
+def tour_stop_inline_filename(instance, filename):
+    fname, ext = os.path.splitext(filename)
+    return '/'.join(['tour_stops', instance.tour_stop.slug,'inline', "%s%s" % (slugify(fname), ext)])
+
+def tour_splash_image_filename(instance, filename):
+    fname, ext = os.path.splitext(filename)
+    return '/'.join(['tours', instance.tour_stop.slug, "%s%s" % (slugify(fname), ext)])
 
 class TourStop(models.Model):
     tour = models.ForeignKey(Tour)
     name = models.CharField(max_length=50)
     description = HTMLField(blank=True, default='')
-    description_brief = HTMLField(blank=True, default='')
-
+    metadescription = models.TextField(blank=True, default='', validators=[MaxLengthValidator(250)])
+    article_link = models.CharField(max_length=525, blank=True, default='')
     # geo fields
     lat = models.FloatField(null=True, blank=True)
     lng = models.FloatField(null=True, blank=True)
+    park_lat = models.FloatField(null=True, blank=True)
+    park_lng = models.FloatField(null=True, blank=True)
+
+    mp4 = models.FileField(upload_to='.', blank=True, default='')
+    ogg = models.FileField(upload_to='.', blank=True, default='')
+    poster = models.ImageField(upload_to='.', blank=True, default='')
 
     # used in drag and drop reodering as well as tour stop order
-    position = models.PositiveSmallIntegerField("Position", default=12)
+    position = models.PositiveSmallIntegerField("Position", default=(new_position))
 
     class Meta:
         verbose_name = _('Tour Stop')
@@ -68,27 +95,23 @@ class TourStop(models.Model):
     def slug(self):
         return slugify(self.name)
 
-# callback for tour_stop image name
-def tour_stop_image_filename(instance, filename):
-    fname, ext = os.path.splitext(filename)
-    return '/'.join(['tour_stops', instance.tour_stop.slug, "%s%s" % (slugify(fname), ext)])
+    def clean(self):
+        super(TourStop, self).save()
+        mp4check = magic.from_file(getattr(settings, "MEDIA_ROOT", None) + '/' + str(self.mp4))
+        oggcheck = magic.from_file(getattr(settings, "MEDIA_ROOT", None) + '/' + str(self.ogg))
 
-# callback for the thumbnail path
-def tour_stop_thumb_filename(instance, filename):
-    fname, ext = os.path.splitext(filename)
-    return '/'.join(['tour_stops', instance.tour_stop.slug,'thumbs', "%s%s" % (slugify(fname), ext)])
-
-def tour_splash_image_filename(instance, filename):
-    fname, ext = os.path.splitext(filename)
-    return '/'.join(['tours', instance.tour_stop.slug, "%s%s" % (slugify(fname), ext)])
+        if not (re.search('MPEG', mp4check) and re.search('Ogg data', oggcheck)) and (self.ogg != '' and self.mp4 != ''):
+            raise forms.ValidationError('Invalid file tyep for video')
 
 class TourStopMedia(models.Model):
     tour_stop = models.ForeignKey(TourStop)
-    media_type = models.ForeignKey(TourStopMediaType, default='1')
+    #media_type = models.ForeignKey(TourStopMediaType, default='1')
     title = models.CharField(max_length=50, blank=True, default='')
     caption = models.CharField(max_length=255, blank=True, default='')
     image = models.FileField(upload_to=tour_stop_image_filename, blank=True, default='')
-    thumbnail = models.ImageField(upload_to=tour_stop_thumb_filename, blank=True, default='')
+    inline = models.ImageField(upload_to=tour_stop_inline_filename, blank=True, default='')
+    source_link = models.CharField(max_length=525, blank=True, default='')
+    metadata = HTMLField(blank=True, default='')
 
     class Meta:
         verbose_name = _('Tour Stop Media')
@@ -114,7 +137,7 @@ class TourStopMedia(models.Model):
 
         if re.search('image', type):
     
-            if not self.thumbnail or (orig and self.image != orig.image):
+            if not self.inline or (orig and self.image != orig.image):
                 print "creating thumbnail"
                 #create thumbnail if it doesn't exist
                 image = Image.open(self.image)
@@ -124,10 +147,10 @@ class TourStopMedia(models.Model):
     
                 #compute thumb size currently hardcoded to maintain aspect ratio with 125px width
                 # TODO: refactor to class variable
-                thumb_w = 125
-                thumb_h = height * thumb_w / width
+                inline_w = 290
+                inline_h = height * inline_w / width
     
-                image.thumbnail((thumb_w, thumb_h), Image.ANTIALIAS)
+                image.thumbnail((inline_w, inline_h), Image.ANTIALIAS)
     
                 # save the thumbnail to memory
                 temp_handle = StringIO()
@@ -138,7 +161,7 @@ class TourStopMedia(models.Model):
                 suf = SimpleUploadedFile(os.path.split(self.image.name)[-1],
                                          temp_handle.read(),
                                         content_type='image/%s' % image.format)
-                self.thumbnail.save(suf.name, suf, save=False)
+                self.inline.save(suf.name, suf, save=False)
 
         # finally we save the TSMedia object
         super(TourStopMedia, self).save(force_update, force_insert)
@@ -168,3 +191,4 @@ class TourSplashImage(models.Model):
 					content_type='image/%s' % image.format)
 		self.splashimage.save(suf.name, suf, save=False)
 		super(TourSplashImage, self).save()
+
