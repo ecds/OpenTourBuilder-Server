@@ -1,9 +1,10 @@
+{% load thumbnail %}
 <div class="image-grid ui-grid-a">
   {% if images %}
     <h3>Images</h3>
     {% for ts_image in images %}
       <div class="image-well {% cycle 'ui-block-a' 'ui-block-b' %}">
-        <a href="{% url tour:stop-media-detail tour_stop.tour.slug ts_image.id %}"><img src="{{ts_image.thumbnail.url}}" /></a>
+        <a href="{% url tour:stop-media-detail tour_stop.tour.slug ts_image.id %}"><img src="{{ts_image.image|thumbnail:"125x0"}}" /></a>
       </div>
     {% endfor %}
   {% endif %}
@@ -15,13 +16,16 @@
       </div>
     {% endfor %}
   {% endif %}
-  {% if videos %}
-    <h3>Viedo</h3>
-    {% for ts_video in videos %}
-      <div class="image-well {% cycle 'ui-block-a' 'ui-block-b' %}">
-        <a href="{% url tour:stop-media-detail tour_stop.tour.slug ts_video.id %}">{{ts_video.title}}</a>
-      </div>
-    {% endfor %}
-  {% endif %}
 </div>
+  {% if tour_stop.mp4 and tour_stop.ogg %}
+    <h3>Viedo</h3>             
+    {% if tour_stop.poster %}
+    <video width="290" height="190" poster="/battleofatlanta/media/{{ tour_stop.poster }}" controls>
+    {% else %}
+    <video width="290" height="190" poster="http://dev.emorydisc.org/battleofatlanta/static/images/BOfAtlantaTroupHurtHouse.jpg" controls>
+    {% endif %}
+        <source src="/battleofatlanta/media/{{ tour_stop.mp4 }}" type="video/mp4" />
+        <source src="/battleofatlanta/media/{{ tour_stop.ogg }}" type="video/ogg" />
+    </video>
+  {% endif %}
 <div class="clearfix"></div>

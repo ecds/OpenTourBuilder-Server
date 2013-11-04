@@ -5,3 +5,4 @@ django-admin-bootstrapped
 django-autoslug
 django-tinymce
 PIL
+docutils

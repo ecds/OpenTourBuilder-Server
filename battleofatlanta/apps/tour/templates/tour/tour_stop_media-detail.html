@@ -1,5 +1,5 @@
 {% extends "site_base.html" %}
-
+{% load thumbnail %}
 {% block header %}
 <div class="ui-btn-left" data-role="controlgroup" data-type="horizontal">
 <!--  <a href="#" data-role="button" data-rel="back" data-transition="slide">Back</a>-->
@@ -9,10 +9,16 @@
 
 {% block content %}
 <div id="image-detail">
-  <img src="{{tour_stop_media.image.url}}"/>
+  <img src="{{tour_stop_media.image|thumbnail:"580x0"}}"/>
   <div class="clearfix"></div>
   <div class="caption">
     {{ tour_stop_media.caption }}
+  </div>
+  <div class="metadata">
+    {{ tour_stop_media.metadata|safe }}
+    {% if tour_stop_media.source_link %}
+    <a href="{{ tour_stop_media.source_link }}" target="_blank">Source Link</a>
+    {% endif %}
   </div>
 </div>
 {% endblock content %}

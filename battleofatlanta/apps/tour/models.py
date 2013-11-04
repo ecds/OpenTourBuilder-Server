@@ -40,7 +40,7 @@ class Tour(models.Model):
 #    title = models.CharField(max_length=50)
 
     def __unicode__(self):
-        return "%s" % (self.title)
+        return "%s" % (self.name)
 
 def new_position():
     return TourStop.objects.count()

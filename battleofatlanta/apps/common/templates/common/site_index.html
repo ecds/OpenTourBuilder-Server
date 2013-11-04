@@ -34,7 +34,6 @@
 
 {% block footer %}
 <div id="start_tour_btn" data-role="controlgroup">
-  <a href="{% url tour:version 'battle-of-atlanta' 'full' %}" data-role="button" data-icon="arrow-r">Full</a>
-  <a href="{% url tour:version 'battle-of-atlanta' 'brief' %}" data-role="button" data-icon="arrow-r">Brief</a>
+<a href="{% url tour:detail 'battle-of-atlanta' %}" data-role="button" data-icon="arrow-r">Start Tour</a>
 </div>
 {% endblock footer %}

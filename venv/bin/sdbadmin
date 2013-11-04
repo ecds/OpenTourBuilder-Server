@@ -1,0 +1,5 @@
+#!/data/django/boa/battleofatlanta/venv/bin/python
+# EASY-INSTALL-SCRIPT: 'boto==2.13.3','sdbadmin'
+__requires__ = 'boto==2.13.3'
+import pkg_resources
+pkg_resources.run_script('boto==2.13.3', 'sdbadmin')

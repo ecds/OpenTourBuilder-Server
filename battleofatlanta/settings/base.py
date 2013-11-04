@@ -144,8 +144,7 @@ INSTALLED_APPS = (
 
     'south',
 
-    # frontend apps
-    'leaflet',
+    'storages',
 
     # testing apps
     # TODO: figure out how to move this into a settings/test.py
@@ -214,4 +213,6 @@ TINYMCE_DEFAULT_CONFIG = {
     "theme_advanced_buttons3_add" : "cite,abbr",
     'cleanup_on_startup': True,
     'custom_undo_redo_levels': 10,
+    'convert_urls': False,
 }
+

@@ -1,5 +1,21 @@
 {% extends "site_base.html" %}
 {% load thumbnail %}
+{% load truncate_html %}
+
+{% block meta %}
+<meta content="{{ tour_stop.metadescription }}" itemprop="description" name="description" property="og:description"/>
+<meta content="{{ tour_stop.name}}" itemprop="headline" property="og:title" />
+<meta content="article" property="og:type"/>
+<meta content="{{ tour_stop.name}}: Battle of Atlanta Tour" property="og:site_name"/>
+<meta content="{{ request.build_absolute_uri }}" itemprop="url" property="og:url"/>
+{% if images %}
+<meta content="http://{{ request.get_host }}{{ images.0.image|thumbnail:"0x190" }}" itemprop="thumbnailUrl" property="og:image"/>
+{% else %}
+<meta content="http://dev.emorydisc.org/battleofatlanta/static/images/BOfAtlantaTroupHurtHouse.jpg" itemprop="thumbnailUrl" property="og:image"/>
+{% endif %}
+<meta content="161439920720584" property="fb:page_id"/>
+<meta content="512379578843557" property="fb:app_id"/>
+{% endblock meta %}
 
 {% comment %}
   The page_scripts block is where you add scripts to ajax loaded pages.
@@ -9,74 +25,69 @@
 {% endcomment %}
 
 {% block page_scripts %}
+  <script type="text/javascript">
+    // Don't allow JQM override the page title
+    $(":jqmData(role='page')").attr("data-title", document.title);
+  </script>
   <script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
   <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.ui.map.js"></script>
-  <script type="text/javascript" src="http://dev.emorydisc.org/static/swipe/Swipe/swipe.js"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/local.js"></script>
+  <!--<script type="text/javascript" src="http://dev.emorydisc.org/static/swipe/Swipe/swipe.js"></script>-->
   <script type="text/javascript">
-    function initializeMap() {
+
       /*
-	Initialize the TSD map.
-	We set the width and height here so that the map actually has a width and height before 
-	chaining into the gmap. Also we are constraining to .ui-page-active because if we don't there
-	is the potential for any previous page that had a .map_stop_container to be changed, therefore
-	overwriting that pages map.
+      click on marker loads data per stop and changes color of marker.
+      get directions.
       */
-      $('.ui-page-active .map_stop_container').show().width('100%').height('350px').gmap({
-	center: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
-	zoom: 17,
-	mapTypeId: google.maps.MapTypeId.TERRAIN
-      }).bind('init', function() {
-	  var self = this;
-	  // invoke the admarker callback, see tour-detail for an alternate implementation
-	  $('.ui-page-active .map_stop_container').gmap('addMarker', {
-	    position: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
-	    icon: '{{ STATIC_URL }}markers/marker{{ tour_stop.position }}.png',
-	  }).click(function(e) {
-	     window.location = get_native_map_link({{tour_stop.lat}}, {{tour_stop.lng}}, "{{tour_stop.name}}");
-	  });
-      });
-    }
-  
-    /*
-      bind to last page shown so that we get proper map
-    */
-    $("div:jqmData(role='page'):last").on('pageshow', function() {
-      // binding to init-tab event in jqm.navtabs so that we are sure the map tab has been shown
-      // before trying to invoke a map on it's map container
-      $('div:jqmData(id="map")').bind('init-tab', function() {
-	initializeMap();
-      });
-    });
-  </script>
-  <script>
 
-    function initializeSwipe() {
-	var elem = document.getElementById('mySwipe');
-	$(elem).addClass("swip-wrap")
-	window.mySwipe = Swipe(elem, {
-		// startSlide: 0,
-		// auto: 3000,
-		// continuous: true,
-		// disableScroll: true,
-		// stopPropagation: true,
-		// callback: function(index, element) {},
-		// transitionEnd: function(index, element) {}
-		callback: function(pos) {
-			var i = bullets.length;
-      			while (i--) {
-        			bullets[i].className = ' ';
-			}
-			bullets[pos].className = 'on';
+      function addMarker(map, lat, lng, label, num_icon) {
+        map.addMarker({
+          position: new google.maps.LatLng(lat, lng),
+          bounds: true,
+          icon: num_icon,
+        }).click(function() {
+          console.log(get_native_map_link(lat, lng));
+          window.location = get_native_map_link(lat, lng, label);
+        });
+      }
 
-		}
-	});
-	var bullets = document.getElementById('position').getElementsByTagName('li');
-    }
-    
-    $("div:jqmData(role='page'):last").on('pageshow', function() {
-	initializeSwipe();
+      function initializeMap() {
+        /**
+          Initialize markers separately to slightly improve readability
+        */
+        $('.ui-page-active #map_container').width('100%').height('350px').gmap({
+          mapTypeId: google.maps.MapTypeId.TERRAIN,
+          zoom: 10,
+        callback: function(map) {
+            var self = this;
+            addMarker(this, {{tour_stop.lat}}, {{tour_stop.lng}}, "{{tour_stop.name}}", "{{ STATIC_URL }}markers/marker{{tour_stop.position}}.png")
+            {% if tour_stop.park_lat and tour_stop.park_lng %}
+            addMarker(this, {{tour_stop.park_lat}}, {{tour_stop.park_lng}}, "Parking: {{tour_stop.name}}", "{{ STATIC_URL }}markers/blue-parking.png")
+            {% endif %} 
+          }
+        });
+      }
+
+      $("div:jqmData(role='page'):last").on('pageshow', function() {
+        $('div:jqmData(id="map")').bind('init-tab', function() {
+          initializeMap();
+        });
       });
-</script>	
+    </script>
+
+<div id="fb-root"></div>
+<script>
+(function initializeFB(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=512379578843557";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+//    $("div:jqmData(role='page'):last").on('pageshow', function() {
+//    initializeFB();
+//      });
+</script>
 
 {% endblock page_scripts %}
 
@@ -100,52 +111,33 @@
 
 {% block content %}
 <div data-id="details" class="tab-content">
-	<article>
+    <div class="fb-like" data-href="http://dev.emorydisc.org/battleofatlanta/tour/battle-of-atlanta/{{ page.number }}" data-layout="button_count" data-width="450" data-show-faces="false" data-send="false"></div>
+    <article>
 	<h4>{{ tour_stop.name}}</h4>
-	<!--<form action = "/battleofatlanta/tour/battle-of-atlanta/switch_version/{{ page.number }}" methon="post">
-		<input type="submit" data-mini="true" data-inline="true" value="Switch to {{ switch }} Version" />
-	</form>-->
-
     <div data-role="content" id="contentSlider">
-        <div id='mySwipe' style='min-width:110%; margin:0 auto' class='swipe'>
-            <div class='swipe-wrap'>
-                {% if images %}
-		{% for ts_image in images %}
-		<div>
-			<a href="{% url tour:stop-media-detail tour_stop.tour.slug ts_image.id %}">
-				<img src="{{ts_image.image|thumbnail:"0x190"}}" />
-			</a>
-			<div class="swipe-caption">
-				{{ ts_image.caption }}
-			</div>
-		</div> 
-		{% endfor %}
-		{% else %}
-		<div><img src="http://dev.emorydisc.org/battleofatlanta/static/images/BOfAtlantaTroupHurtHouse.jpg"></div>
-		{% endif %}
-            </div>
-                <nav>
-                        <ul id="position">
-                        {% for ts_image in images %}
-                        <li></li>
-                        {% endfor %}
-                        </ul>
-                </nav>
-        </div>
-        <!--<div style='text-align:center;padding-top:20px;'>
-            <button onclick='mySwipe.prev()'>prev</button>
-            <button onclick='mySwipe.next()'>next</button>
-        </div>-->
+        {% if tour_stop.mp4 and tour_stop.ogg %}
+        {% if tour_stop.poster %}
+        <video width="290" height="190" poster="/battleofatlanta/media/{{ tour_stop.poster }}" controls>
+        {% else %}
+        <video width="290" height="190" poster="http://dev.emorydisc.org/battleofatlanta/static/images/BOfAtlantaTroupHurtHouse.jpg" controls>
+        {% endif %}
+            <source src="/battleofatlanta/media/{{ tour_stop.mp4 }}" type="video/mp4" />
+            <source src="/battleofatlanta/media/{{ tour_stop.ogg }}" type="video/ogg" />
+        </video>
+            {% else %}
+                <img src="http://dev.emorydisc.org/battleofatlanta/static/images/BOfAtlantaTroupHurtHouse.jpg">
+            {% endif %}
     </div>
 
 
 	<div>
-		{% if tour_version == "full" %}
 		{{ tour_stop.description|safe }}
-		{% else %}
-		{{ tour_stop.description_brief|safe }}
-		{% endif %}
 	</div>
+    {% if tour_stop.article_link %}
+        <div>
+            <a href="{{ tour_stop.article_link }}" target="_blank">Read Full Article</a>
+        </div>
+    {% endif %}
 	</article>
 </div>
 
@@ -154,7 +146,8 @@
 </div>
 
 <div data-id="map" class="tab-content">
-  <div class="map_stop_container" data-eul="{{tour_stop}}"></div>
+<!--  <div class="map_stop_container" data-eul="{{tour_stop}}"></div>-->
+<div id="map_container"></div>
 </div>
 {% endblock content %}
 
