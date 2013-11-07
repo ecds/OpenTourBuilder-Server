@@ -36,14 +36,11 @@ class Tour(models.Model):
     def get_absolute_url(self):
         return reverse('detail', kwargs={'slug': self.slug})
 
-#class TourStopMediaType(models.Model):
-#    title = models.CharField(max_length=50)
-
     def __unicode__(self):
         return "%s" % (self.name)
 
 def new_position():
-    return TourStop.objects.count()
+    return TourStop.objects.filter(tour_id='0').count()
 
 # callback for tour_stop image name
 def tour_stop_image_filename(instance, filename):
@@ -75,7 +72,10 @@ class TourStop(models.Model):
     ogg = models.FileField(upload_to='.', blank=True, default='')
     poster = models.ImageField(upload_to='.', blank=True, default='')
 
-    # used in drag and drop reodering as well as tour stop order
+    #def new_position(tour_id):
+    #    return self.objects.filter(tour_id=tou_id).count()
+   
+     # used in drag and drop reodering as well as tour stop order
     position = models.PositiveSmallIntegerField("Position", default=(new_position))
 
     class Meta:
