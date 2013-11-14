@@ -5,9 +5,9 @@
   <!--<meta name="viewport" content="width=320,height=480,initial-scale=1.0"><!--,maximum-scale=1">-->
 <meta name="viewport" content="initial-scale=1, maximum-scale=1">  
 {% if tour_stop %}
-<title>{{ tour_stop.name}}: Battle of Atlanta Tour</title>
+<title>{{ tour_stop.name}}: {{ tour_stop.tour }}</title>
 {% else %}
-<title>Battle of Atlanta</title>
+<title>Tours</title>
 {% endif %}
   {% block meta %}
   {% endblock meta %}
@@ -34,19 +34,18 @@ $(document).bind("mobileinit", function () {
     {% endblock page_scripts %}
     <div data-role="header" data-position="fixed">
     {% block header %}
-      <h1>Battle of Atlanta</h1>
+      <h1>Tours</h1>
     {% endblock header %}
     </div>
-
     <div {% block content_attributes %}{% endblock %} data-role="content">
       {% block content %}
       {% endblock content %}
     </div>
-
     <div class="{% block footer_class %}{% endblock %}" data-role="footer" data-position="fixed">
       {% block footer %}
       {% endblock footer %}
     </div>
   </div>
 </body>
+{{ tour.google_analytics }}
 </html>
