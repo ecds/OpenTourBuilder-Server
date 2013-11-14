@@ -6,3 +6,4 @@ django-autoslug
 django-tinymce
 PIL
 docutils
+pythion-magic
