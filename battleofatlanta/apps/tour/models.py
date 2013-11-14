@@ -24,7 +24,12 @@ from cStringIO import StringIO
 class Tour(models.Model):
     name = models.CharField(max_length=50)
     description = HTMLField()
-    slug = AutoSlugField(populate_from='name', unique=True)
+    slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
+    fb_app_id = models.CharField(max_length=50, blank=True)
+    fb_page_id = models.CharField(max_length=50, blank=True)
+    twitter_acct = models.CharField(max_length=50, blank=True)
+    google_analytics = models.TextField(blank=True, default='')
+    splashimage = models.ImageField(upload_to='tours/', blank=True, default='')
 
     class Meta:
         verbose_name = _('Tour')
@@ -39,8 +44,32 @@ class Tour(models.Model):
     def __unicode__(self):
         return "%s" % (self.name)
 
+    def save(self, force_update=False, force_insert=False):
+
+        image = Image.open(self.splashimage)
+
+        width = 290
+        height = 190
+
+        image.thumbnail((width, height), Image.ANTIALIAS)
+        image.save(self.splashimage.path)
+
+        # save the thumbnail to memory
+        temp_handle = StringIO()
+        image.save(temp_handle, image.format)
+        temp_handle.seek(0) #rewind the file
+
+        suf = SimpleUploadedFile(os.path.split(self.splashimage.name)[-1],
+                                temp_handle.read(),
+                                content_type='image/%s' % image.format)
+        self.splashimage.save(suf.name, suf, save=False)
+        super(Tour, self).save()
+
 def new_position():
-    return TourStop.objects.filter(tour_id='0').count()
+    if hasattr(TourStop, 'tour_id'):
+        return TourStop.objects.filter(tour_id=TourStop.tour_id).count()
+    else:
+        return TourStop.objects.count()
 
 # callback for tour_stop image name
 def tour_stop_image_filename(instance, filename):
@@ -57,7 +86,7 @@ def tour_splash_image_filename(instance, filename):
     return '/'.join(['tours', instance.tour_stop.slug, "%s%s" % (slugify(fname), ext)])
 
 class TourStop(models.Model):
-    tour = models.ForeignKey(Tour)
+    tour = models.ForeignKey(Tour, default='1')
     name = models.CharField(max_length=50)
     description = HTMLField(blank=True, default='')
     metadescription = models.TextField(blank=True, default='', validators=[MaxLengthValidator(250)])
@@ -72,11 +101,12 @@ class TourStop(models.Model):
     ogg = models.FileField(upload_to='.', blank=True, default='')
     poster = models.ImageField(upload_to='.', blank=True, default='')
 
-    #def new_position(tour_id):
-    #    return self.objects.filter(tour_id=tou_id).count()
-   
-     # used in drag and drop reodering as well as tour stop order
+#def new_positions(self):
+#    return self.objects.filter(tour_id=slef.tour).count()
+
+    # used in drag and drop reodering as well as tour stop order
     position = models.PositiveSmallIntegerField("Position", default=(new_position))
+
 
     class Meta:
         verbose_name = _('Tour Stop')
@@ -165,30 +195,4 @@ class TourStopMedia(models.Model):
 
         # finally we save the TSMedia object
         super(TourStopMedia, self).save(force_update, force_insert)
-
-class TourSplashImage(models.Model):
-	tour = models.ForeignKey(Tour)
-	splashimage = models.ImageField(upload_to='tours/', blank=True, default='')
-
-	def save(self, force_update=False, force_insert=False):
-
-		#super(TourSplashImage, self).save()
-		image = Image.open(self.splashimage)
-
-		width = 290
-		height = 190
-
-		image.thumbnail((width, height), Image.ANTIALIAS)
-		image.save(self.splashimage.path)
-
-		# save the thumbnail to memory
-		temp_handle = StringIO()
-		image.save(temp_handle, image.format)
-		temp_handle.seek(0) #rewind the file
-
-		suf = SimpleUploadedFile(os.path.split(self.splashimage.name)[-1],
-					temp_handle.read(),
-					content_type='image/%s' % image.format)
-		self.splashimage.save(suf.name, suf, save=False)
-		super(TourSplashImage, self).save()
 

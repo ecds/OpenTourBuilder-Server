@@ -7,12 +7,24 @@
 {% block content %}
 <div class="lead-media">
   <!--<img data-src="holder.js/100%x150/industrial" />-->
-  <img src="{{ STATIC_URL }}images/BOfAtlantaTroupHurtHouse.jpg" />
+  <!--<img src="{{ STATIC_URL }}images/BOfAtlantaTroupHurtHouse.jpg" />-->
 </div>
-<div data-role="navbar">
+    <div data-role="collapsible-set" data-corners="false" data-theme="b" data-content-theme="d">
+        {% for tour in tours %}
+        <div data-role="collapsible">
+        <h3>{{ tour.name }}</h3>
+            <div>
+                <img src="{{MEDIA_URL}}/{{ tour.splashimage }}" />
+                {{ tour.description|safe }}
+                <a href="{% url tour:detail tour.slug %}">Start Tour</a></li>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+<!--<div data-role="navbar">
   <ul>
     <li><a href="#" class="ui-btn-active" data-href="description" data-theme="a">Description</a></li>
-    <!--<li><a href="#" data-href="options" data-theme="a">Options</a></li>-->
+    <li><a href="#" data-href="options" data-theme="a">Options</a></li>
   </ul>
 </div>
 <div class="tab-container">
@@ -21,19 +33,22 @@
       Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
     </article>
   </div>
-  <!--<div id="options" class="tab-content">
+  <div id="options" class="tab-content">
     <article>
       Options
     </article>
-  </div>-->
+  </div>
   <div><a href="tour/battle-of-atlanta/1/">About Tour</a></div>
-</div>
+  {% for tour in tours %}
+    foo
+  {% endfor %}  
+</div>-->
 {% endblock content %}
 
 {% block footer_class %}{% endblock footer_class %}
 
 {% block footer %}
-<div id="start_tour_btn" data-role="controlgroup">
+<!--<div id="start_tour_btn" data-role="controlgroup">
 <a href="{% url tour:detail 'battle-of-atlanta' %}" data-role="button" data-icon="arrow-r">Start Tour</a>
-</div>
+</div>-->
 {% endblock footer %}

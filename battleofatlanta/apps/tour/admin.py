@@ -4,7 +4,7 @@ from django.contrib import admin
 
 from django_admin_bootstrapped.admin.models import SortableInline, CollapsibleInline
 
-from battleofatlanta.apps.tour.models import Tour, TourStop, TourStopMedia, TourSplashImage
+from battleofatlanta.apps.tour.models import Tour, TourStop, TourStopMedia
 
 class TourStopMediaInline(admin.TabularInline, SortableInline):
     model = TourStopMedia
@@ -18,16 +18,14 @@ class TourStopInline(admin.StackedInline, SortableInline, CollapsibleInline):
     model = TourStop
     extra = 0
     start_collapsed = True
-
-class TourSplashImageInline(admin.StackedInline, CollapsibleInline):
-	model = TourSplashImage
-	extra = 0
+#    exclude = ('position',)
 
 class TourStopAdmin(admin.ModelAdmin):
     inlines = ( TourStopMediaInline, )
+    exclude = ('position',)
 
 class TourAdmin(admin.ModelAdmin):
-    inlines = ( TourStopInline, TourSplashImageInline )
+    inlines = ( TourStopInline, )
 
 #class TourStopMediaTypeAdmin(admin.ModelAdmin):
 #    model = TourStopMediaType
