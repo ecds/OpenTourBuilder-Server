@@ -7,15 +7,15 @@ python:
 env:
     - USE_TEST_SETTINGS=1
 
-before_install:
-    - virtualenv env; source venv/bin/activate
+#before_install:
+#    - virtualenv env; source venv/bin/activate
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install:
-    - "pip install -r requirements/test.txt --use-mirrors"
+#install:
+#    - "pip install -r requirements/test.txt --use-mirrors"
 
-before_script:
-    - mysql -e 'create database boa_test;'
+#before_script:
+#    - mysql -e 'create database boa_test;'
 
-script: 
-    - python manage.py syncdb --noinput
-    - python manage.py test
+#script: 
+#    - python manage.py syncdb --noinput
+#    - python manage.py test
