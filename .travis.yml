@@ -2,12 +2,12 @@ language: python
 
 python:
     - "2.7"
-    - "2.6"
+#    - "2.6"
 
 env:
     - USE_TEST_SETTINGS=1
 
-before_install:
+#before_install:
     - source venv/bin/activate
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
