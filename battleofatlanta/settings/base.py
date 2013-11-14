@@ -144,7 +144,7 @@ INSTALLED_APPS = (
 
     'south',
 
-    'storages',
+    #'storages',
 
     # testing apps
     # TODO: figure out how to move this into a settings/test.py
