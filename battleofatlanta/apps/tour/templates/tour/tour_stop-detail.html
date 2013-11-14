@@ -9,12 +9,16 @@
 <meta content="{{ tour_stop.name}}: Battle of Atlanta Tour" property="og:site_name"/>
 <meta content="{{ request.build_absolute_uri }}" itemprop="url" property="og:url"/>
 {% if images %}
-<meta content="http://{{ request.get_host }}{{ images.0.image|thumbnail:"0x190" }}" itemprop="thumbnailUrl" property="og:image"/>
+<meta content="http://{{ request.get_host }}{{ images.0.image|thumbnail:"0x300" }}" itemprop="thumbnailUrl" property="og:image"/>
 {% else %}
-<meta content="http://dev.emorydisc.org/battleofatlanta/static/images/BOfAtlantaTroupHurtHouse.jpg" itemprop="thumbnailUrl" property="og:image"/>
+<meta content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ tour.splashimage }}" itemprop="thumbnailUrl" property="og:image"/>
 {% endif %}
-<meta content="161439920720584" property="fb:page_id"/>
-<meta content="512379578843557" property="fb:app_id"/>
+<meta content="{{ tour.fb_page_id }}" property="fb:page_id"/>
+<meta content="{{ tour.fb_app_id }}" property="fb:app_id"/>
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@{{ tour.twitter_acct }}">
+<meta name="twitter:creator" content="@{{ tour.twitter_acct }}">
+<meta name="twitter:description" content="{{ tour_stop.metadescription }}">
 {% endblock meta %}
 
 {% comment %}
@@ -43,10 +47,11 @@
       function addMarker(map, lat, lng, label, num_icon) {
         map.addMarker({
           position: new google.maps.LatLng(lat, lng),
-          bounds: true,
+          //bounds: true,
           icon: num_icon,
+          //zoom: 5,
         }).click(function() {
-          console.log(get_native_map_link(lat, lng));
+          //console.log(get_native_map_link(lat, lng));
           window.location = get_native_map_link(lat, lng, label);
         });
       }
@@ -56,8 +61,9 @@
           Initialize markers separately to slightly improve readability
         */
         $('.ui-page-active #map_container').width('100%').height('350px').gmap({
-          mapTypeId: google.maps.MapTypeId.TERRAIN,
-          zoom: 10,
+          //mapTypeId: google.maps.MapTypeId.TERRAIN,
+          zoom: 16,
+          center: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
         callback: function(map) {
             var self = this;
             addMarker(this, {{tour_stop.lat}}, {{tour_stop.lng}}, "{{tour_stop.name}}", "{{ STATIC_URL }}markers/marker{{tour_stop.position}}.png")
@@ -74,27 +80,24 @@
         });
       });
     </script>
-
-<div id="fb-root"></div>
-<script>
-(function initializeFB(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=512379578843557";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
-//    $("div:jqmData(role='page'):last").on('pageshow', function() {
-//    initializeFB();
-//      });
-</script>
+{% if tour.fb_app_id %}
+    <div id="fb-root"></div>
+    <script>
+        (function initializeFB(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId={{ tour.fb_app_id }}";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+    {% endif %}
 
 {% endblock page_scripts %}
 
 {% block header %}
-  <div class="ui-btn-left" data-role="controlgroup" data-type="horizontal"><!-- data-position="fixed" data-tap-toggle="false">-->
-    <!--<a href="#" data-role="button" data-rel="back" data-transition="slide">Back</a>-->
-    <a href="/battleofatlanta/tour/battle-of-atlanta" data-role="button" data-icon="home">Home</a>
+  <div class="ui-btn-left" data-role="controlgroup" data-type="horizontal">
+    <a href="/battleofatlanta/tour/{{ tour.slug }}" data-role="button" data-icon="home">Home</a>
   </div>
   <span class="ui-title" />
   <div class="ui-btn-right" data-role="controlgroup" data-type="horizontal">
@@ -111,22 +114,11 @@
 
 {% block content %}
 <div data-id="details" class="tab-content">
-    <div class="fb-like" data-href="http://dev.emorydisc.org/battleofatlanta/tour/battle-of-atlanta/{{ page.number }}" data-layout="button_count" data-width="450" data-show-faces="false" data-send="false"></div>
+    {% include "tour/includes/social_media.html" %}
     <article>
 	<h4>{{ tour_stop.name}}</h4>
-    <div data-role="content" id="contentSlider">
-        {% if tour_stop.mp4 and tour_stop.ogg %}
-        {% if tour_stop.poster %}
-        <video width="290" height="190" poster="/battleofatlanta/media/{{ tour_stop.poster }}" controls>
-        {% else %}
-        <video width="290" height="190" poster="http://dev.emorydisc.org/battleofatlanta/static/images/BOfAtlantaTroupHurtHouse.jpg" controls>
-        {% endif %}
-            <source src="/battleofatlanta/media/{{ tour_stop.mp4 }}" type="video/mp4" />
-            <source src="/battleofatlanta/media/{{ tour_stop.ogg }}" type="video/ogg" />
-        </video>
-            {% else %}
-                <img src="http://dev.emorydisc.org/battleofatlanta/static/images/BOfAtlantaTroupHurtHouse.jpg">
-            {% endif %}
+    <div data-role="content">
+        {% include "tour/includes/video.html" %}
     </div>
 
 
@@ -138,7 +130,8 @@
             <a href="{{ tour_stop.article_link }}" target="_blank">Read Full Article</a>
         </div>
     {% endif %}
-	</article>
+	{% include "tour/includes/social_media.html" %}
+    </article>
 </div>
 
 <div data-id="media" class="tab-content">

@@ -1,0 +1,13 @@
+{% load thumbnail %}
+{% if tour_stop.mp4 and tour_stop.ogg %}
+    {% if tour_stop.poster %}
+        <video width="290" height="190" poster="{{ tour_stop.poster|thumbnail:"290x190" }}" controls>
+    {% else %}
+        <video width="290" height="190" poster="{{ MEDIA_URL }}{{ tour.splashimage }}" controls>
+    {% endif %}
+            <source src="{{ MEDIA_URL }}{{ tour_stop.mp4 }}" type="video/mp4" />
+            <source src="{{ MEDIA_URL }}{{ tour_stop.ogg }}" type="video/ogg" />
+        </video>
+{% else %}
+    <img src="{{ MEDIA_URL }}{{ tour.splashimage }}">
+{% endif %}
