@@ -8,15 +8,9 @@
       </div>
     {% endfor %}
   {% endif %}
-  {% if audio %}
-    <h3>Audio</h3>
-    {% for ts_audio in audio %}
-      <div class="image-well {% cycle 'ui-block-a' 'ui-block-b' %}">
-        <a href="{% url tour:stop-media-detail tour_stop.tour.slug ts_audio.id %}">{{ts_audio.title.url}}</a>
-      </div>
-    {% endfor %}
-  {% endif %}
 </div>
+{% if tour_stop.mp4 %}
     <h3>Video</h3>             
     {% include "tour/includes/video.html" %}
+{% endif %}
 <div class="clearfix"></div>
