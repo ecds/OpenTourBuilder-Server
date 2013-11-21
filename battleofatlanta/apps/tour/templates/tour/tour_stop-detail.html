@@ -51,7 +51,7 @@
           icon: num_icon,
           //zoom: 5,
         }).click(function() {
-          //console.log(get_native_map_link(lat, lng));
+          alert(get_native_map_link(lat, lng));
           window.location = get_native_map_link(lat, lng, label);
         });
       }
@@ -129,6 +129,7 @@
         <div>
             <a href="{{ tour_stop.article_link }}" target="_blank">Read Full Article</a>
         </div>
+    <br />
     {% endif %}
 	{% include "tour/includes/social_media.html" %}
     </article>
@@ -139,17 +140,21 @@
 </div>
 
 <div data-id="map" class="tab-content">
-<!--  <div class="map_stop_container" data-eul="{{tour_stop}}"></div>-->
-<div id="map_container"></div>
+<!--  <div class="map_stop_container" data-eul="{{tour_stop}}"></div>
+<div id="map_container"></div>-->
+    <a href="#" onclick="window.location = get_native_map_link({{ tour_stop.park_lat }}, {{ tour_stop.lng }}, 'Tour Stop');">
+        <img src="http://maps.googleapis.com/maps/api/staticmap?zoom=15&size=200x200&maptype=roadmap&markers=color:blue%7Clabel:P%7C{{ tour_stop.park_lat }},{{ tour_stop.park_lng }}&markers=color:red%7C{{ tour_stop.lat }},{{ tour_stop.lng }}&sensor=false&key=AIzaSyBx6Zz6NMBoTBzIU0sbZQezxXgFMZdKZeI" alt="Map to {{ tour_stop.name }}"/>
+    </a>
+    <a href="#" onclick="window.location = get_native_map_link({{ tour_stop.park_lat }}, {{ tour_stop.lng }}, 'Tour Stop');" data-role="button">Get Directions</a>
 </div>
 {% endblock content %}
 
 {% block footer %}
 <div data-role="navbar" data-iconpos="bottom" data-position="fixed" data-tap-toggle="false">
   <ul>
-    <li><a href="#" class="ui-btn-active" data-icon="bar" data-href="details">Details</a></li>
-    <li><a href="#" data-icon="grid" data-href="media">Media</a></li>
-    <li><a href="#" data-icon="star" data-href="map">Map</a></li>
+    <li><a href="#" class="ui-btn-active" data-icon="info" data-href="details">Details</a></li>
+    <li><a href="#" data-icon="grid" data-href="media">Gallery</a></li>
+    <li><a href="#" data-icon="star" data-href="map">Directions</a></li>
   </ul>
 </div>
 {% endblock footer %}

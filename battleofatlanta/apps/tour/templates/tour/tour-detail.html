@@ -55,8 +55,23 @@
 
 {% block content %}
 <div data-id="details" class="tab-content">
-  {{ tour.description|safe }}
-  <div data-role="collapsible-set" data-corners="false" data-theme="b" data-content-theme="d">
+  <!--{{ tour.description|safe }}-->
+  <div data-role="collapsible-set" data-corners="false" data-theme="a" data-content-theme="b">
+    <div data-role="collapsible">
+        <h3>About</h3>
+        <div>
+            About the tour.
+        </div>
+    </div>
+    <div data-role="collapsible">
+        <h3>Instructions</h3>
+        <div>
+            How to use the dang site.
+        </div>
+    </div>
+  </div>
+  <h3>Tour Stops</h3>
+  <div data-role="collapsible-set" data-corners="false" data-theme="b" data-content-theme="b">
     {% for tour_stop in tour_stops %}
     <div data-role="collapsible">
       <h3>{% if tour_stop.position != 0 %} {{ tour_stop.position }}. {% endif %} {{ tour_stop.name }}</h3>
