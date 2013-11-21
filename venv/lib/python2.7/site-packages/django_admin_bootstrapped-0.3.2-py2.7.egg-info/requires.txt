@@ -1,2 +1,0 @@
-setuptools
-Django>=1.4
