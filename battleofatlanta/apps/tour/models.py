@@ -46,24 +46,25 @@ class Tour(models.Model):
 
     def save(self, force_update=False, force_insert=False):
 
-        image = Image.open(self.splashimage)
+        if self.splashimage:
+            image = Image.open(self.splashimage)
 
-        width = 290
-        height = 190
+            width = 290
+            height = 190
 
-        image.thumbnail((width, height), Image.ANTIALIAS)
-        image.save(self.splashimage.path)
+            image.thumbnail((width, height), Image.ANTIALIAS)
+            image.save(self.splashimage.path)
 
-        # save the thumbnail to memory
-        temp_handle = StringIO()
-        image.save(temp_handle, image.format)
-        temp_handle.seek(0) #rewind the file
+            # save the thumbnail to memory
+            temp_handle = StringIO()
+            image.save(temp_handle, image.format)
+            temp_handle.seek(0) #rewind the file
 
-        suf = SimpleUploadedFile(os.path.split(self.splashimage.name)[-1],
-                                temp_handle.read(),
-                                content_type='image/%s' % image.format)
-        self.splashimage.save(suf.name, suf, save=False)
-        super(Tour, self).save()
+            suf = SimpleUploadedFile(os.path.split(self.splashimage.name)[-1],
+                                    temp_handle.read(),
+                                    content_type='image/%s' % image.format)
+            self.splashimage.save(suf.name, suf, save=False)
+            super(Tour, self).save()
 
 def new_position():
     if hasattr(TourStop, 'tour_id'):
