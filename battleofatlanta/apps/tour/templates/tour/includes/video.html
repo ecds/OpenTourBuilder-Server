@@ -1,15 +1,6 @@
 {% load thumbnail %}
-{% if tour_stop.mp4 and tour_stop.ogg %}
-    {% if tour_stop.poster %}
-        <video width="290" height="190" poster="{{ tour_stop.poster|thumbnail:"290x190" }}" controls>
-    {% elif images %}
-        <video width="290" height="190" poster="{{ images.0.image|thumbnail:"290x190" }}" controls>
-    {% else %}
-        <video width="290" height="190" poster="{{ MEDIA_URL }}{{ tour.splashimage }}" controls>
-    {% endif %}
-            <source src="{{ MEDIA_URL }}{{ tour_stop.mp4 }}" type="video/mp4" />
-            <source src="{{ MEDIA_URL }}{{ tour_stop.ogg }}" type="video/ogg" />
-        </video>
+{% if tour_stop.video_embed %}
+    <iframe id="youtube" width="290" height="190" src="{{ tour_stop.video_embed }}" frameborder="0" allowfullscreen></iframe>
 {% elif images %}
     <img src="{{ images.0.image|thumbnail:"0x190" }}" />
 {% else %}

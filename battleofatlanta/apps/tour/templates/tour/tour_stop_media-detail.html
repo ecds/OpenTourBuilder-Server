@@ -1,6 +1,7 @@
 {% extends "site_base.html" %}
 {% load thumbnail %}
 {% block header %}
+<div data-role="header">
 <div class="ui-btn-left" data-role="controlgroup" data-type="horizontal">
 <!--  <a href="#" data-role="button" data-rel="back" data-transition="slide">Back</a>-->
 </div>
@@ -24,6 +25,7 @@
 {% endblock content %}
 
 {% block footer %}
+<div class="{% block footer_class %}{% endblock %}" data-role="footer">
 	<div data-role="navbar" data-iconpos="bottom">
   <ul>
     <li><a href="#" class="ui-btn-active" data-icon="back" data-rel="back" >Back</a></li>

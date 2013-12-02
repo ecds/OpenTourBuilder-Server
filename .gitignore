@@ -1,4 +1,5 @@
 *.pyc
+venv
 battleofatlanta/settings/local.py
 battleofatlanta/static
 battleofatlanta/media

@@ -214,5 +214,6 @@ TINYMCE_DEFAULT_CONFIG = {
     'cleanup_on_startup': True,
     'custom_undo_redo_levels': 10,
     'convert_urls': False,
+    'content_css': 'dev.emorydisc.org/battleofatlanta/static/css/structure.css',
 }
 

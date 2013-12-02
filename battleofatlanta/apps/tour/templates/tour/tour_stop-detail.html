@@ -6,16 +6,31 @@
 <meta content="{{ tour_stop.metadescription }}" itemprop="description" name="description" property="og:description"/>
 <meta content="{{ tour_stop.name}}" itemprop="headline" property="og:title" />
 <meta content="article" property="og:type"/>
-<meta content="{{ tour_stop.name}}: Battle of Atlanta Tour" property="og:site_name"/>
+<meta content="{{ tour_stop.name}}: {{ tour.name }}" property="og:site_name"/>
 <meta content="{{ request.build_absolute_uri }}" itemprop="url" property="og:url"/>
+<meta content="{{ tour.fb_page_id }}" property="fb:page_id"/>
+<meta content="{{ tour.fb_app_id }}" property="fb:app_id"/>
+<meta content="{{ request.build_absolute_uri }}" name="twitter:url" />
+{% if tour_stop.video_embed %}
+<meta name="twitter:card" content="player">
+{% if tour_stop.poster %}
+<meta name="twitter:image" content="http://{{ request.get_host }}{{ tour_stop.poster|thumbnail:"480x360" }}" />
+{% elif images %}
+<meta name="twitter:image" content="http://{{ request.get_host }}{{ images.0.image|thumbnail:"480x360" }}" />
+{% else %}
+<meta name="twitter:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ tour.splashimage|thumbnail:"480x360" }}" />
+{% endif %}
+<meta name="twitter:player" content="{{ tour_stop.video_embed }}">
+<meta name="twitter:player:width" content="480">
+<meta name="twitter:player:height" content="360">
+{% else %}
+<meta name="twitter:card" content="summary_large_image">
 {% if images %}
 <meta content="http://{{ request.get_host }}{{ images.0.image|thumbnail:"0x300" }}" itemprop="thumbnailUrl" property="og:image"/>
 {% else %}
 <meta content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ tour.splashimage }}" itemprop="thumbnailUrl" property="og:image"/>
 {% endif %}
-<meta content="{{ tour.fb_page_id }}" property="fb:page_id"/>
-<meta content="{{ tour.fb_app_id }}" property="fb:app_id"/>
-<meta name="twitter:card" content="summary">
+{% endif %}
 <meta name="twitter:site" content="@{{ tour.twitter_acct }}">
 <meta name="twitter:creator" content="@{{ tour.twitter_acct }}">
 <meta name="twitter:description" content="{{ tour_stop.metadescription }}">
@@ -96,6 +111,7 @@
 {% endblock page_scripts %}
 
 {% block header %}
+ <div data-role="header" data-position="fixed">
   <div class="ui-btn-left" data-role="controlgroup" data-type="horizontal">
     <a href="/battleofatlanta/tour/{{ tour.slug }}" data-role="button" data-icon="home">Home</a>
   </div>
@@ -142,14 +158,22 @@
 <div data-id="map" class="tab-content">
 <!--  <div class="map_stop_container" data-eul="{{tour_stop}}"></div>
 <div id="map_container"></div>-->
-    <a href="#" onclick="window.location = get_native_map_link({{ tour_stop.park_lat }}, {{ tour_stop.lng }}, 'Tour Stop');">
-        <img src="http://maps.googleapis.com/maps/api/staticmap?zoom=15&size=200x200&maptype=roadmap&markers=color:blue%7Clabel:P%7C{{ tour_stop.park_lat }},{{ tour_stop.park_lng }}&markers=color:red%7C{{ tour_stop.lat }},{{ tour_stop.lng }}&sensor=false&key=AIzaSyBx6Zz6NMBoTBzIU0sbZQezxXgFMZdKZeI" alt="Map to {{ tour_stop.name }}"/>
+    <div id="static_map">
+        <a href="#" onclick="window.location = get_native_map_link({{ tour_stop.park_lat }}, {{ tour_stop.park_lng }}, 'Tour Stop');">
+        <img src="http://maps.googleapis.com/maps/api/staticmap?zoom=15&size=300x200&maptype=roadmap&markers=color:blue%7Clabel:P%7C{{ tour_stop.park_lat }},{{ tour_stop.park_lng }}&markers=color:red%7C{{ tour_stop.lat }},{{ tour_stop.lng }}&sensor=false&key=AIzaSyBx6Zz6NMBoTBzIU0sbZQezxXgFMZdKZeI" alt="Map to {{ tour_stop.name }}"/>
     </a>
-    <a href="#" onclick="window.location = get_native_map_link({{ tour_stop.park_lat }}, {{ tour_stop.lng }}, 'Tour Stop');" data-role="button">Get Directions</a>
+    </div>
+    <div id="direction_button">
+        <a href="#" onclick="window.location = get_native_map_link({{ tour_stop.park_lat }}, {{ tour_stop.park_lng }}, 'Tour Stop');" data-role="button">Directions to Parking</a>
+    </div>
+    <div id="direction_notes">
+        {{ tour_stop.direction_notes|safe }}
+    </div>
 </div>
 {% endblock content %}
 
 {% block footer %}
+<div class="{% block footer_class %}{% endblock %}" data-role="footer" data-position="fixed">
 <div data-role="navbar" data-iconpos="bottom" data-position="fixed" data-tap-toggle="false">
   <ul>
     <li><a href="#" class="ui-btn-active" data-icon="info" data-href="details">Details</a></li>

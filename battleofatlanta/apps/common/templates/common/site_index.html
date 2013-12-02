@@ -4,6 +4,11 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
 {% endblock extrajs %}
 
+{% block header %}
+<div data-role="header" data-position="fixed">
+<h1>Tours</h1>
+{% endblock header %}
+
 {% block content %}
 <div class="lead-media">
   <!--<img data-src="holder.js/100%x150/industrial" />-->
@@ -14,40 +19,20 @@
         <div data-role="collapsible">
         <h3>{{ tour.name }}</h3>
             <div>
-                <img src="{{MEDIA_URL}}/{{ tour.splashimage }}" />
+                <a href="{% url tour:detail tour.slug %}">
+                    <img src="{{MEDIA_URL}}/{{ tour.splashimage }}" />
+                </a>
                 {{ tour.description|safe }}
                 <a href="{% url tour:detail tour.slug %}">Start Tour</a></li>
             </div>
         </div>
         {% endfor %}
     </div>
-<!--<div data-role="navbar">
-  <ul>
-    <li><a href="#" class="ui-btn-active" data-href="description" data-theme="a">Description</a></li>
-    <li><a href="#" data-href="options" data-theme="a">Options</a></li>
-  </ul>
-</div>
-<div class="tab-container">
-  <div id="description" class="tab-content">
-    <article>
-      Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-    </article>
-  </div>
-  <div id="options" class="tab-content">
-    <article>
-      Options
-    </article>
-  </div>
-  <div><a href="tour/battle-of-atlanta/1/">About Tour</a></div>
-  {% for tour in tours %}
-    foo
-  {% endfor %}  
-</div>-->
 {% endblock content %}
 
-{% block footer_class %}{% endblock footer_class %}
 
 {% block footer %}
+<div class="{% block footer_class %}{% endblock %}" data-role="footer" data-position="fixed">
 <!--<div id="start_tour_btn" data-role="controlgroup">
 <a href="{% url tour:detail 'battle-of-atlanta' %}" data-role="button" data-icon="arrow-r">Start Tour</a>
 </div>-->

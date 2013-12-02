@@ -8,74 +8,23 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Tour'
-        db.create_table('tour_tour', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('description', self.gf('tinymce.models.HTMLField')()),
-            ('slug', self.gf('autoslug.fields.AutoSlugField')(unique=True, max_length=50, populate_from='name', unique_with=())),
-            ('fb_app_id', self.gf('django.db.models.fields.CharField')(max_length=50, blank=True)),
-            ('fb_page_id', self.gf('django.db.models.fields.CharField')(max_length=50, blank=True)),
-            ('twitter_acct', self.gf('django.db.models.fields.CharField')(max_length=50, blank=True)),
-            ('google_analytics', self.gf('django.db.models.fields.TextField')(default='', blank=True)),
-            ('splashimage', self.gf('django.db.models.fields.files.ImageField')(default='', max_length=100, blank=True)),
-        ))
-        db.send_create_signal('tour', ['Tour'])
+        # Deleting field 'TourInfo.body'
+        db.delete_column('tour_tourinfo', 'body')
 
-        # Adding model 'TourInfo'
-        db.create_table('tour_tourinfo', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('tour', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['tour.Tour'])),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('description', self.gf('tinymce.models.HTMLField')(default='', blank=True)),
-            ('position', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=1)),
-        ))
-        db.send_create_signal('tour', ['TourInfo'])
-
-        # Adding model 'TourStop'
-        db.create_table('tour_tourstop', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('tour', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['tour.Tour'])),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('description', self.gf('tinymce.models.HTMLField')(default='', blank=True)),
-            ('metadescription', self.gf('django.db.models.fields.TextField')(default='', blank=True)),
-            ('article_link', self.gf('django.db.models.fields.CharField')(default='', max_length=525, blank=True)),
-            ('video_embed', self.gf('django.db.models.fields.CharField')(default='', max_length=50, blank=True)),
-            ('lat', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('lng', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('park_lat', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('park_lng', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('direction_notes', self.gf('tinymce.models.HTMLField')(default='', blank=True)),
-            ('position', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=19)),
-        ))
-        db.send_create_signal('tour', ['TourStop'])
-
-        # Adding model 'TourStopMedia'
-        db.create_table('tour_tourstopmedia', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('tour_stop', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['tour.TourStop'])),
-            ('title', self.gf('django.db.models.fields.CharField')(default='', max_length=50, blank=True)),
-            ('caption', self.gf('django.db.models.fields.CharField')(default='', max_length=255, blank=True)),
-            ('image', self.gf('django.db.models.fields.files.FileField')(default='', max_length=100, blank=True)),
-            ('inline', self.gf('django.db.models.fields.files.ImageField')(default='', max_length=100, blank=True)),
-            ('source_link', self.gf('django.db.models.fields.CharField')(default='', max_length=525, blank=True)),
-            ('metadata', self.gf('tinymce.models.HTMLField')(default='', blank=True)),
-        ))
-        db.send_create_signal('tour', ['TourStopMedia'])
+        # Adding field 'TourInfo.description'
+        db.add_column('tour_tourinfo', 'description',
+                      self.gf('tinymce.models.HTMLField')(default='', blank=True),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'Tour'
-        db.delete_table('tour_tour')
+        # Adding field 'TourInfo.body'
+        db.add_column('tour_tourinfo', 'body',
+                      self.gf('tinymce.models.HTMLField')(default='', blank=True),
+                      keep_default=False)
 
-        # Deleting model 'TourInfo'
-        db.delete_table('tour_tourinfo')
-
-        # Deleting model 'TourStop'
-        db.delete_table('tour_tourstop')
-
-        # Deleting model 'TourStopMedia'
-        db.delete_table('tour_tourstopmedia')
+        # Deleting field 'TourInfo.description'
+        db.delete_column('tour_tourinfo', 'description')
 
 
     models = {
