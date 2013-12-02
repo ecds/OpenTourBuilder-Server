@@ -89,7 +89,7 @@ class TourInfo(models.Model):
         return "%s - %s" % (self.name, self.tour.name)
 
     def get_absolute_url(self):
-        return reverse('tour:info-detail', kwargs={"slug":  self.tour.slug, "name": self.name})
+        return reverse('tour:info-detail', kwargs={"slug":  self.tour.slug, "info": self.name})
 
     @property
     def slug(self):

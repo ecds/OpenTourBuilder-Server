@@ -1,29 +1,23 @@
 {% extends "site_base.html" %}
 {% load truncate_html %}
 
-{% block page_scripts %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.ui.map.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/local.js"></script>
-{% endblock page_scripts %}
-
 {% block header %}
-<div data-role="header" data-position="fixed">
-<h1>{{ tour_info.name }}</h1>
+<div data-role="header">
+<div class="ui-btn-left" data-role="controlgroup" data-type="horizontal"  data-position="fixed">
+</div>
+<span class="ui-title">{{ tour_info.name }}</span>
 {% endblock header %}
 
 {% block content %}
 <div data-id="details" class="tab-content">
-    hi
+    {{ tour_info.description|safe }}
 </div>
 {% endblock content %}
-
 {% block footer %}
 <div class="{% block footer_class %}{% endblock %}" data-role="footer" data-position="fixed">
-<div data-role="navbar" data-iconpos="bottom">
+        <div data-role="navbar" data-iconpos="bottom">
   <ul>
-    <li><a href="#" class="ui-btn-active" data-icon="bar" data-href="details">Tour Stops</a></li>
-    <li><a href="#" data-icon="star" data-href="map">Map</a></li>
+    <li><a href="#" class="ui-btn-active" data-icon="back" data-rel="back" >Back</a></li>
   </ul>
 </div>
 {% endblock footer %}

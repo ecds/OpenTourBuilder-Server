@@ -55,7 +55,7 @@
 {% block content %}
 <div data-id="details" class="tab-content">
   {% for info in tour_info %}
-    <a href="{{ tour_info.get_absolute_url }}" data-role="button" data-icon="arrow-r">{{ info.name }}</a>
+    <a href="{{ info.get_absolute_url }}" data-role="button" data-icon="arrow-r">{{ info.name }}</a>
   {% endfor %}
   <h3>Tour Stops</h3>
   <div data-role="collapsible-set" data-corners="false" data-theme="b" data-content-theme="b">

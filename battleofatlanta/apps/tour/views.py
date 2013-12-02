@@ -17,16 +17,15 @@ def tour_detail(request, slug):
             'tour_stops': tour_stops,
         }, context_instance=RequestContext(request))
 
-def tour_info_detail(request, slug, page):
-    info = get_object_or_404(Tour, slug=slug)
+def tour_info_detail(request, slug, info):
+    tour = get_object_or_404(Tour, slug=slug)
+    tour_info = tour.tourinfo_set.filter(name=info)
 
-    paginator = Paginator(tour.tourinfo_set.all(), 1)
 
-    page = paginator.page(int(page))
-
-    return render_to_response("tour/tour_stop-detail.html", {
+    return render_to_response("tour/tour_info-detail.html", {
+            'info': info,
             'tour': tour,
-            'tour_info': page[0],
+            'tour_info': tour_info[0],
         }, context_instance=RequestContext(request))
 
 def tour_stop_detail(request, slug, page):
