@@ -48,35 +48,37 @@ class Tour(models.Model):
     def __unicode__(self):
         return "%s" % (self.name)
 
-    def save(self, force_update=False, force_insert=False):
+#    def save(self, force_update=False, force_insert=False):
 
-#        if self.splashimage:
-         image = Image.open(self.splashimage)
+#         if self.splashimage:
+#            image = Image.open(self.splashimage)
 
-         width = 290
-         height = 190
+#            width = 290
+#            height = 190
 
-         image.thumbnail((width, height), Image.ANTIALIAS)
-         image.save(self.splashimage.path)
+#            image.thumbnail((width, height), Image.ANTIALIAS)
+#            image.save(self.splashimage.path)
 
             # save the thumbnail to memory
-         temp_handle = StringIO()
-         image.save(temp_handle, image.format)
-         temp_handle.seek(0) #rewind the file
+#            temp_handle = StringIO()
+#            image.save(temp_handle, image.format)
+#            temp_handle.seek(0) #rewind the file
 
-         suf = SimpleUploadedFile(os.path.split(self.splashimage.name)[-1],
-                                 temp_handle.read(),
-                                 content_type='image/%s' % image.format)
-         self.splashimage.save(suf.name, suf, save=False)
-         super(Tour, self).save()
+#            suf = SimpleUploadedFile(os.path.split(self.splashimage.name)[-1],
+#                                 temp_handle.read(),
+#                                 content_type='image/%s' % image.format)
+#            self.splashimage.save(suf.name, suf, save=False)
+#            super(Tour, self).save()
+
+#         else:
+#            print('it is NULLLLLLLLLLLL')
 
 class TourInfo(models.Model):
     tour = models.ForeignKey(Tour)
     name = models.CharField(max_length=50)
     description = HTMLField(blank=True, default='')
     position = models.PositiveSmallIntegerField("Position", default=1)
-    slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
-    #slug = models.CharField(max_length=50, blank=True, default='')
+    info_slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
 
     class Meta:
         verbose_name = _('Tour Info')
@@ -89,17 +91,13 @@ class TourInfo(models.Model):
         return "%s - %s" % (self.name, self.tour.name)
 
     def get_absolute_url(self):
-        return reverse('tour:info-detail', kwargs={"slug":  self.tour.slug, "info": self.name})
+        return reverse('tour:info-detail', kwargs={"slug":  self.tour.slug, "info": self.info_slug})
 
-    @property
-    def slug(self):
-        return slugify(self.name)
-
-def new_position():
-    if hasattr(TourStop, 'tour_id'):
-        return TourStop.objects.filter(tour_id=TourStop.tour_id).count()
-    else:
-        return TourStop.objects.count()
+def new_position(instance, tour_id):
+    #if hasattr(TourStop, 'tour_id'):
+    return TourStop.objects.filter(tour_id=tour_id).count()
+    #else:
+    #    return TourStop.objects.count()
 
 # callback for tour_stop image name
 def tour_stop_image_filename(instance, filename):
@@ -131,18 +129,12 @@ class TourStop(models.Model):
     lng = models.FloatField(null=True, blank=True)
     park_lat = models.FloatField(null=True, blank=True)
     park_lng = models.FloatField(null=True, blank=True)
+    parking_block = models.TextField(blank=True, default='')
 
     direction_notes = HTMLField(blank=True, default='')
 
-    #mp4 = models.FileField(upload_to='.', blank=True, default='')
-    #ogg = models.FileField(upload_to='.', blank=True, default='')
-    #poster = models.ImageField(upload_to='.', blank=True, default='')
-
-#def new_positions(self):
-#    return self.objects.filter(tour_id=slef.tour).count()
-
     # used in drag and drop reodering as well as tour stop order
-    position = models.PositiveSmallIntegerField("Position", default=(new_position))
+    position = models.PositiveSmallIntegerField("Position")
 
     class Meta:
         verbose_name = _('Tour Stop')
@@ -160,6 +152,23 @@ class TourStop(models.Model):
     @property
     def slug(self):
         return slugify(self.name)
+
+    def save(self, force_insert=False, force_update=False):
+        #self.position = new_position()
+        if self.position == None:
+            print('No position')
+            #new_position = self.objects.filter(tour_id=self.tour_id).count()
+            self.position = new_position(self, self.tour_id)
+            print('New position = %s' % ( self.position ))
+        else:
+            print('position = %s' % (self.position))
+        super(TourStop, self).save(force_insert, force_update)
+
+#    class Meta:
+#        model = TourStop
+#        widgets = {
+#            'description': TinyMCE(mce_attrs={'content_css': "dev.emorydisc.org/battleofatlanta/static/css/structure.css"}),
+#        }
 
 class TourStopMedia(models.Model):
     tour_stop = models.ForeignKey(TourStop)
