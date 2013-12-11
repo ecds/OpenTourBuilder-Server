@@ -48,31 +48,6 @@ class Tour(models.Model):
     def __unicode__(self):
         return "%s" % (self.name)
 
-#    def save(self, force_update=False, force_insert=False):
-
-#         if self.splashimage:
-#            image = Image.open(self.splashimage)
-
-#            width = 290
-#            height = 190
-
-#            image.thumbnail((width, height), Image.ANTIALIAS)
-#            image.save(self.splashimage.path)
-
-            # save the thumbnail to memory
-#            temp_handle = StringIO()
-#            image.save(temp_handle, image.format)
-#            temp_handle.seek(0) #rewind the file
-
-#            suf = SimpleUploadedFile(os.path.split(self.splashimage.name)[-1],
-#                                 temp_handle.read(),
-#                                 content_type='image/%s' % image.format)
-#            self.splashimage.save(suf.name, suf, save=False)
-#            super(Tour, self).save()
-
-#         else:
-#            print('it is NULLLLLLLLLLLL')
-
 class TourInfo(models.Model):
     tour = models.ForeignKey(Tour)
     name = models.CharField(max_length=50)
@@ -94,10 +69,7 @@ class TourInfo(models.Model):
         return reverse('tour:info-detail', kwargs={"slug":  self.tour.slug, "info": self.info_slug})
 
 def new_position(instance, tour_id):
-    #if hasattr(TourStop, 'tour_id'):
     return TourStop.objects.filter(tour_id=tour_id).count()
-    #else:
-    #    return TourStop.objects.count()
 
 # callback for tour_stop image name
 def tour_stop_image_filename(instance, filename):
@@ -134,7 +106,7 @@ class TourStop(models.Model):
     direction_notes = HTMLField(blank=True, default='')
 
     # used in drag and drop reodering as well as tour stop order
-    position = models.PositiveSmallIntegerField("Position")
+    position = models.PositiveSmallIntegerField("Position", blank=True, null=True, default='')
 
     class Meta:
         verbose_name = _('Tour Stop')
@@ -154,21 +126,9 @@ class TourStop(models.Model):
         return slugify(self.name)
 
     def save(self, force_insert=False, force_update=False):
-        #self.position = new_position()
         if self.position == None:
-            print('No position')
-            #new_position = self.objects.filter(tour_id=self.tour_id).count()
             self.position = new_position(self, self.tour_id)
-            print('New position = %s' % ( self.position ))
-        else:
-            print('position = %s' % (self.position))
         super(TourStop, self).save(force_insert, force_update)
-
-#    class Meta:
-#        model = TourStop
-#        widgets = {
-#            'description': TinyMCE(mce_attrs={'content_css': "dev.emorydisc.org/battleofatlanta/static/css/structure.css"}),
-#        }
 
 class TourStopMedia(models.Model):
     tour_stop = models.ForeignKey(TourStop)
