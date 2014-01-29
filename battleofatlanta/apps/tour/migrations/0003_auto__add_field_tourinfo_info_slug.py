@@ -8,15 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'TourStop.video_embed'
-        db.add_column('tour_tourstop', 'video_embed',
-                      self.gf('django.db.models.fields.CharField')(default='', max_length=50, blank=True),
+        # Adding field 'TourInfo.info_slug'
+        db.add_column('tour_tourinfo', 'info_slug',
+                      self.gf('autoslug.fields.AutoSlugField')(default='', unique_with=(), max_length=50, populate_from='name'),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting field 'TourStop.video_embed'
-        db.delete_column('tour_tourstop', 'video_embed')
+        # Deleting field 'TourInfo.info_slug'
+        db.delete_column('tour_tourinfo', 'info_slug')
 
 
     models = {
@@ -32,6 +32,15 @@ class Migration(SchemaMigration):
             'splashimage': ('django.db.models.fields.files.ImageField', [], {'default': "''", 'max_length': '100', 'blank': 'True'}),
             'twitter_acct': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'})
         },
+        'tour.tourinfo': {
+            'Meta': {'ordering': "['position']", 'object_name': 'TourInfo'},
+            'description': ('tinymce.models.HTMLField', [], {'default': "''", 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'info_slug': ('autoslug.fields.AutoSlugField', [], {'default': "''", 'unique_with': '()', 'max_length': '50', 'populate_from': "'name'"}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'position': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '1'}),
+            'tour': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tour.Tour']"})
+        },
         'tour.tourstop': {
             'Meta': {'ordering': "['position']", 'object_name': 'TourStop'},
             'article_link': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '525', 'blank': 'True'}),
@@ -45,7 +54,7 @@ class Migration(SchemaMigration):
             'park_lat': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'park_lng': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'position': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '19'}),
-            'tour': ('django.db.models.fields.related.ForeignKey', [], {'default': "'1'", 'to': "orm['tour.Tour']"}),
+            'tour': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tour.Tour']"}),
             'video_embed': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '50', 'blank': 'True'})
         },
         'tour.tourstopmedia': {

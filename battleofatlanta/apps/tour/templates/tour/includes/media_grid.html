@@ -4,7 +4,7 @@
     <h3>Images</h3>
     {% for ts_image in images %}
       <div class="image-well {% cycle 'ui-block-a' 'ui-block-b' %}">
-        <a href="{% url tour:stop-media-detail tour_stop.tour.slug ts_image.id %}"><img src="{{ts_image.image|thumbnail:"125x0"}}" /></a>
+        <a href="{% url tour:stop-media-detail tour_stop.tour.slug ts_image.id %}"><img src="{{ts_image.image|thumbnail:"125x0"}}" alt="{{ ts_image.title }}"/></a>
       </div>
     {% endfor %}
   {% endif %}

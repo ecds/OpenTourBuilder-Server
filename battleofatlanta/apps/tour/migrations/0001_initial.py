@@ -29,6 +29,7 @@ class Migration(SchemaMigration):
             ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('description', self.gf('tinymce.models.HTMLField')(default='', blank=True)),
             ('position', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=1)),
+            ('info_slug', self.gf('autoslug.fields.AutoSlugField')(default='', unique_with=(), max_length=50, populate_from='name')),
         ))
         db.send_create_signal('tour', ['TourInfo'])
 
@@ -95,6 +96,7 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['position']", 'object_name': 'TourInfo'},
             'description': ('tinymce.models.HTMLField', [], {'default': "''", 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'info_slug': ('autoslug.fields.AutoSlugField', [], {'default': "''", 'unique_with': '()', 'max_length': '50', 'populate_from': "'name'"}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'position': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '1'}),
             'tour': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tour.Tour']"})

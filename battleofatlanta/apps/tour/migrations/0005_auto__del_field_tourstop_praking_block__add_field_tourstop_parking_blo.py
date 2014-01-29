@@ -8,49 +8,63 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Deleting field 'TourStop.praking_block'
+        db.delete_column('tour_tourstop', 'praking_block')
 
-        # Changing field 'Tour.fb_app_id'
-        db.alter_column('tour_tour', 'fb_app_id', self.gf('django.db.models.fields.IntegerField')(null=True))
+        # Adding field 'TourStop.parking_block'
+        db.add_column('tour_tourstop', 'parking_block',
+                      self.gf('django.db.models.fields.TextField')(default='', blank=True),
+                      keep_default=False)
 
-        # Changing field 'Tour.fb_page_id'
-        db.alter_column('tour_tour', 'fb_page_id', self.gf('django.db.models.fields.IntegerField')(null=True))
 
     def backwards(self, orm):
+        # Adding field 'TourStop.praking_block'
+        db.add_column('tour_tourstop', 'praking_block',
+                      self.gf('django.db.models.fields.TextField')(default='', blank=True),
+                      keep_default=False)
 
-        # Changing field 'Tour.fb_app_id'
-        db.alter_column('tour_tour', 'fb_app_id', self.gf('django.db.models.fields.FloatField')(null=True))
+        # Deleting field 'TourStop.parking_block'
+        db.delete_column('tour_tourstop', 'parking_block')
 
-        # Changing field 'Tour.fb_page_id'
-        db.alter_column('tour_tour', 'fb_page_id', self.gf('django.db.models.fields.FloatField')(null=True))
 
     models = {
         'tour.tour': {
             'Meta': {'object_name': 'Tour'},
             'description': ('tinymce.models.HTMLField', [], {}),
-            'fb_app_id': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'fb_page_id': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'fb_app_id': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
+            'fb_page_id': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
+            'google_analytics': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'slug': ('autoslug.fields.AutoSlugField', [], {'unique': 'True', 'max_length': '50', 'populate_from': "'name'", 'unique_with': '()'}),
             'splashimage': ('django.db.models.fields.files.ImageField', [], {'default': "''", 'max_length': '100', 'blank': 'True'}),
             'twitter_acct': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'})
         },
+        'tour.tourinfo': {
+            'Meta': {'ordering': "['position']", 'object_name': 'TourInfo'},
+            'description': ('tinymce.models.HTMLField', [], {'default': "''", 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'info_slug': ('autoslug.fields.AutoSlugField', [], {'unique': 'True', 'max_length': '50', 'populate_from': "'name'", 'unique_with': '()'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'position': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '1'}),
+            'tour': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tour.Tour']"})
+        },
         'tour.tourstop': {
             'Meta': {'ordering': "['position']", 'object_name': 'TourStop'},
             'article_link': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '525', 'blank': 'True'}),
             'description': ('tinymce.models.HTMLField', [], {'default': "''", 'blank': 'True'}),
+            'direction_notes': ('tinymce.models.HTMLField', [], {'default': "''", 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'lat': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'lng': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'metadescription': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
-            'mp4': ('django.db.models.fields.files.FileField', [], {'default': "''", 'max_length': '100', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'ogg': ('django.db.models.fields.files.FileField', [], {'default': "''", 'max_length': '100', 'blank': 'True'}),
             'park_lat': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'park_lng': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'position': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '17'}),
-            'poster': ('django.db.models.fields.files.ImageField', [], {'default': "''", 'max_length': '100', 'blank': 'True'}),
-            'tour': ('django.db.models.fields.related.ForeignKey', [], {'default': "'1'", 'to': "orm['tour.Tour']"})
+            'parking_block': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
+            'position': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '1'}),
+            'tour': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tour.Tour']"}),
+            'video_embed': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '50', 'blank': 'True'})
         },
         'tour.tourstopmedia': {
             'Meta': {'object_name': 'TourStopMedia'},

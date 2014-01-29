@@ -1,4 +1,5 @@
 {% extends "site_base.html" %}
+{% load thumbnail %}
 
 {% block extrajs %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
@@ -11,19 +12,19 @@
 
 {% block content %}
 <div class="lead-media">
-  <!--<img data-src="holder.js/100%x150/industrial" />-->
-  <!--<img src="{{ STATIC_URL }}images/BOfAtlantaTroupHurtHouse.jpg" />-->
 </div>
     <div data-role="collapsible-set" data-corners="false" data-theme="b" data-content-theme="d">
         {% for tour in tours %}
         <div data-role="collapsible">
         <h3>{{ tour.name }}</h3>
             <div>
+                {% if tour.splashimage %}
                 <a href="{% url tour:detail tour.slug %}">
-                    <img src="{{MEDIA_URL}}/{{ tour.splashimage }}" />
+                    <img src="{{ tour.splashimage|thumbnail:"290x190" }}" alt="Default image for {{ tour.name }}"/>
                 </a>
+                {% endif %}
                 {{ tour.description|safe }}
-                <a href="{% url tour:detail tour.slug %}">Start Tour</a></li>
+                <a href="{% url tour:detail tour.slug %}">Start Tour</a>
             </div>
         </div>
         {% endfor %}

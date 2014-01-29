@@ -2,7 +2,7 @@
 {% if tour_stop.video_embed %}
     <iframe id="youtube" width="290" height="190" src="{{ tour_stop.video_embed }}" frameborder="0" allowfullscreen></iframe>
 {% elif images %}
-    <img src="{{ images.0.image|thumbnail:"0x190" }}" />
+    <p class="caption"><a href="{% url tour:stop-media-detail tour_stop.tour.slug images.0.id %}"><img src="{{ images.0.image|thumbnail:"0x190" }}" /></a>{{ images.0.caption }}</p>
 {% else %}
     <img src="{{ MEDIA_URL }}{{ tour.splashimage }}">
 {% endif %}

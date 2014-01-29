@@ -4,7 +4,7 @@ from django.contrib import admin
 
 from django_admin_bootstrapped.admin.models import SortableInline, CollapsibleInline
 
-from battleofatlanta.apps.tour.models import Tour, TourInfo, TourStop, TourStopMedia
+from battleofatlanta.apps.tour.models import Tour, TourInfo, TourStop, TourStopMedia, DirectionsMode
 
 class TourStopMediaInline(admin.TabularInline, SortableInline):
     model = TourStopMedia
@@ -38,6 +38,9 @@ class TourStopAdmin(admin.ModelAdmin):
 class TourAdmin(admin.ModelAdmin):
     inlines = ( TourInfoInline, TourStopInline, )
 
+#class DirectionsMode(admin.ModelAdmin):
+#    extra = 0
+
 #class TourStopMediaTypeAdmin(admin.ModelAdmin):
 #    model = TourStopMediaType
 
@@ -45,4 +48,5 @@ admin.site.register(TourStopMedia, TourStopMediaAdmin)
 admin.site.register(TourInfo, TourInfoAdmin)
 admin.site.register(TourStop, TourStopAdmin)
 admin.site.register(Tour, TourAdmin)
+admin.site.register(DirectionsMode)
 #admin.site.register(TourStopMediaType, TourStopMediaTypeAdmin)

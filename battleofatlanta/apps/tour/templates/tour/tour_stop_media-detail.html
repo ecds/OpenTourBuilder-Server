@@ -10,7 +10,7 @@
 
 {% block content %}
 <div id="image-detail">
-  <img src="{{tour_stop_media.image|thumbnail:"580x0"}}"/>
+  <img src="{{tour_stop_media.image|thumbnail:"580x0"}}" alt="{{ tour_stop_media.title }}"/>
   <div class="clearfix"></div>
   <div class="caption">
     {{ tour_stop_media.caption }}

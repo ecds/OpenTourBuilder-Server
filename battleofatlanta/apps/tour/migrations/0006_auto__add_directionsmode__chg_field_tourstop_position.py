@@ -8,18 +8,33 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting field 'TourInfo.position'
-        db.delete_column('tour_tourinfo', 'position')
+        # Adding model 'DirectionsMode'
+        db.create_table('tour_directionsmode', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('mode', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('default', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=0)),
+        ))
+        db.send_create_signal('tour', ['DirectionsMode'])
 
+
+        # Changing field 'TourStop.position'
+        db.alter_column('tour_tourstop', 'position', self.gf('django.db.models.fields.PositiveSmallIntegerField')(null=True))
 
     def backwards(self, orm):
-        # Adding field 'TourInfo.position'
-        db.add_column('tour_tourinfo', 'position',
-                      self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=''),
-                      keep_default=False)
+        # Deleting model 'DirectionsMode'
+        db.delete_table('tour_directionsmode')
 
+
+        # Changing field 'TourStop.position'
+        db.alter_column('tour_tourstop', 'position', self.gf('django.db.models.fields.PositiveSmallIntegerField')())
 
     models = {
+        'tour.directionsmode': {
+            'Meta': {'object_name': 'DirectionsMode'},
+            'default': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '0'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'mode': ('django.db.models.fields.CharField', [], {'max_length': '50'})
+        },
         'tour.tour': {
             'Meta': {'object_name': 'Tour'},
             'description': ('tinymce.models.HTMLField', [], {}),
@@ -33,10 +48,12 @@ class Migration(SchemaMigration):
             'twitter_acct': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'})
         },
         'tour.tourinfo': {
-            'Meta': {'object_name': 'TourInfo'},
-            'body': ('tinymce.models.HTMLField', [], {'default': "''", 'blank': 'True'}),
+            'Meta': {'ordering': "['position']", 'object_name': 'TourInfo'},
+            'description': ('tinymce.models.HTMLField', [], {'default': "''", 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'info_slug': ('autoslug.fields.AutoSlugField', [], {'unique': 'True', 'max_length': '50', 'populate_from': "'name'", 'unique_with': '()'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'position': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '1'}),
             'tour': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tour.Tour']"})
         },
         'tour.tourstop': {
@@ -51,7 +68,8 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'park_lat': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'park_lng': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'position': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '19'}),
+            'parking_block': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
+            'position': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': "''", 'null': 'True', 'blank': 'True'}),
             'tour': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tour.Tour']"}),
             'video_embed': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '50', 'blank': 'True'})
         },
