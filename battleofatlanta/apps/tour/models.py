@@ -25,10 +25,17 @@ def validate_twitter(value):
     if '@' in value:
         raise ValidationError('Do not include the @ in your Twitter Account')
 
+class DirectionsMode(models.Model):
+    mode = models.CharField(max_length=50)
+
+    def __unicode__(self):
+        return "%s" % (self.mode)
+
 class Tour(models.Model):
     name = models.CharField(max_length=50)
     description = HTMLField()
     slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
+    mode = models.ForeignKey(DirectionsMode, default=1)
     fb_app_id = models.CharField(max_length=50, blank=True)
     fb_page_id = models.CharField(max_length=50, blank=True)
     twitter_acct = models.CharField(max_length=50, blank=True, validators=[validate_twitter])
@@ -188,3 +195,6 @@ class TourStopMedia(models.Model):
         # finally we save the TSMedia object
         super(TourStopMedia, self).save(force_update, force_insert)
 
+#class DirectionsMode(models.Model):
+#    mode = models.CharField(max_length=50)
+#    default = models.PositiveSmallIntegerField(default = 0)
