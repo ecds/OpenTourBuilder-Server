@@ -1,0 +1,37 @@
+{% extends "site_base.html" %}
+{% load thumbnail %}
+
+{% block extrajs %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
+{% endblock extrajs %}
+
+{% block header %}
+<div data-role="header" data-position="fixed">
+<h1>Tours</h1>
+{% endblock header %}
+
+{% block content %}
+<div class="lead-media">
+</div>
+    <div data-role="collapsible-set" data-corners="false" data-theme="b" data-content-theme="d">
+        {% for tour in tours %}
+        <div data-role="collapsible">
+        <h3>{{ tour.name }}</h3>
+            <div>
+                {% if tour.splashimage %}
+                <a href="{% url 'tour:detail' tour.slug %}">
+                    <img src="{{ tour.splashimage|thumbnail:"290x190" }}" alt="Default image for {{ tour.name }}"/>
+                </a>
+                {% endif %}
+                {{ tour.description|safe }}
+                <a href="{% url 'tour:detail' tour.slug %}">Start Tour</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock content %}
+
+
+{% block footer %}
+<div class="{% block footer_class %}{% endblock %}" data-role="footer" data-position="fixed">
+{% endblock footer %}

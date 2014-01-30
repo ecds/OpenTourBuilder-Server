@@ -1,7 +1,7 @@
 import os
 import sys
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'battleofatlanta.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'tours.settings'
 
 from django.core.handlers.wsgi import WSGIHandler
 application = WSGIHandler()
