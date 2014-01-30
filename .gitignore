@@ -1,5 +1,5 @@
 *.pyc
 venv
-battleofatlanta/settings/local.py
-battleofatlanta/static
-battleofatlanta/media
+tours/settings/local.py
+tours/static
+tours/media
