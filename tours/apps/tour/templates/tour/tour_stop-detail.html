@@ -187,9 +187,9 @@
             // Get the selected value
             var selectedMode = document.getElementById('mode').value;
 
-            /* Get Django's CSRF token using a jQuery cookie plugin.
-            * This is provided from a hidden input filed and django's csrf_token
-            */ template tag.
+            // Get Django's CSRF token using a jQuery cookie plugin.
+            // This is provided from a hidden input filed and django's csrf_token
+            // template tag.
             var csrftoken = $.cookie('csrftoken');
 
             // Make the ajax post to the tour.update_directionsmode view
