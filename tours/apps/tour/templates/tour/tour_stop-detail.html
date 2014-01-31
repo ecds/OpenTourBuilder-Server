@@ -187,15 +187,15 @@
             // Get the selected value
             var selectedMode = document.getElementById('mode').value;
 
-            /* Get Django's CSRF token using a jQuery cookie plugin.
-            * This is provided from a hidden input filed and django's csrf_token
-            */ template tag.
+            // Get Django's CSRF token using a jQuery cookie plugin.
+            // This is provided from a hidden input filed and django's csrf_token
+            //template tag.
             var csrftoken = $.cookie('csrftoken');
 
             // Make the ajax post to the tour.update_directionsmode view
             $.ajax({
                 //url: {% url 'tour:mode' tour_stop.tour.slug  %} + selectedMode + '/',
-		        url: 'http://{{ request.get_host }}/tour/update_directionsmode/' + selectedMode + '/',
+                url: 'http://{{ request.get_host }}/tour/update_directionsmode/' + selectedMode + '/',
                 type: 'post',
                 headers: {
                     'X-CSRFToken': csrftoken,
@@ -245,22 +245,22 @@
 <div data-id="details" class="tab-content" data-class="tab">
     {% include "tour/includes/social_media.html" %}
     <article>
-	<h4>{{ tour_stop.name}}</h4>
+    <h4>{{ tour_stop.name}}</h4>
     <div data-role="content">
         {% include "tour/includes/video.html" %}
     </div>
 
 
-	<div>
-		{{ tour_stop.description|safe }}
-	</div>
+    <div>
+        {{ tour_stop.description|safe }}
+    </div>
     {% if tour_stop.article_link %}
         <div>
             <a href="{{ tour_stop.article_link }}" target="_blank">Read Full Article</a>
         </div>
     <br />
     {% endif %}
-	{% include "tour/includes/social_media.html" %}
+    {% include "tour/includes/social_media.html" %}
     </article>
 </div>
 
