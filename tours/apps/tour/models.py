@@ -52,6 +52,8 @@ class Tour(models.Model):
     def get_absolute_url(self):
         return reverse('detail', kwargs={'slug': self.slug})
 
+    print('URL = %s' % (get_absolute_url))
+
     def __unicode__(self):
         return "%s" % (self.name)
 

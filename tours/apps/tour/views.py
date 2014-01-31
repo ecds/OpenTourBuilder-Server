@@ -7,14 +7,12 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.core.context_processors import csrf
 from django.conf import settings
-#from django.views.decorators.csrf import csrf_protect
 from tours.apps.tour.models import Tour, TourInfo, TourStop, TourStopMedia, DirectionsMode
 
 def directions(request, slug):
     tour = tour = get_object_or_404(Tour, slug=slug)
     if  "directions" not in request.session:
         mode = str(tour.mode)
-        print("Mode = " + mode)
         request.session["directions"] = mode
 
 def update_directionsmode(request, mode):
@@ -46,12 +44,8 @@ def tour_info_detail(request, slug, info):
             'tour_info': tour_info[0],
         }, context_instance=RequestContext(request))
 
-#@csrf_protect
 def tour_stop_detail(request, slug, page):
     tour = get_object_or_404(Tour, slug=slug)
-
-#    c = {}
-#    c.update(csrf(request))
 
     directions(request, slug)
 
@@ -70,7 +64,7 @@ def tour_stop_detail(request, slug, page):
             'page': page,
             'directions': directions_pref,
             'modes': modes,
-	    'sub': settings.SUB_URL,
+    	    'sub': settings.SUB_URL,
         }, context_instance=RequestContext(request))
 
 def tour_stop_media_detail(request, slug, id):
