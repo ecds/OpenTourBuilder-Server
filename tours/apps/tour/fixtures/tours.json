@@ -5,8 +5,8 @@
         "fields": {
             "name" : "Battle of Atlanta",
             "description": "A tour of the Battle of Atlanta",
-            "slug": "battle-of-atlanta",
-	    "mode": 1
+            "slug": "battle-of-atlanta-test",
+            "splashimage": "/data/django/tours/sitemedia/markers/marker1.png"
         }
     }
 ]
