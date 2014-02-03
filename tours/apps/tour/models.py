@@ -33,6 +33,7 @@ class DirectionsMode(models.Model):
 
 class Tour(models.Model):
     name = models.CharField(max_length=50)
+    published = models.BooleanField(default=False)
     description = HTMLField()
     slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
     mode = models.ForeignKey(DirectionsMode, default=1)
@@ -51,8 +52,6 @@ class Tour(models.Model):
 
     def get_absolute_url(self):
         return reverse('detail', kwargs={'slug': self.slug})
-
-    print('URL = %s' % (get_absolute_url))
 
     def __unicode__(self):
         return "%s" % (self.name)

@@ -4,10 +4,33 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.core.context_processors import csrf
 from django.conf import settings
 from tours.apps.tour.models import Tour, TourInfo, TourStop, TourStopMedia, DirectionsMode
+
+'''
+Decerator that will only display a tour if:
+    Tour is published
+    User is authenticated
+
+Will not show the tour if:
+    Tour is unpublished and user in not authenticated
+'''
+def check_published(view):
+    def check(request, *args, **kwargs):
+        tour = Tour.objects.get(slug=kwargs["slug"])
+        user = request.user.is_authenticated()
+
+        # Return 403 if no user and tour is unpublished
+        if user is False and tour.published is False:
+            return HttpResponseForbidden()
+
+        # Show tour if user is authenticated or tour is published
+        elif user is True or tour.published is True:
+            return view(request, *args, **kwargs)
+
+    return check
 
 def directions(request, slug):
     tour = tour = get_object_or_404(Tour, slug=slug)
@@ -22,6 +45,7 @@ def update_directionsmode(request, mode):
     request.session['directions'] = mode
     return HttpResponse('ok')
 
+@check_published
 def tour_detail(request, slug):
     tour = get_object_or_404(Tour, slug=slug)
     tour_info = tour.tourinfo_set.all()
@@ -33,6 +57,7 @@ def tour_detail(request, slug):
             'tour_stops': tour_stops,
         }, context_instance=RequestContext(request))
 
+@check_published
 def tour_info_detail(request, slug, info):
     tour = get_object_or_404(Tour, slug=slug)
     tour_info = tour.tourinfo_set.filter(info_slug=info)
@@ -44,6 +69,7 @@ def tour_info_detail(request, slug, info):
             'tour_info': tour_info[0],
         }, context_instance=RequestContext(request))
 
+@check_published
 def tour_stop_detail(request, slug, page):
     tour = get_object_or_404(Tour, slug=slug)
 
@@ -67,6 +93,7 @@ def tour_stop_detail(request, slug, page):
     	    'sub': settings.SUB_URL,
         }, context_instance=RequestContext(request))
 
+@check_published
 def tour_stop_media_detail(request, slug, id):
     tour_stop_media = get_object_or_404(TourStopMedia, pk=id)
 
