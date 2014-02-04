@@ -5,7 +5,7 @@ from django.template import RequestContext
 from tours.apps.tour.models import Tour
 
 def site_index(request):
-    tours
+    tours = ''
     if request.user.is_authenticated() is True:
         tours = Tour.objects.all()
     else:
