@@ -50,8 +50,8 @@
 </script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.ui.map.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/maps/jquery.ui.map.extensions.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/maps/jquery.ui.map.services.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/maps/jquery.ui.map.extensions.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/maps/jquery.ui.map.services.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/local.js"></script>
 <script type="text/javascript">
@@ -189,11 +189,7 @@
 
             // Get Django's CSRF token using a jQuery cookie plugin.
             // This is provided from a hidden input filed and django's csrf_token
-<<<<<<< HEAD
-            //template tag.
-=======
             // template tag.
->>>>>>> 98f3b86d3bd656f13adcd4f9aded9a676ac5bf8a
             var csrftoken = $.cookie('csrftoken');
 
             // Make the ajax post to the tour.update_directionsmode view
