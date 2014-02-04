@@ -4,6 +4,6 @@ South==0.7.6
 django-admin-bootstrapped
 django-autoslug
 django-tinymce
-PIL
+pillow
 docutils
 python-magic
