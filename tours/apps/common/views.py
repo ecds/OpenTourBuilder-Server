@@ -5,5 +5,9 @@ from django.template import RequestContext
 from tours.apps.tour.models import Tour
 
 def site_index(request):
-    tours = Tour.objects.filter(published=True)
+    tours
+    if request.user.is_authenticated() is True:
+        tours = Tour.objects.all()
+    else:
+        tours = Tour.objects.filter(published=True)
     return render_to_response('common/site_index.html', {'tours': tours,}, context_instance=RequestContext(request))
