@@ -2,6 +2,7 @@
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
+from django.core.files import File
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
@@ -14,10 +15,10 @@ from django.core.validators import ValidationError, RegexValidator, MaxLengthVal
 from autoslug import AutoSlugField
 from tinymce.models import HTMLField
 from PIL import Image
+import tempfile
 
 import re
 import os
-import magic
 
 from cStringIO import StringIO
 
@@ -79,20 +80,6 @@ class TourInfo(models.Model):
 def new_position(instance, tour_id):
     return TourStop.objects.filter(tour_id=tour_id).count()
 
-# callback for tour_stop image name
-def tour_stop_image_filename(instance, filename):
-    fname, ext = os.path.splitext(filename)
-    return '/'.join(['tour_stops', instance.tour_stop.slug, "%s%s" % (slugify(fname), ext)])
-
-# callback for the inline path
-def tour_stop_inline_filename(instance, filename):
-    fname, ext = os.path.splitext(filename)
-    return '/'.join(['tour_stops', instance.tour_stop.slug,'inline', "%s%s" % (slugify(fname), ext)])
-
-def tour_splash_image_filename(instance, filename):
-    fname, ext = os.path.splitext(filename)
-    return '/'.join(['tours', instance.tour_stop.slug, "%s%s" % (slugify(fname), ext)])
-
 def validate_https(value):
     if 'https' not in value:
         raise ValidationError('Make sure your embed link uses HTTPS.')
@@ -142,8 +129,8 @@ class TourStopMedia(models.Model):
     tour_stop = models.ForeignKey(TourStop)
     title = models.CharField(max_length=50, blank=True, default='')
     caption = models.CharField(max_length=255, blank=True, default='')
-    image = models.FileField(upload_to=tour_stop_image_filename, blank=True, default='')
-    inline = models.ImageField(upload_to=tour_stop_inline_filename, blank=True, default='')
+    image = models.ImageField(upload_to='stops/', verbose_name='Image')
+    inline = models.ImageField(upload_to='stops/inline/', blank=True, null=True)
     source_link = models.CharField(max_length=525, blank=True, default='')
     metadata = HTMLField(blank=True, default='')
 
@@ -157,45 +144,35 @@ class TourStopMedia(models.Model):
     def get_absolute_url(self):
         return reverse('tour:stop-media-detail', kwargs={"slug":  self.tour_stop.tour.slug, "id": self.id})
 
-    def save(self, force_update=False, force_insert=False):
-        orig = None
-        if self.pk is not None:
+    def save(self, *args, **kwargs):
+        # override save method to resize image and generate thumbnail
+
+        image_update = False
+        # if pk is set, this is an update to an existing model;
+        # check if the image is being changed
+        if self.pk:
             orig = TourStopMedia.objects.get(pk=self.pk)
-        # finally we save the TSMedia object
-        super(TourStopMedia, self).save(force_update, force_insert)
+            if self.image != orig.image:
+                image_update = True
 
-        type = magic.from_file(getattr(settings, "MEDIA_ROOT", None) + '/' + str(self.image))
+        if self.image and not self.inline or image_update:
+            self.generate_thumbnail()
 
-        if re.search('image', type):
-    
-            if not self.inline or (orig and self.image != orig.image):
-                #create thumbnail if it doesn't exist
-                image = Image.open(self.image)
-    
-                # retrieve original size for computation of thumb size
-                width, height = image.size
-    
-                #compute thumb size currently hardcoded to maintain aspect ratio with 125px width
-                # TODO: refactor to class variable
-                inline_w = 290
-                inline_h = height * inline_w / width
-    
-                image.thumbnail((inline_w, inline_h), Image.ANTIALIAS)
-    
-                # save the thumbnail to memory
-                temp_handle = StringIO()
-                image.save(temp_handle, image.format)
-                temp_handle.seek(0) #rewind the file
-    
-                # save the thumbnail field
-                suf = SimpleUploadedFile(os.path.split(self.image.name)[-1],
-                                         temp_handle.read(),
-                                        content_type='image/%s' % image.format)
-                self.inline.save(suf.name, suf, save=False)
+        super(TourStopMedia, self).save(*args, **kwargs)
 
-        # finally we save the TSMedia object
-        super(TourStopMedia, self).save(force_update, force_insert)
+    def generate_thumbnail(self):
+        thumbnail_size = (290, 290)
+    
+        return self._resize_imagefield(thumbnail_size, self.inline)
 
-#class DirectionsMode(models.Model):
-#    mode = models.CharField(max_length=50)
-#    default = models.PositiveSmallIntegerField(default = 0)
+    def _resize_imagefield(self, size, field):
+        image = Image.open(self.image)
+        # NOTE: using thumbnail for both resize/thumb
+        # because it resizes the current image rather than resize,
+        # which returns a new Image object
+        image.thumbnail(size, Image.ANTIALIAS)
+        tmp = tempfile.NamedTemporaryFile(suffix='.png')
+        image.save(tmp.name, 'png')
+        content = File(tmp)
+        field.save('%s' % self.image, content, save=False)
+
