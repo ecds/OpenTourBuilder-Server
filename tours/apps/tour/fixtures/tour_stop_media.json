@@ -1,0 +1,41 @@
+[
+    { 
+        "model": "tour.tourstopmedia",
+        "pk": 1,
+        "fields": {
+            "title": "Pic 1", 
+            "source_link": "", 
+            "image": "/data/django/tours/sitemedia/markers/marker1.png", 
+            "tour_stop": 1, 
+            "caption": "", 
+            "inline": "", 
+            "metadata": ""
+        }
+    },
+    {
+        "model": "tour.tourstopmedia",
+        "pk": 2, 
+        "fields": {
+            "title": "Pic 2", 
+            "source_link": "", 
+            "image": "/data/django/tours/sitemedia/markers/marker2.png", 
+            "tour_stop": 2, 
+            "caption": "", 
+            "inline": "", 
+            "metadata": ""
+        }
+    },
+    { 
+        "model": "tour.tourstopmedia",
+        "pk": 3,
+        "fields": {
+            "title": "Pic 3", 
+            "source_link": "", 
+            "image": "/data/django/tours/sitemedia/markers/marker3.png", 
+            "tour_stop": 3, 
+            "caption": "", 
+            "inline": "", 
+            "metadata": ""
+        }
+    }
+]

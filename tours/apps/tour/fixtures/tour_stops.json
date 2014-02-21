@@ -1,0 +1,35 @@
+[
+    {
+        "model": "tour.TourStop",
+        "pk": 1,
+        "fields": {
+            "name" : "Atlanta",
+            "description": "A stop in atlanta for the tour",
+            "tour": 1,
+            "position": 0,
+            "video_embed": "https://youtube.com/embed/67yreTZGsxM"
+        }
+    },
+    {
+        "model": "tour.TourStop",
+        "pk": 2,
+        "fields": {
+            "name" : "Boston",
+            "description": "A stop in Boston for the tour",
+            "tour": 1,
+            "position": 1,
+            "video_embed": "https://youtube.com/embed/67yreTZGsxM"
+        }
+    },
+    {
+        "model": "tour.TourStop",
+        "pk": 3,
+        "fields": {
+            "name" : "Topeka",
+            "description": "A stop in Topeka for the tour",
+            "tour": 1,
+            "position": 2,
+            "video_embed": "https://youtube.com/embed/67yreTZGsxM"
+        }
+    }
+]

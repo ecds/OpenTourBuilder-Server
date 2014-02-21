@@ -2,6 +2,8 @@ Battle of Atlanta
 =================
 -----------------
 
+.. image:: https://travis-ci.org/emory-libraries-disc/battleofatlanta.png?branch=develop
+
 Overview
 --------
 A Django project that allows creation of tours for the Battle of Atlanta project. \

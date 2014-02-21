@@ -1,0 +1,141 @@
+/**
+    File: structure.css
+    Description:
+        This file is used to define structure of the Battle of Atlanta site. Styles appropriate for
+        definition here should be related to appearance and geometry, not dealing with typography. A separate
+        typography.css should be created fonts if needed.
+*/
+
+body {
+    /*max-width: 320px;*/
+    max-height: 480px;
+    height: 480px;
+    border: 1px solid gray;
+}
+.clearfix {
+    clear: both;
+}
+
+/* bootstrap navbar resets */
+.navbar-inner {
+    border-radius: 0;
+}
+
+/* Overrides of some JQM style */
+
+.ui-content {
+	padding: 5px 10px;
+}
+
+/* custom tab control */
+.tab-content {
+    display:none;
+}
+.tab-content:first-child {
+    display:block;
+    /*text-align: justify;*/
+    padding: 0px;
+}
+
+.tab-content article {
+/*    border: 1px solid black;*/
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    line-height: 1.5em;
+    letter-spacing: .05em;
+    padding: 0px 10px;
+}
+
+.tab-content p {
+	padding-bottom: 1em;
+}
+
+.tab-content img, .tab-content video, .lead-media img, iframe#youtube {
+	display: block;
+	margin-right: auto;
+	margin-left: auto;
+	padding-bottom: 5px;
+}
+
+sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+#map_container {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    
+}
+
+#directions {
+    border-style: solid;
+    border-width: 1px;
+    padding: 3px;    
+}
+
+.adp-directions {
+    width: 100%;
+    text-align: center;
+}
+
+#select {
+    display: none;
+}
+
+#select-left {
+    width: 20%;
+    float:left;
+    text-align: right;
+    padding-top: 3px;
+}
+
+#select-right {
+    width: 60%;
+    float: left;
+    margin-left: 15px;
+}
+
+/* /custom tab control */
+
+
+#start_tour_btn {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.no-corners {
+    border-radius: 0;
+}
+
+/* image detail */
+#image-detail {
+    width: 100%;
+    overflow: hidden;
+    display: block;
+}
+#image-detail img {
+    width: 100%;
+}
+/* /image detail */
+
+/* Override for line on top of buttons */
+
+.ui-btn-inner {
+    border-color: rgba(255, 255, 255, 0.3);
+    border-top: none;
+}
+
+/* Override for line on top of buttons */
+
+.tab-content h3 {
+    text-align: center;
+    font-size: 150%;
+}
+
+.info-button {
+    margin: 0;
+}

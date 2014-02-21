@@ -1,6 +1,9 @@
 # requirements/common.txt
-Django==1.4
+Django==1.6
 South==0.7.6
 django-admin-bootstrapped
 django-autoslug
 django-tinymce
+pillow
+docutils
+python-magic

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="googlebot" content="noindex">
+  <meta name="bingbot" content="noindex">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% if tour_stop %}
+  <title>{{ tour_stop.name}}: {{ tour_stop.tour }}</title>
+  {% else %}
+  <title>Tours</title>
+  {% endif %}
+  
+  {% block meta %}
+  {% endblock meta %}
+  
+  <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet">
+  <link href="{{ STATIC_URL }}css/jquery.mobile-1.2.0.min.css" rel="stylesheet">
+  <link href="{{ STATIC_URL }}css/structure.css" rel="stylesheet">
+  <link href="{{ STATIC_URL }}css/extra.css" rel="stylesheet">
+
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).bind("mobileinit", function () {
+        $.mobile.ajaxEnabled = false;
+    });
+  </script>
+
+  <script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+  {% block head_scripts %}
+  {% endblock head_scripts %} 
+
+</head>
+
+<body style="position:relative;">
+  <div {% block page_attributes %}{% endblock %} data-role="page">
+    {% block page_scripts %}
+    {% endblock page_scripts %}
+    <!--<div data-role="header" data-position="fixed">-->
+    {% block header %}
+      <h1>Tours</h1>
+    {% endblock header %}
+    </div>
+    <div {% block content_attributes %}{% endblock %} data-role="content">
+      {% block content %}
+      {% endblock content %}
+    </div>
+    <!--<div class="{% block footer_class %}{% endblock %}" data-role="footer" data-position="fixed">-->
+      {% block footer %}
+      {% endblock footer %}
+    </div>
+  </div>
+</body>
+{{ tour.google_analytics }}
+</html>
