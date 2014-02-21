@@ -3,6 +3,8 @@
     <iframe id="youtube" width="290" height="190" src="{{ tour_stop.video_embed }}" frameborder="0" allowfullscreen></iframe>
 {% elif images %}
     <p class="caption"><a href="{% url 'tour:stop-media-detail' tour_stop.tour.slug images.0.id %}"><img src="{{ images.0.image|thumbnail:"0x190" }}" /></a>{{ images.0.caption }}</p>
-{% else %}
+{% elif tour.splashimage %}
     <img src="{{ tour.splashimage|thumbnail:"0x190" }}">
+{% else %}
+    You should upload some images.
 {% endif %}

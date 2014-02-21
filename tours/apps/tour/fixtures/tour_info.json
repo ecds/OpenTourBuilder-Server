@@ -1,0 +1,24 @@
+[
+    {
+        "model": "tour.TourInfo",
+        "pk": 1,
+        "fields": {
+            "name" : "About",
+            "description": "About this thing",
+            "tour": 1,
+            "position": 0,
+            "info_slug": "about"
+        }
+    },
+    {
+        "model": "tour.TourInfo",
+        "pk": 2,
+        "fields": {
+            "name" : "Instructions",
+            "description": "Some instructions",
+            "tour": 1,
+            "position": 1,
+            "info_slug": "instructions"
+        }
+    }
+]

@@ -18,7 +18,7 @@ from tours.apps.tour.models import Tour, TourStop
 logger = logging.getLogger(__name__)
 
 class TourTestCase(DjangoTestCase):
-    fixtures = ["tours.json", "tour_stops.json"]
+    fixtures = ["tours.json", "tour_stops.json"]#, "tour_info.json"]#, "tour_stop_media.json"]
 
     def setUp(self):
         # get the tour
