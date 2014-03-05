@@ -168,10 +168,10 @@
 
     // Initiate the map each time its tab is clicked.
     $("div:jqmData(role='page'):last").on('pageshow', function() {
-        $('div:jqmData(class="tab")').bind('init-tab', function() {
+        //$('div:jqmData(class="tab")').bind('init-tab', function() {
             initializeMap();
             $("html,body").scrollTop(0);
-        });
+        //});
     });
 </script>
 
@@ -242,6 +242,32 @@
 {% endblock header %}
 
 {% block content %}
+   
+   <div data-id="map" class="tab-content" data-class="tab">
+<div id="select">
+    <div id="select-left">Select Mode:</div>
+    <div id="select-right">
+        <select id="mode">
+        {% for mode in modes %}
+        <option value="{{ mode.mode }}" {% if mode.mode == directions %} selected="selected" {% endif %}>{{ mode.mode }}</option>
+        {% endfor %}
+        </select>
+        <input type="hidden" value="{{ csrf_token }}" />
+    </div>
+</div>
+<br>
+   <div class="map_stop_container" data-eul="{{tour_stop}}"></div>
+<div id="map_container"></div>
+    <div id="static_map"></div>
+    <div class="ui-li ui-li-divider ui-btn ui-bar-b ui-corner-top ui-btn-up-undefined" id="directions_head"></div>
+    <div id="directions"></div>
+    <div id="direction_notes">
+        {{ tour_stop.direction_notes|safe }}
+    </div>
+    <div class="ui-li ui-li-divider ui-btn ui-bar-b ui-corner-bottom ui-btn-up-undefined"></div>
+</div>
+   
+   
 <div data-id="details" class="tab-content" data-class="tab">
     {% include "tour/includes/social_media.html" %}
     <article>
@@ -268,37 +294,14 @@
   {% include "tour/includes/media_grid.html" %}
 </div>
 
-<div data-id="map" class="tab-content" data-class="tab">
-<div id="select">
-    <div id="select-left">Select Mode:</div>
-    <div id="select-right">
-        <select id="mode">
-        {% for mode in modes %}
-        <option value="{{ mode.mode }}" {% if mode.mode == directions %} selected="selected" {% endif %}>{{ mode.mode }}</option>
-        {% endfor %}
-        </select>
-        <input type="hidden" value="{{ csrf_token }}" />
-    </div>
-</div>
-<br>
-<div class="map_stop_container" data-eul="{{tour_stop}}"></div>
-<div id="map_container"></div>
-    <div id="static_map"></div>
-    <div class="ui-li ui-li-divider ui-btn ui-bar-b ui-corner-top ui-btn-up-undefined" id="directions_head"></div>
-    <div id="directions"></div>
-    <div id="direction_notes">
-        {{ tour_stop.direction_notes|safe }}
-    </div>
-    <div class="ui-li ui-li-divider ui-btn ui-bar-b ui-corner-bottom ui-btn-up-undefined"></div>
-</div>
 {% endblock content %}
      {% block footer %}
 <div class="{% block footer_class %}{% endblock %}" data-role="footer" data-position="fixed">
 <div data-role="navbar" data-iconpos="bottom" data-position="fixed" data-tap-toggle="false">
   <ul>
-    <li><a href="#" class="ui-btn-active ui-state-persist" data-icon="info" data-href="details">Details</a></li>
+    <li><a href="#" class="ui-btn-active ui-state-persist" data-icon="star" data-href="map">Directions</a></li>
+    <li><a href="#" data-icon="info" data-href="details">Details</a></li>
     <li><a href="#" data-icon="grid" data-href="media">Gallery</a></li>
-    <li><a href="#" data-icon="star" data-href="map">Directions</a></li>
   </ul>
 </div>
 {% endblock footer %}
