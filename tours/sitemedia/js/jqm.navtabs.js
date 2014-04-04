@@ -18,6 +18,8 @@ $(document).delegate('.ui-navbar ul li > a', 'click', function() {
   // custom event trigger in case there are any actions that need to be taken after 
   // a tab is shown
   $('div:jqmData(id="' + $(this).data('href') + '")').trigger('init-tab');
-
+  if($(this).hasClass('ui-btn-active')){
+     $('html,body').scrollTop(0);
+  }
   return false;
 });
