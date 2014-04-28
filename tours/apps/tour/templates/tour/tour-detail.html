@@ -29,30 +29,20 @@
     $("#map_container").width('100%').height('350px').gmap({
       //mapTypeId: google.maps.MapTypeId.TERRAIN,
       //zoom: 10,
-	callback: function(map) {
-        var self = this;
-        {% for ts in tour_stops %}
+    callback: function(map) {
+      var self = this;
+
+      {% for ts in tour_stops %}
         var infowindow = "<a href=\"{{ ts.get_absolute_url }}\">{{ts.name}}</a><p>{{ ts.metadescription }}</p>";
         addMarker(this, {{ts.lat}}, {{ts.lng}}, "{{ts.name}}", "{{ STATIC_URL }}markers/marker{{ forloop.counter }}.png", infowindow) 
-	{% endfor %}
+      {% endfor %}
 
-
-    self.getCurrentPosition(function(position, status) {
-        if ( status === 'OK' ) {
+      self.getCurrentPosition(function(position, status) {
+          if ( status === 'OK' ) {
             var clientPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             self.addMarker({'position': clientPosition, 'bounds': true, icon: '{{ STATIC_URL }}markers/mylocation.png'});
-            //self.addShape('Circle', { 
-            //    'strokeWeight': 0, 
-            //    'fillColor': "#008595", 
-            //    'fillOpacity': 0.25, 
-            //    'center': clientPosition, 
-            //    'radius': 15, 
-            //    'clickable': false 
-            //});
-        }
-    }); 
-
-
+          }
+        }); 
       }
     });
   }
@@ -62,12 +52,6 @@
       initializeMap();
     });
   });
-  
-//  $("div:jqmData(role='collapsible')").bind('expand', function () {
-//    console.log('Expanded');
-//    }).bind('collapse', function () {
-//        console.log('Collapsed');
-//    });
 
     $(document).on( "expand", "#scroll", function( event, ui ){
         console.log('Open');
@@ -80,41 +64,50 @@
 {% endblock page_scripts %}
 
 {% block header %}
-<div data-role="header" data-position="fixed">
-<h1>{{ tour.name }}</h1>
-<!--<a href="#" class="ui-btn-right" data-mini="true" data-rel="back" data-transition="slide">Back</a>-->
+  <a href="/" class="ui-btn back-btn" data-mini="true" data-transition="slide" data-direction="reverse"><span>Back</span></a>
+  <h1 class="tour-name">{{ tour.name }}</h1>
+  <div class="ui-btn-right" data-role="controlgroup" data-type="horizontal">
+     <a href="#auxMenu" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-icon-bars ui-nodisc-icon ui-alt-icon menu-btn" data-transition="pop"> Menu</a>
+  </div>
 {% endblock header %}
 
 {% block content %}
-<div data-id="details" class="tab-content">
-  {% for info in tour_info %}
-    <a href="{{ info.get_absolute_url }}" data-role="button" data-icon="arrow-r" class="info-button">{{ info.name }}</a>
-  {% endfor %}
-  <h3>Tour Stops</h3>
-  <div data-role="collapsible-set" data-corners="false" data-theme="b" data-content-theme="b">
-    {% for tour_stop in tour_stops %}
-    <div data-role="collapsible" {% if forloop.last %} id='scroll'{% endif %}>
-      <h3>{{ forloop.counter }}. {{ tour_stop.name }}</h3>
-      <div>
-        {{ tour_stop.metadescription }}
-        <a href="{{ tour_stop.get_absolute_url }}"><img src="http://maps.googleapis.com/maps/api/staticmap?zoom=16&amp;size=240x200&amp;maptype=roadmap{% if tour_stop.parking_block %}&amp;path=color:blue%7Cweight:5%7Cfillcolor:blue%7C{{ tour_stop.parking_block }}{% endif %}&amp;markers=color:red%7C{{ tour_stop.lat }},{{ tour_stop.lng }}&amp;sensor=false&amp;key=AIzaSyBx6Zz6NMBoTBzIU0sbZQezxXgFMZdKZeI" alt="Map to {{ tour_stop.name }}"/></a>
-        <div><a href="{{ tour_stop.get_absolute_url }}" data-transition="flip">Learn More</a></div>
-      </div>
-    </div>
-    {% endfor %}
+  <div data-role="popup" id="auxMenu">
+    <ul data-role="listview" data-inset="true" style="min-width:210px;">
+      {% for info in tour_info %}
+      <li>
+          <a href="{{ info.get_absolute_url }}" data-role="button" data-icon="arrow-r" class="info-button">{{ info.name }}</a>
+      </li>
+      {% endfor %}
+    </ul>
   </div>
+
+  <div data-id="details" class="tab-content jqm-content">
+    <h2>Tour Stops</h2>
+
+    <ul data-role="listview" data-split-icon="gear" data-split-theme="a" data-inset="true" data-shadow="false" data-corners="false">
+      {% for tour_stop in tour_stops %}
+        <li {% if forloop.last %} id='scroll'{% endif %}>
+          <a href="{{ tour_stop.get_absolute_url }}"  data-transition="slide">
+            <img src="http://maps.googleapis.com/maps/api/staticmap?zoom=16&amp;size=240x200&amp;maptype=roadmap{% if tour_stop.parking_block %}&amp;path=color:blue%7Cweight:5%7Cfillcolor:blue%7C{{ tour_stop.parking_block }}{% endif %}&amp;markers=color:red%7C{{ tour_stop.lat }},{{ tour_stop.lng }}&amp;sensor=false&amp;key=AIzaSyBx6Zz6NMBoTBzIU0sbZQezxXgFMZdKZeI" alt="Map to {{ tour_stop.name }}"/>
+            <h3>{{ forloop.counter }}. {{ tour_stop.name }}</h3>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
 </div>
+
+
 <div data-id="map" class="tab-content">
   <div id="map_container"></div>
 </div>
 {% endblock content %}
 
 {% block footer %}
-<div class="{% block footer_class %}{% endblock %}" data-role="footer" data-position="fixed">
 <div data-role="navbar" data-iconpos="bottom">
   <ul>
-    <li><a href="#" class="ui-btn-active" data-icon="bar" data-href="details">Tour Stops</a></li>
-    <li><a href="#" data-icon="star" data-href="map">Map</a></li>
+    <li><a href="#" class="ui-btn-active" data-href="details">Tour Stops</a></li>
+    <li><a href="#" data-href="map">Map</a></li>
   </ul>
 </div>
 {% endblock footer %}

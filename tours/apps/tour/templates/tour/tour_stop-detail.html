@@ -48,12 +48,7 @@
     // Don't allow JQM override the page title
     $(":jqmData(role='page')").attr("data-title", document.title);
 </script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.ui.map.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/maps/jquery.ui.map.extensions.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/maps/jquery.ui.map.services.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/local.js"></script>
+
 <script type="text/javascript">
     /*
     * click on marker loads data per stop and changes color of marker.
@@ -74,13 +69,12 @@
      }
 
     function initializeMap() {
-        var selectedMode = document.getElementById('mode').value;
-
+        var selectedMode = document.getElementById('mode').value || "DRIVING";
         /**
         * Initialize markers separately to slightly improve readability
         */
 
-        $('.ui-page-active #map_container').width('90%').height('350px').gmap({
+        $('.ui-page-active #map_container').width('100%').height('350px').gmap({
             //mapTypeId: google.maps.MapTypeId.TERRAIN,
             zoom: 16,
             center: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
@@ -165,14 +159,6 @@
             }
         });
     }
-    
-    // Initiate the map each time its tab is clicked.
-    $("div:jqmData(role='page'):first").on('pageshow', function() {
-        $('div:jqmData(class="tab")').bind('init-tab', function() {
-            initializeMap();
-            //$("html,body").scrollTop(0);
-        });
-    });
 </script>
 
 <script>
@@ -209,10 +195,12 @@
 </script>
 
 <script>
-    $(document).ready(function () {
-        //redrawMap();
+    $(document).on('click','#tabs a',function () {
+        initializeMap();
+    })
+
+    $(document).on('ready',function(){
         var hash = window.location.hash;
-        //alert(hash)
         var $tabs = $("#tabs li a");
         //find the index of the tab that matches hash
         if (hash) {
@@ -226,12 +214,12 @@
                 }
             }
         }
-    });
+    }); 
 </script>
 
 {% if tour.fb_app_id %}
     <script>
-    // Code from FaceBook
+    // Code from Facebook
     (function initializeFB(d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
@@ -245,90 +233,155 @@
 {% endblock page_scripts %}
 
 {% block header %}
- <div data-role="header" data-position="fixed">
-  <div class="ui-btn-left" data-role="controlgroup" data-type="horizontal">
-    <a href="/tour/{{ tour.slug }}" data-role="button" data-icon="home" >Home</a>
-  </div>
-  <span class="ui-title"></span>
-  <div class="ui-btn-right" data-role="controlgroup" data-type="horizontal">
-    {% if page.has_previous %}
-    <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.previous_page_number %}" data-role="button" data-icon="arrow-l">Prev Stop</a>
-    {% endif %}
+    <div class="tour-stop-detail rounded-corners">
+      <div class="" data-role="controlgroup" data-type="horizontal">
 
+        <a href="/tour/{{ tour.slug }}" data-role="button" class="back-btn" data-transition="slide" data-direction="reverse" ><span>Back</span></a>
+        <h1 class="tour-title">{{ tour.name }}</h1>
+      </div>
 
-    {% if page.has_next %}
-    <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.next_page_number %}" data-role="button" data-icon="arrow-r">Next Stop</a>
-    {% endif %}
-  </div>
+      <h2 class="ui-title">
+        {{tour_stop.name}}
+      </h2>
+      <div data-role="navbar" id="tabs" class="btn-right btn-map">
+          <ul>
+            
+            <li><a href="#history" class="ui-btn-active ui-state-persist" data-href="details">History</a></li>
+            <li>
+                <a href="#directions" data-href="map">
+                    <img src="http://maps.googleapis.com/maps/api/staticmap?zoom=14&amp;size=100x100&amp;maptype=roadmap{% if tour_stop.parking_block %}&amp;path=color:blue%7Cweight:5%7Cfillcolor:blue%7C{{ tour_stop.parking_block }}{% endif %}&amp;markers=color:red%7C{{ tour_stop.lat }},{{ tour_stop.lng }}&amp;sensor=false&amp;key=AIzaSyBx6Zz6NMBoTBzIU0sbZQezxXgFMZdKZeI" alt="Map to {{ tour_stop.name }}"/>
+                </a>
+            </li>
+          </ul>
+        </div>
+    </div>
 {% endblock header %}
 
 {% block content %}
-   <div data-id="map" class="tab-content" data-class="tab">
-      <div id="stopheader"><h4>{{ tour_stop.name }}</h4></div>
-      <div>
-        {{ tour_stop.directions_intro }}
-      </div>
-     <div id="select">
-        <!--<div id="select-left">Select Mode:</div>
-        <div id="select-right">-->
+
+<div data-role="tabs" id="tabs">
+
+<!--DETAILS -->
+    <div data-id="details" class="tab-content" data-role="tab">
+        <article>
+            <div class="m-carousel m-fluid m-carousel-photos">
+                <div class="m-carousel-inner" style="width:
+                {% if tour_stop.video_embed %}
+                    {{ images |length |add:'1'}}00%
+                {% else %}
+                    {{ images |length }}00%
+                {% endif %}
+                ">
+                <!-- the items -->
+                    {% if tour_stop.video_embed %}
+                        <div class="m-item">
+                            <iframe id="youtube" width="290" height="190" src="{{ tour_stop.video_embed }}?controls=2&amp;modestbranding=1&amp;rel=0&amp;showinfo=0&amp;theme=light" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    {% endif %}
+                    {% if images %}
+                        {% for ts_image in images %}
+                            <div class="m-item">
+                                <a data-rel="dialog" data-transition="slidedown" href="{% url 'tour:stop-media-detail' tour_stop.tour.slug ts_image.id %}"><img src="{{ts_image.image|thumbnail:"300x0"}}" alt="{{ ts_image.title }}"/></a>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+                <!-- the controls -->
+                <div class="m-carousel-controls m-carousel-bulleted">
+                    {% if images %}
+                        <a href="#" data-slide="prev" class="slide-static ui-btn ui-icon-carat-l ui-btn-icon-notext ui-corner-all">No text</a>
+                        {% if tour_stop.video_embed %}
+                            <a href="#" data-slide="1" class="">1</a>
+                            {% for ts_image in images %}
+                                <a href="#" data-slide="{{forloop.counter|add:'1'}}" class="">{{forloop.counter|add:'1'}}</a>
+                            {% endfor %}
+
+                        {% else %}
+                            {% for ts_image in images %}
+                                <a href="#" data-slide="{{forloop.counter}}" class="">{{forloop.counter}}</a>
+                            {% endfor %}
+                        {% endif %}
+                       
+                        <a href="#" data-slide="next" class="slide-static ui-btn ui-icon-carat-r ui-btn-icon-notext ui-corner-all">No text</a>
+                    {% endif %}
+                </div>
+            </div>
+            <script>$('.m-carousel').carousel()</script>
+            <div data-role="content">
+                {{ tour_stop.description|safe }}
+
+                {% include "tour/includes/liblogo.html" %}
+
+                <div data-role="controlgroup" data-type="horizontal">
+                    {% include "tour/includes/social_media.html" %}
+                </div>
+            </div>
+        </article>
+    </div>
+
+<!-- MAP -->    
+<script>
+ initializeMap();
+</script>
+    <div data-id="map" class="tab-content hidden" data-role="tab" style="display:none;">
+        <div>
+            {{ tour_stop.directions_intro }}
+        </div>
+        <div id="select">
             <select id="mode">
-            {% for mode in modes %}
-            <option value="{{ mode.mode }}" {% if mode.mode == directions %} selected="selected" {% endif %}>{{ mode.mode }}</option>
-            {% endfor %}
+                {% for mode in modes %}
+                    <option value="{{ mode.mode }}" {% if mode.mode == directions %} selected="selected" {% endif %}>{{ mode.mode }}</option>
+                {% endfor %}
             </select>
             <input type="hidden" value="{{ csrf_token }}" />
-        <!--</div>-->
-    </div>
-<br>
-   <div class="map_stop_container" data-eul="{{tour_stop}}"></div>
-<div id="map_container"></div>
-    <div id="static_map"></div>
-    <div class="ui-li ui-li-divider ui-btn ui-bar-b ui-corner-top ui-btn-up-undefined" id="directions_head"></div>
-    <div id="directions"></div>
-    <div class="ui-li ui-li-divider ui-btn ui-bar-b ui-corner-bottom ui-btn-up-undefined"></div>
-    <div id="direction_notes">
-        {{ tour_stop.direction_notes|safe }}
-    </div>
-    {% include "tour/includes/liblogo.html" %}
-</div>
-   
-   
-<div data-id="details" class="tab-content" data-class="tab">
-    {% include "tour/includes/social_media.html" %}
-    <article>
-    <h4>{{ tour_stop.name}}</h4>
-    <div data-role="content">
-        {% include "tour/includes/video.html" %}
-    </div>
-
-
-    <div>
-        {{ tour_stop.description|safe }}
-    </div>
-    {% if tour_stop.article_link %}
-        <div>
-            <a href="{{ tour_stop.article_link }}" target="_blank">Read Full Article</a>
         </div>
-    <br />
-    {% endif %}
-    {% include "tour/includes/liblogo.html" %}
-    {% include "tour/includes/social_media.html" %}
-    </article>
-</div>
 
-<div data-id="media" class="tab-content" data-class="tab">
-  {% include "tour/includes/media_grid.html" %}
-  {% include "tour/includes/liblogo.html" %}
-</div>
+        <div class="map_stop_container" data-eul="{{tour_stop}}"></div>
 
+        <div id="map_container"></div>
+
+        <div id="static_map"></div>
+
+        <div class="ui-li ui-li-divider ui-btn ui-bar-b ui-corner-top ui-btn-up-undefined" id="directions_head"></div>
+
+        <div id="directions"></div>
+
+        <div class="ui-li ui-li-divider ui-btn ui-bar-b ui-corner-bottom ui-btn-up-undefined"></div>
+        
+        <div id="direction_notes">
+            {{ tour_stop.direction_notes|safe }}
+        </div>
+
+        {% include "tour/includes/liblogo.html" %}
+    </div>
+
+<!-- MEDIA -->
+    <div data-id="media" class="tab-content" data-role="tab" style="display:none;">
+     <!-- {% include "tour/includes/media_grid.html" %}-->
+      {% include "tour/includes/liblogo.html" %}
+    </div>
+</div>
 {% endblock content %}
-     {% block footer %}
-<div class="{% block footer_class %}{% endblock %}" data-role="footer" data-position="fixed">
-<div data-role="navbar" data-iconpos="bottom" data-position="fixed" data-tap-toggle="false" id="tabs">
-  <ul>
-    <li><a href="#directions" class="ui-btn-active ui-state-persist" data-href="map">Directions</a></li>
-    <li><a href="#history" data-href="details">History</a></li>
-    <li><a href="#gallery" data-href="media">Gallery</a></li>
-  </ul>
-</div>
+
+{% block footer %}
+    <div class="rounded-corners">
+<!--        <div data-role="navbar" data-iconpos="bottom" data-position="fixed" data-tap-toggle="false" id="tabs">
+          <ul>
+            
+            <li><a href="#history" class="ui-btn-active ui-state-persist" data-href="details">History</a></li>
+            <li><a href="#directions" data-href="map">Directions</a></li>
+            <li><a href="#gallery" data-href="media">Gallery</a></li>
+          </ul>
+        </div>
+    -->
+
+      {% if page.has_previous %}
+        <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.previous_page_number %}" data-role="button" data-icon="arrow-l">Prev Stop</a>
+        {% endif %}
+
+
+        {% if page.has_next %}
+        <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.next_page_number %}" data-role="button" data-icon="arrow-r">Next Stop</a>
+        {% endif %}
+    </div>
 {% endblock footer %}

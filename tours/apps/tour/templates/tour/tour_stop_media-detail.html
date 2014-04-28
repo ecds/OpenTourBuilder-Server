@@ -2,14 +2,17 @@
 {% load thumbnail %}
 {% block header %}
 <div data-role="header">
-<div class="ui-btn-left" data-role="controlgroup" data-type="horizontal">
-<!--  <a href="#" data-role="button" data-rel="back" data-transition="slide">Back</a>-->
-</div>
-<span class="ui-title">{{ tour_stop_media.title }}</span>
+
+  <h2 class="ui-title">{{ tour_stop_media.title }}</h2>
+  <div class="ui-btn-right" data-role="controlgroup" data-type="horizontal">
+     <a href="#" data-role="button" data-rel="back" data-transition="slide" data-direction="reverse" data-icon="delete" ></a>
+  </div>
 {% endblock header %}
 
 {% block content %}
 <div id="image-detail">
+  
+
   <img src="{{tour_stop_media.image|thumbnail:"580x0"}}" alt="{{ tour_stop_media.title }}"/>
   <div class="clearfix"></div>
   <div class="caption">
@@ -21,16 +24,10 @@
     <a href="{{ tour_stop_media.source_link }}" target="_blank">Source Link</a>
     {% endif %}
   </div>
+  <div>
+    <a href="#" data-rel="back" data-transition="slide">Return to Tour</a>
 </div>
 {% endblock content %}
 
 {% block footer %}
-<div class="{% block footer_class %}{% endblock %}" data-role="footer">
-	<div data-role="navbar" data-iconpos="bottom">
-  <ul>
-    <li><a href="#" class="ui-btn-active" data-icon="back" data-rel="back" >Back</a></li>
-  </ul>
-<!--<a href="#" class="ui-btn-right" data-mini="true" data-rel="back" data-transition="slide">Back</a>-->
-	<!--	<a href="#" class="ui-btn-active" data-icon="arrow-l" data-rel="back" id="media_back_button">Back</a>-->
-	</div>
 {% endblock footer %}
