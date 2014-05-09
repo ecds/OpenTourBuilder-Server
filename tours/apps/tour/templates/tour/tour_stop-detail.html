@@ -164,33 +164,7 @@
 <script>
     // This is a listener to change the directions mode select menu.
     $(function() {
-        $('#mode').change(function() {
-            // Destroy the map
-            $('#map_container').gmap('destroy');
-            // Clear the turn-by-turn directions.
-            $('#directions').empty();
 
-            // Get the selected value
-            var selectedMode = document.getElementById('mode').value;
-
-            // Get Django's CSRF token using a jQuery cookie plugin.
-            // This is provided from a hidden input filed and django's csrf_token
-            // template tag.
-            var csrftoken = $.cookie('csrftoken');
-
-            // Make the ajax post to the tour.update_directionsmode view
-            $.ajax({
-                //url: {% url 'tour:mode' tour_stop.tour.slug  %} + selectedMode + '/',
-                url: 'http://{{ request.get_host }}/tour/update_directionsmode/' + selectedMode + '/',
-                type: 'post',
-                headers: {
-                    'X-CSRFToken': csrftoken,
-                },
-                success: function (data) {}
-            });
-            // And redraw the map.
-            initializeMap();
-        });
     });
 </script>
 
@@ -215,6 +189,43 @@
             }
         }
     }); 
+    $(document).on('pagecreate',function(){
+        $('#map_container').gmap('destroy');
+            // Clear the turn-by-turn directions.
+            $('#directions').empty();
+
+        $(document).on('click','#tabs .ui-block-b a',function(){
+            initializeMap();
+        });
+        $(document).on('change','#mode',function() {
+            // Destroy the map
+            $('#map_container').gmap('destroy');
+
+            // Clear the turn-by-turn directions.
+            $('#directions').empty();
+
+            // Get the selected value
+            var selectedMode = document.getElementById('mode').value;
+
+            // Get Django's CSRF token using a jQuery cookie plugin.
+            // This is provided from a hidden input filed and django's csrf_token
+            // template tag.
+            var csrftoken = $.cookie('csrftoken');
+
+            // Make the ajax post to the tour.update_directionsmode view
+            $.ajax({
+                url: 'http://{{ request.get_host }}/tour/update_directionsmode/' + selectedMode + '/',
+                type: 'post',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                },
+                success: function (data) {console.log(data)}
+            });
+            // And redraw the map.
+            initializeMap();
+        });
+    });
+
 </script>
 
 {% if tour.fb_app_id %}
@@ -255,12 +266,15 @@
           </ul>
         </div>
     </div>
+    
 {% endblock header %}
 
 {% block content %}
 
 <div data-role="tabs" id="tabs">
-
+{% if tour.splashimage %}
+    {{tour.splashimage}}
+    {% endif %}
 <!--DETAILS -->
     <div data-id="details" class="tab-content" data-role="tab">
         <article>
@@ -310,19 +324,17 @@
             <div data-role="content">
                 {{ tour_stop.description|safe }}
 
-                {% include "tour/includes/liblogo.html" %}
-
-                <div data-role="controlgroup" data-type="horizontal">
+                <div class="social-media" data-role="controlgroup" data-type="horizontal">
                     {% include "tour/includes/social_media.html" %}
                 </div>
+                <div class="clearfix"></div>
+                {% include "tour/includes/liblogo.html" %}
+
+                
             </div>
         </article>
     </div>
 
-<!-- MAP -->    
-<script>
- initializeMap();
-</script>
     <div data-id="map" class="tab-content hidden" data-role="tab" style="display:none;">
         <div>
             {{ tour_stop.directions_intro }}
@@ -376,12 +388,12 @@
     -->
 
       {% if page.has_previous %}
-        <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.previous_page_number %}" data-role="button" data-icon="arrow-l">Prev Stop</a>
+        <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.previous_page_number %}" class="ui-btn ui-corner-all ui-icon-arrow-l ui-btn-icon-left ui-nodisc-icon ui-alt-icon pull-left">Prev Stop</a>
         {% endif %}
 
 
         {% if page.has_next %}
-        <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.next_page_number %}" data-role="button" data-icon="arrow-r">Next Stop</a>
+        <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.next_page_number %}" class="ui-btn ui-corner-all ui-icon-arrow-r ui-btn-icon-right ui-nodisc-icon ui-alt-icon pull-right">Next Stop</a>
         {% endif %}
     </div>
 {% endblock footer %}

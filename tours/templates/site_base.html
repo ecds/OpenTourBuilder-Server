@@ -39,7 +39,7 @@
 
 <body id="body">
   <div {% block page_attributes %}{% endblock %} data-role="page">
-    <div data-role="header" class="jqm-header ui-header ui-bar-inherit" role="banner" data-tap-toggle="false">
+    <div data-role="header" class="jqm-header ui-header ui-bar-inherit {% block header_class %}{% endblock %}" role="banner" data-tap-toggle="false">
       {% block header %}
         <h1>Tours</h1>
       {% endblock header %}

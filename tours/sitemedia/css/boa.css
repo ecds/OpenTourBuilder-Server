@@ -26,19 +26,15 @@ h1.tour-name.ui-title {
     margin-top: -30px;
 }
 
-body#body{
-    background-color: #111;
+body, .ui-page, .ui-content{
+    background-color: #FFF;
 }
 
 .ui-page{
-    background-color: #333;
     position: relative;
-    height: 100%;
 }
 
 .ui-content{
-    background-color: #FFF;
-    min-height: 100%;
     margin-bottom: -1px;
 }
 
@@ -46,6 +42,7 @@ body#body{
     border-radius: 15px 15px 0 0;
     margin-top: 4px;
     margin-bottom:-1px;
+    box-shadow: 0px -21px 1px #333;
 }
 
 .ui-footer .rounded-corners {
@@ -54,6 +51,135 @@ body#body{
     box-shadow: 0px 23px 0px #111;
     margin-bottom: 5px;
     margin-top: 1px;
+    height: 3.5em;
+}
+
+
+#home-content {
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0;
+}
+#home-content .jumbotron > img {
+    width: 100%;
+}
+
+.jumbotron {
+    padding: 30px;
+    margin-bottom: 30px;
+    color: inherit;
+    background-color: #eee;
+    background-size: cover;
+}
+
+.jumbotron .jumbo-header {
+    color: inherit
+}
+
+.jumbotron a.ui-link {
+    text-shadow: none;
+    text-decoration: none;
+    color: #47B2EE;
+}
+
+.jumbotron p {
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    font-weight: 200;
+    margin-top: 0;
+}
+
+.container .jumbotron {
+    border-radius: 6px
+}
+
+.jumbotron .container {
+    max-width: 100%}
+
+.jumbotron .jumbo-header {
+    font-size: 3em;
+    margin-bottom: 0;
+    margin-top: 0.5em;
+}
+
+@media screen and (min-width: 768px) {
+    .jumbotron {
+        padding-top:48px;
+        padding-bottom: 48px
+    }
+
+    .container .jumbotron {
+        padding-left: 60px;
+        padding-right: 60px
+    }
+
+    .jumbotron .jumbo-header {
+        font-size:5em;
+    
+}
+    .jumbotron p {
+        font-size:2em;
+    }
+}
+
+.jumbotron > a.ui-link {
+    text-decoration: none;
+    text-shadow: none;
+}
+
+#home-content .jumbotron{
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    margin: 0;
+    top: 0;
+    padding: 0;
+}
+
+
+#home-content .jumbotron.multiple{
+    min-height: 20em;
+    position: relative;
+    font-size: 0.8em;
+    padding:2em 0;
+}
+
+@media (min-width:767px){
+    #home-content .jumbotron.multiple{
+        padding:10em 0;
+    }
+}
+
+#home-content .jumbotron .container{
+    background: rgba(255, 255, 255, 0.89);
+    display: block;
+    padding: 2em 10% 1em;
+    color: #EEE;
+    width: 80%;
+    position: absolute;
+    top: 0;
+    background: -moz-linear-gradient(top,  rgba(51,51,51,0.8) 0%, rgba(26,26,26,0.8) 50%, rgba(0,0,0,0) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(51,51,51,0.8)), color-stop(50%,rgba(26,26,26,0.8)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(51,51,51,0.8) 0%,rgba(26,26,26,0.8) 50%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(51,51,51,0.8) 0%,rgba(26,26,26,0.8) 50%,rgba(0,0,0,0) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(51,51,51,0.8) 0%,rgba(26,26,26,0.8) 50%,rgba(0,0,0,0) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(51,51,51,0.8) 0%,rgba(26,26,26,0.8) 50%,rgba(0,0,0,0) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cc333333', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
+}
+
+@media screen and (min-width: 768px) {
+    #home-content .jumbotron .container{
+        bottom:0;
+        top:auto;
+        padding: 1em 10% 5em;
+        background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%, rgba(26,26,26,0.8) 50%, rgba(51,51,51,0.8) 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(50%,rgba(26,26,26,0.8)), color-stop(100%,rgba(51,51,51,0.8))); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(26,26,26,0.8) 50%,rgba(51,51,51,0.8) 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(26,26,26,0.8) 50%,rgba(51,51,51,0.8) 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(26,26,26,0.8) 50%,rgba(51,51,51,0.8) 100%); /* IE10+ */
+        background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(26,26,26,0.8) 50%,rgba(51,51,51,0.8) 100%); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#cc333333',GradientType=0 ); /* IE6-9 */
+    }
 }
 
 .ui-popup .ui-listview>li{
@@ -72,6 +198,7 @@ body#body{
 
 .jqm-header{
     border: 0px;
+    z-index: 1;
 }
 
 .btn-right.btn-map{
@@ -220,6 +347,24 @@ a.back-btn.ui-btn:hover:before, a.back-btn.ui-btn:focus:before{
     background: #E6E6E6;
 }
 
+.ui-page-theme-a .ui-btn.ui-btn-c {
+    background-color: #99E9BC;
+    border-color: #A6E2C8;
+    text-shadow: 0 1px 0 #BEFFD6;
+}
+
+.ui-page-theme-a .ui-btn.ui-btn-c:hover,
+.ui-page-theme-a .ui-btn.ui-btn-c:focus{
+    background-color: #7BD1A1;
+}
+
+.ui-page-theme-a .ui-btn.ui-btn-c:active,
+.ui-page-theme-a .ui-btn.ui-btn-c.ui-btn-active{
+    color:#2FCE7B;
+    text-shadow:none;
+    background-color: #FFF
+}
+
 .ui-listview>li p {
     margin-left: 10px;
 }
@@ -228,6 +373,13 @@ a.back-btn.ui-btn:hover:before, a.back-btn.ui-btn:focus:before{
     opacity: 0;
 }
 
+a.ui-btn.ui-icon-delete.ui-btn-icon-notext.ui-corner-all {
+    border-radius: 50%;
+    padding: 0;
+    width: 2em;
+    height: 2em;
+    background-color: #FFF;
+}
 
 
 /*  Classes  on  outer  slideshow  wrapper:
@@ -628,4 +780,100 @@ a.slide-static.ui-btn {
     height: 1em;
     width: 1em;
     top: 0;
+}
+
+.sr-only{
+    display: none;
+}
+
+.pull-right{
+    right: 1em;
+    position: absolute;
+    width: 30%;
+}
+
+.pull-left{
+    left: 1em;
+    position: absolute;
+    width: 30%;
+}
+
+p.caption {
+    clear: both;
+    display: block;
+    text-align: center;
+    margin: 29px auto;
+    color: #999;
+    font-size: 0.9em;
+}
+p.caption img {
+    display: block;
+    margin: 0 auto 10px;
+}
+
+
+
+.social-media.ui-controlgroup {
+    width: 100%;
+    display: block;
+    padding-bottom: 1em;
+    margin-bottom: 2em;
+    border-top: 1px solid rgb(233, 233, 233);
+    border-radius:0px;
+    padding-top:1em;
+    border-bottom: 1px solid #F6F6F6;
+}
+
+.social-media.ui-controlgroup .ui-controlgroup-controls {
+    width: 100%;
+}
+
+.social-media.ui-controlgroup iframe, .social-media.ui-controlgroup .fb_iframe_widget {
+    display: block;
+    margin-top: 0px;
+    display: block;
+    float: left;
+    margin-left: 10px;
+    position: relative;
+}
+
+.social-media.ui-controlgroup div > iframe{
+    margin-left:2em;
+}
+
+/***** EMORY LOGO ******/
+.emorylogo {
+    width: 100%;
+    position: relative;
+}
+.emorylogo img {
+    margin: auto;
+    width: 150px;
+    display: block;
+    opacity: 0.8;
+}
+
+.jumbotron div.emorylogo {
+    position: absolute;
+    bottom: 1em;
+}
+
+@media (min-width:767px){
+    .jumbotron div.emorylogo {
+        position: absolute;
+        top: 2em;
+    }
+    .jumbotron div.emorylogo img{
+        float:right;
+        padding-right:2em;
+    }
+}
+
+
+/********* GOOGLE MAP *******/
+td.adp-text {
+    padding-left: 2em;
+}
+table.adp-directions {
+    width: 100%;
 }

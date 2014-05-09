@@ -5,7 +5,7 @@
 
   <h2 class="ui-title">{{ tour_stop_media.title }}</h2>
   <div class="ui-btn-right" data-role="controlgroup" data-type="horizontal">
-     <a href="#" data-role="button" data-rel="back" data-transition="slide" data-direction="reverse" data-icon="delete" ></a>
+     <a href="#" data-rel="back" data-transition="slide" data-direction="reverse" class="ui-btn ui-icon-delete ui-btn-icon-notext ui-corner-all" >Return to Tour</a>
   </div>
 {% endblock header %}
 
@@ -24,9 +24,6 @@
     <a href="{{ tour_stop_media.source_link }}" target="_blank">Source Link</a>
     {% endif %}
   </div>
-  <div>
-    <a href="#" data-rel="back" data-transition="slide">Return to Tour</a>
-</div>
 {% endblock content %}
 
 {% block footer %}
