@@ -3,3 +3,5 @@ venv
 tours/settings/local.py
 tours/static
 tours/media
+
+mydatabase
