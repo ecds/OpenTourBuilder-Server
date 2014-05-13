@@ -1,7 +1,12 @@
-
 body{
     font-family: 'Open Sans', 'sans-serif';
     font-size: 14px;
+    background-color: #FFF;
+}
+
+.ui-mobile, .ui-mobile body{
+    background-color: #111;
+    background-image: url(../images/dark_geometric.png)
 }
 
 h1, h2, h3, h4, h5, h6{
@@ -26,20 +31,29 @@ h1.tour-name.ui-title {
     margin-top: -30px;
 }
 
-body, .ui-page, .ui-content{
-    background-color: #FFF;
+.ui-page, .ui-content{
+    
 }
 
 .ui-page{
     position: relative;
+    background-image: url(../images/arches.png);
+    background-size: auto;
+    background-repeat: repeat repeat;
 }
 
 .ui-content{
     margin-bottom: -1px;
+    background-color:#F8F8F8;
+    background-color: rgba(253, 249, 242, 0.8);
+}
+
+.ui-content .ui-content{
+    background-color:transparent;
 }
 
 .ui-header .rounded-corners {
-    border-radius: 15px 15px 0 0;
+    border-radius: 15px 15px 0 0 !important;
     margin-top: 4px;
     margin-bottom:-1px;
     box-shadow: 0px -21px 1px #333;
@@ -52,8 +66,28 @@ body, .ui-page, .ui-content{
     margin-bottom: 5px;
     margin-top: 1px;
     height: 3.5em;
+    background-color: transparent;
 }
 
+.jqm-header.ui-header {
+    background-color: rgba(4, 29, 94, 0.7);
+    color: #FFF;
+    text-shadow: 0 1px 0 #818181;
+}
+
+.jqm-header.ui-header .ui-btn{
+    color:inherit;
+}
+
+.jqm-header .ui-btn-right.ui-controlgroup .ui-btn.menu-btn {
+    background: none;
+    background-color: transparent;
+    padding-bottom: 7px;
+    padding-top: 7px;
+    border-color: #F3F3F3;
+    text-shadow: 0 1px 0 #5A5A5A;
+    font-weight: normal;
+}
 
 #home-content {
     padding-left: 0px;
@@ -209,7 +243,13 @@ body, .ui-page, .ui-content{
 }
 
 .ui-header .btn-right.btn-map .ui-grid-a>.ui-block-a a {
-    padding-top: 2em;
+    padding-top: 3em;
+}
+
+@media (min-width:800px){
+    .ui-header .btn-right.btn-map .ui-grid-a>.ui-block-a a {
+        padding-top: 2.5em;
+    }
 }
 
 .btn-right.btn-map .ui-btn-active{
@@ -229,14 +269,26 @@ body, .ui-page, .ui-content{
 
 .ui-header .btn-right.btn-map .ui-grid-a>.ui-block-a a, .ui-header .ui-grid-a>.ui-block-b a{
     width: 100px;
-    top:0;
+    top: -1px;
     right:0;
     height: 100px;
     position: absolute;
+    background-color: #8EDBA6;
+    border-top-color: transparent;
+    border-top-right-radius: 15px;
+    text-shadow: 0 1px 0 #17AC7C;
+}
+
+.ui-header .btn-right.btn-map .ui-grid-a>.ui-block-a a:hover,
+.ui-header .btn-right.btn-map .ui-grid-a>.ui-block-a a:focus,
+.ui-header .btn-right.btn-map .ui-grid-a>.ui-block-b a:hover,
+.ui-header .btn-right.btn-map .ui-grid-a>.ui-block-b a:focus{
+    background-color: #66D49B;
+    
 }
 
 .jqm-content > h2 {
-    color: #3EB249;
+    color: #3E5EB2;
     background-color: rgba(0, 0, 0, 0);
     border-bottom: 1px solid #DDD;
     font-size: 1.6em;
@@ -248,6 +300,24 @@ body, .ui-page, .ui-content{
     border-left:3px solid #777;
     margin-bottom: 8px;
     border-bottom: 1px solid #DDD;
+}
+
+.ui-page-theme-a .ui-listview>li>.ui-btn {
+    background-color:#F6F6F6;
+    background-color: rgba(255, 255, 255, 0.64);
+    border-color: #EEE;
+}
+.ui-page-theme-a .ui-listview>li>.ui-btn:hover,
+.ui-page-theme-a .ui-listview>li>.ui-btn:focus{
+    background-color:#F8F8F8;
+}
+
+
+.ui-page-theme-a .ui-listview>li>.ui-btn.ui-btn-active{
+    background-color: #D8CFC2;
+    color: #444;
+    text-shadow: 0 1px 0 #E2E2E2;
+    border-color:#CECECE;
 }
 
 .ui-listview .ui-li-has-thumb>img:first-child, .ui-listview .ui-li-has-thumb>.ui-btn>img:first-child, .ui-listview .ui-li-has-thumb .ui-li-thumb {
@@ -269,7 +339,8 @@ body, .ui-page, .ui-content{
     padding: 0;
     margin: 6px 15px 5px;
     font-size: 1em;
-    color: #757575;
+    color: #555555;
+    text-shadow: 0 1px 0 #DFDFDF;
 }
 
 .tour-stop-detail .ui-title{
@@ -281,6 +352,8 @@ body, .ui-page, .ui-content{
     font-weight: bold;
     white-space: normal;
     padding-bottom: 7px;
+    color: #444444;
+    text-shadow: 0 1px 0 #E2E2E2;
 }
 
 div.tour-stop-detail {
@@ -288,7 +361,7 @@ div.tour-stop-detail {
     top: -1px;
     float: left;
     width: 100%;
-    background: #CECECE;
+    background: #D8CFC2;
     overflow: hidden;
 }
 a.back-btn.ui-btn {
@@ -296,9 +369,9 @@ a.back-btn.ui-btn {
 
 }
 
-a.back-btn.ui-btn {
+.ui-page-theme-a a.back-btn.ui-btn {
     background: transparent;
-    border: solid #FFFFFF;
+    border: 1px solid #F3F3F3;
     border-width: 1px 1px 1px 0;
     -moz-border-radius: 0 5px 5px 0;
     -webkit-border-radius: 0 5px 5px 0;
@@ -312,11 +385,13 @@ a.back-btn.ui-btn {
     position: relative;
     text-decoration: none;
     overflow: visible;
+    text-shadow: 0 1px 0 #5E5E5E;
+    font-weight: normal;
 }
 
 a.back-btn.ui-btn:before {
     background: transparent;
-    border: solid #E4E4E4;
+    border: solid #F3F3F3;
     border-width: 0 0 1px 1px;
     border-radius: 2px 0 2px 2px;
     content: '';
@@ -332,8 +407,18 @@ a.back-btn.ui-btn:before {
     width: 21px;
 }
 
+.jqm-header .ui-btn-right.ui-controlgroup .ui-btn.menu-btn:hover, 
+.jqm-header .ui-btn-right.ui-controlgroup .ui-btn.menu-btn:focus {
+    border-color: #91A1CA;
+}
+
+.tour-stop-detail a.back-btn.ui-btn {
+    color: #666;
+    text-shadow: none;
+}
+
 .tour-stop-detail a.back-btn.ui-btn:before {
-    left: -9px;
+    left: -11px;
 }
 
 a.back-btn.ui-btn span{
@@ -343,7 +428,7 @@ a.back-btn.ui-btn span{
 
 a.back-btn.ui-btn:hover, a.back-btn.ui-btn:focus,
 a.back-btn.ui-btn:hover:before, a.back-btn.ui-btn:focus:before{
-    border-color: #0033B5;
+    border-color: #A5A5A5;
     background: #E6E6E6;
 }
 
@@ -816,7 +901,7 @@ p.caption img {
 .social-media.ui-controlgroup {
     width: 100%;
     display: block;
-    padding-bottom: 1em;
+    padding-bottom: 2em;
     margin-bottom: 2em;
     border-top: 1px solid rgb(233, 233, 233);
     border-radius:0px;
@@ -862,6 +947,7 @@ p.caption img {
     .jumbotron div.emorylogo {
         position: absolute;
         top: 2em;
+        height: 0;
     }
     .jumbotron div.emorylogo img{
         float:right;
@@ -876,4 +962,27 @@ td.adp-text {
 }
 table.adp-directions {
     width: 100%;
+}
+
+
+div.ui-footer.ui-bar-inherit.ui-footer-fixed {
+    background-color: #EEEBE2;
+}
+
+.ui-page-theme-a div.ui-footer.ui-bar-inherit .ui-btn.ui-btn-active,
+.ui-page-theme-a div.ui-footer.ui-bar-inherit .ui-btn.ui-btn-active:hover,
+.ui-page-theme-a div.ui-footer.ui-bar-inherit .ui-btn.ui-btn-active:focus{
+    background-color: #CFCFCF;
+    color: #FAFAFA;
+    text-shadow: 0 1px 0 #808080;
+    border-color: #B9B9B9;
+}
+
+.ui-page-theme-a div.ui-footer.ui-bar-inherit .ui-btn{
+    background-color:transparent;
+}
+
+.ui-page-theme-a div.ui-footer.ui-bar-inherit .ui-btn:hover, 
+.ui-page-theme-a div.ui-footer.ui-bar-inherit .ui-btn:focus{
+    background-color: #EFF4FF;
 }

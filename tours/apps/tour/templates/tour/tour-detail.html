@@ -1,5 +1,6 @@
 {% extends "site_base.html" %}
 {% load truncate_html %}
+{% load thumbnail %}
 
 {% block page_scripts %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
@@ -61,13 +62,14 @@
     });
 
 </script>
+
 {% endblock page_scripts %}
 
 {% block header %}
   <a href="/" class="ui-btn back-btn" data-mini="true" data-transition="slide" data-direction="reverse"><span>Back</span></a>
   <h1 class="tour-name">{{ tour.name }}</h1>
   <div class="ui-btn-right" data-role="controlgroup" data-type="horizontal">
-     <a href="#auxMenu" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-icon-bars ui-nodisc-icon ui-alt-icon menu-btn" data-transition="pop"> Menu</a>
+     <a href="#auxMenu" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-icon-bars ui-nodisc-icon menu-btn" data-transition="pop"> Menu</a>
   </div>
 {% endblock header %}
 
@@ -76,7 +78,7 @@
     <ul data-role="listview" data-inset="true" style="min-width:210px;">
       {% for info in tour_info %}
       <li>
-          <a href="{{ info.get_absolute_url }}" data-role="button" data-icon="arrow-r" class="info-button">{{ info.name }}</a>
+          <a href="{{ info.get_absolute_url }}" data-ajax="false" class="info-button ui-btn ui-btn-icon-right ui-icon-carat-r ui-nodisc-icon ui-alt-icon">{{ info.name }}</a>
       </li>
       {% endfor %}
     </ul>

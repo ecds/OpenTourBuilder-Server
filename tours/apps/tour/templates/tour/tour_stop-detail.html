@@ -137,6 +137,7 @@
                         var destination = '{{tour_stop.lat}}, {{tour_stop.lng}}';
                     }
 
+                    if( typeof (displayDirections) === "function"){}
                     // Show the turn-by-turn directions.
                     self.displayDirections({
                         'origin': clientPosition,
@@ -162,41 +163,19 @@
 </script>
 
 <script>
-    // This is a listener to change the directions mode select menu.
-    $(function() {
-
-    });
-</script>
-
-<script>
     $(document).on('click','#tabs a',function () {
         initializeMap();
     })
 
-    $(document).on('ready',function(){
-        var hash = window.location.hash;
-        var $tabs = $("#tabs li a");
-        //find the index of the tab that matches hash
-        if (hash) {
-            var $tabContent = $(".tab-content");
-            for (var i = 0; i < $tabs.length; i++) {
-                if (String($tabs[i]).search(hash) != '-1') {
-                    $tabContent.hide();
-                    $($tabContent[i]).show();
-                    $tabs.removeClass("ui-btn-active");
-                    $($tabs[i]).addClass("ui-btn-active");
-                }
-            }
-        }
-    }); 
     $(document).on('pagecreate',function(){
         $('#map_container').gmap('destroy');
-            // Clear the turn-by-turn directions.
-            $('#directions').empty();
+        // Clear the turn-by-turn directions.
+        $('#directions').empty();
 
         $(document).on('click','#tabs .ui-block-b a',function(){
             initializeMap();
         });
+
         $(document).on('change','#mode',function() {
             // Destroy the map
             $('#map_container').gmap('destroy');
@@ -219,26 +198,45 @@
                 headers: {
                     'X-CSRFToken': csrftoken,
                 },
-                success: function (data) {console.log(data)}
+                success: function (data) {}
             });
             // And redraw the map.
             initializeMap();
         });
+
+        $('.menu-btn').on('click',function(){
+            var $this = $(this),
+                offset = $this.offset(),
+                offset_left = offset.left,
+                $auxMenu = $(".ui-popup"),
+                $popupContainer = $(".ui-popup-container");
+
+            if($auxMenu.hasClass('ui-popup-active')){
+                $popupContainer.addClass('ui-popup-hidden').removeClass('in').addClass('ui-popup-truncate').removeClass('ui-popup-active').css({'top':'0px','right':'0'});
+            }
+            else{
+                $popupContainer.removeClass('ui-popup-hidden').addClass('in').removeClass('ui-popup-truncate').addClass('ui-popup-active').css({'top':'30px','right':'15px'});
+            }
+        });
+
+        $('.ui-content').css('min-height',$(window).height());
     });
 
 </script>
 
 {% if tour.fb_app_id %}
     <script>
-    // Code from Facebook
-    (function initializeFB(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId={{ tour.fb_app_id }}";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-</script>
+    $(document).on('pagecreate',function(){
+        // Code from Facebook
+        $(function initializeFB(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId={{ tour.fb_app_id }}";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    });
+    </script>
 {% endif %}
 
 {% endblock page_scripts %}
@@ -272,9 +270,6 @@
 {% block content %}
 
 <div data-role="tabs" id="tabs">
-{% if tour.splashimage %}
-    {{tour.splashimage}}
-    {% endif %}
 <!--DETAILS -->
     <div data-id="details" class="tab-content" data-role="tab">
         <article>
@@ -388,12 +383,12 @@
     -->
 
       {% if page.has_previous %}
-        <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.previous_page_number %}" class="ui-btn ui-corner-all ui-icon-arrow-l ui-btn-icon-left ui-nodisc-icon ui-alt-icon pull-left">Prev Stop</a>
+        <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.previous_page_number %}" class="ui-btn ui-corner-all ui-icon-arrow-l ui-btn-icon-left ui-nodisc-icon ui-alt-icon pull-left" data-transition="slideup" data-direction="reverse">Prev Stop</a>
         {% endif %}
 
 
         {% if page.has_next %}
-        <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.next_page_number %}" class="ui-btn ui-corner-all ui-icon-arrow-r ui-btn-icon-right ui-nodisc-icon ui-alt-icon pull-right">Next Stop</a>
+        <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.next_page_number %}" class="ui-btn ui-corner-all ui-icon-arrow-r ui-btn-icon-right ui-nodisc-icon ui-alt-icon pull-right" data-transition="slideup">Next Stop</a>
         {% endif %}
     </div>
 {% endblock footer %}
