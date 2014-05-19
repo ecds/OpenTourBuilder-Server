@@ -1,6 +1,6 @@
 # file tours/apps/tour/views.py
 
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, render, get_object_or_404
 from django.template import RequestContext
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
@@ -58,6 +58,20 @@ def tour_detail(request, slug):
         }, context_instance=RequestContext(request))
 
 @check_published
+def tour_map(request, slug):
+    tour = get_object_or_404(Tour, slug=slug)
+    tour_info = tour.tourinfo_set.all()
+    tour_stops = tour.tourstop_set.all()
+
+    return render(request, "tour/tour-map.html",
+        {
+            'tour': tour,
+            'tour_info': tour_info,
+            'tour_stops': tour_stops,
+        }
+    )
+
+@check_published
 def tour_info_detail(request, slug, info):
     tour = get_object_or_404(Tour, slug=slug)
     tour_info = tour.tourinfo_set.filter(info_slug=info)
@@ -73,25 +87,40 @@ def tour_info_detail(request, slug, info):
 def tour_stop_detail(request, slug, page):
     tour = get_object_or_404(Tour, slug=slug)
 
-    directions(request, slug)
-
     paginator = Paginator(tour.tourstop_set.all(), 1)
 
     page = paginator.page(int(page))
 
-    directions_pref = request.session["directions"]
-
-    modes = DirectionsMode.objects.all()
-
-    return render_to_response("tour/tour_stop-detail.html", {
+    return render( request, "tour/tour_stop-detail.html",
+        {
             'tour': tour,
             'tour_stop': page[0],
             'images': page[0].tourstopmedia_set.all(),
             'page': page,
+            'sub': settings.SUB_URL,
+        }
+    )
+
+@check_published
+def tour_stop_map(request, slug, page):
+    tour = get_object_or_404(Tour, slug=slug)
+    paginator = Paginator(tour.tourstop_set.all(), 1)
+    page = paginator.page(int(page))
+    directions(request, slug)
+    directions_pref = request.session["directions"]
+    modes = DirectionsMode.objects.all()
+    
+    return render(request, "tour/tour_stop-map.html",
+        {
+            'tour': tour,
+            'tour_stop': page[0],
+            'page': page,
             'directions': directions_pref,
-            'modes': modes,
-    	    'sub': settings.SUB_URL,
-        }, context_instance=RequestContext(request))
+            'modes': modes
+        }
+    )
+    
+    
 
 @check_published
 def tour_stop_media_detail(request, slug, id):

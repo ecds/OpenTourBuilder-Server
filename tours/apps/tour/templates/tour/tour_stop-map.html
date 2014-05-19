@@ -1,0 +1,283 @@
+{% extends "site_base.html" %}
+{% load thumbnail %}
+{% load truncate_html %}
+
+{% comment %}
+  The page_scripts block is where you add scripts to ajax loaded pages.
+  This is necessary due to the nature of jquery mobiles ajax page loading.
+  JQM only looks at data-role="page" elements in the ajax response data, 
+  which means that scripts outside that element get thrown away.
+{% endcomment %}
+
+{% block page_scripts %}
+<script type="text/javascript">
+    // Don't allow JQM override the page title
+    $(":jqmData(role='page')").attr("data-title", document.title);
+</script>
+
+<script type="text/javascript">
+    /*
+    * click on marker loads data per stop and changes color of marker.
+    * get directions.
+    */
+
+     function addMarker(map, lat, lng, label, num_icon) {
+        console.log('something happened here!');
+        map.addMarker({
+            position: new google.maps.LatLng(lat, lng),
+            bounds: true,
+            icon: num_icon,
+            //zoom: 5,
+        }).click(function() {
+            // alert(get_native_map_link(lat, lng));
+            window.location = get_native_map_link(lat, lng, label);
+        });
+     }
+
+    function initializeMap() {
+        var selectedMode = document.getElementById('mode').value || "DRIVING";
+        /**
+        * Initialize markers separately to slightly improve readability
+        */
+
+        $('.ui-page-active #map_container').width('100%').height('350px').gmap({
+            //mapTypeId: google.maps.MapTypeId.TERRAIN,
+            zoom: 16,
+            center: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
+            callback: function(map) {
+                var self = this;
+
+                // Request the user's current location.
+                self.getCurrentPosition(function(position, status) {
+                    // Check to see if user allowed location to be known.
+                    if ( status === 'OK' ) {
+                        // Show the div for user to select directions mode.
+                        $( "#select" ).show();
+                        // State we are showing directions.
+                        $("#directions_head").html('Directions');
+
+                        var clientPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    }
+
+                    // If the user didn't share his/her location:
+                    else {
+                        self.addMarker({position: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}})});
+                        self.addMarker({position: new google.maps.LatLng({{tour_stop.park_lat}}, {{tour_stop.park_lng}}), icon: "{{ STATIC_URL }}markers/blue_MarkerP.png"});
+            
+                        // Use Google's geocoder to get the address base on the lat and lng.
+                        var geocoder = new google.maps.Geocoder();
+                        // Use the parking location if there is one
+                        {% if tour_stop.park_lat and tour_stop.park_lng %}
+                        var location = new google.maps.LatLng({{ tour_stop.park_lat }},{{ tour_stop.park_lng }});
+                        {% else %}
+                        var location = new google.maps.LatLng({{ tour_stop.lat }},{{ tour_stop.lng }});
+                        {% endif %}
+
+                        if (geocoder) {
+                            geocoder.geocode({ 'latLng': location }, function (results, status) {
+                                // Return the address if Google gives us one.
+                                if (status == google.maps.GeocoderStatus.OK) {
+                                    console.log(results[0].formatted_address);
+                                    $("#directions_head").html('Address');
+                                    $("#directions").html(results[0].formatted_address);
+                                }
+                                // Otherwise, apologize to the user
+                                else {
+                                    $("#directions").html('Unable to determine address.');
+                                }
+                            });
+                        }
+                    }
+
+                    // Direct the user to the parking area if the user is driving.
+                    if ( selectedMode === 'DRIVING') {
+                        // But first, make sure there is a parking location given.
+                        {% if tour_stop.park_lat and tour_stop.park_lng %}
+                        var destination = '{{tour_stop.park_lat}}, {{tour_stop.park_lng}}';
+                        {% else %}
+                        var destination = '{{tour_stop.lat}}, {{tour_stop.lng}}';
+                        {% endif %}
+                    }
+                    // Otherwise, send the user to the actual site.
+                    else {
+                        var destination = '{{tour_stop.lat}}, {{tour_stop.lng}}';
+                    }
+
+                    if( typeof (displayDirections) === "function"){}
+                    // Show the turn-by-turn directions.
+                    self.displayDirections({
+                        'origin': clientPosition,
+                        'destination': destination,
+                        'travelMode': google.maps.DirectionsTravelMode[selectedMode] }, {
+                            'panel': document.getElementById('directions') }, function(result, status) {
+                            // If the user's location is known, give him/her the directions...
+                            if ( status === 'OK' ) {
+                                // alert('Results found!');
+                            }
+                            // Otherwise just provide the user with the stop's markers and geocoded address.
+                            else {
+                                addMarker(self, {{tour_stop.lat}}, {{tour_stop.lng}}, "{{tour_stop.name}}", "{{ STATIC_URL }}markers/marker{{tour_stop.position}}.png")
+                                {% if tour_stop.park_lat and tour_stop.park_lng %}
+                                addMarker(this, {{tour_stop.park_lat}}, {{tour_stop.park_lng}}, "Parking: {{tour_stop.name}}", "{{ STATIC_URL }}markers/blue-parking.png")
+                                {% endif %}
+                            }
+                        });
+                });
+            }
+        });
+    }
+</script>
+
+<script>
+   $("div:jqmData(role='page')").on('pageshow', function() {
+      $(document).ready(function () {  
+      //  initializeMap();
+      //});
+
+      //$(document).on('pagecreate',function(){
+         $('#map_container').gmap('destroy');
+         // Clear the turn-by-turn directions.
+          $('#directions').empty();
+
+         //$(document).on('click','#tabs .ui-block-b a',function(){
+            initializeMap();
+         //});
+
+         $(document).on('change','#mode',function() {
+            // Destroy the map
+            $('#map_container').gmap('destroy');
+
+            // Clear the turn-by-turn directions.
+            $('#directions').empty();
+
+            // Get the selected value
+            var selectedMode = document.getElementById('mode').value;
+
+            // Get Django's CSRF token using a jQuery cookie plugin.
+            // This is provided from a hidden input filed and django's csrf_token
+            // template tag.
+            var csrftoken = $.cookie('csrftoken');
+
+            // Make the ajax post to the tour.update_directionsmode view
+            $.ajax({
+                url: 'http://{{ request.get_host }}/tour/update_directionsmode/' + selectedMode + '/',
+                type: 'post',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                },
+                success: function (data) {}
+            });
+            // And redraw the map.
+            initializeMap();
+        });
+
+        $('.menu-btn').on('click',function(){
+            var $this = $(this),
+                offset = $this.offset(),
+                offset_left = offset.left,
+                $auxMenu = $(".ui-popup"),
+                $popupContainer = $(".ui-popup-container");
+
+            if($auxMenu.hasClass('ui-popup-active')){
+                $popupContainer.addClass('ui-popup-hidden').removeClass('in').addClass('ui-popup-truncate').removeClass('ui-popup-active').css({'top':'0px','right':'0'});
+            }
+            else{
+                $popupContainer.removeClass('ui-popup-hidden').addClass('in').removeClass('ui-popup-truncate').addClass('ui-popup-active').css({'top':'30px','right':'15px'});
+            }
+        });
+
+        $('.ui-content').css('min-height',$(window).height());
+      //});
+   });
+   });
+
+</script>
+
+{% endblock page_scripts %}
+
+{% block header %}
+    <div class="tour-stop-detail rounded-corners">
+      <div class="" data-role="controlgroup" data-type="horizontal">
+
+        <a href="/tour/{{ tour.slug }}" data-role="button" class="back-btn" data-transition="slide" data-direction="reverse" ><span>Back</span></a>
+        <h1 class="tour-title">{{ tour.name }}</h1>
+      </div>
+
+      <h2 class="ui-title">
+        {{tour_stop.name}}
+      </h2>
+      <div class="btn-right btn-map">
+          <ul>
+            <li>
+               <a href="{% url 'tour:stop-detail' tour.slug page.number %}">
+                  History
+               </a>
+            </li>
+          </ul>
+        </div>
+    </div>
+    
+{% endblock header %}
+
+{% block content %}
+
+<div data-role="tabs" id="tabs">
+<!--DETAILS -->
+
+    <div data-id="map" class="tab-content hidden" data-role="tab">
+        <div>
+            {{ tour_stop.directions_intro }}
+        </div>
+        <div id="select">
+            <select id="mode">
+                {% for mode in modes %}
+                    <option value="{{ mode.mode }}" {% if mode.mode == directions %} selected="selected" {% endif %}>{{ mode.mode }}</option>
+                {% endfor %}
+            </select>
+            <input type="hidden" value="{{ csrf_token }}" />
+        </div>
+
+        <div class="map_stop_container" data-eul="{{tour_stop}}"></div>
+
+        <div id="map_container"></div>
+
+        <div id="static_map"></div>
+
+        <div class="ui-li ui-li-divider ui-btn ui-bar-b ui-corner-top ui-btn-up-undefined" id="directions_head"></div>
+
+        <div id="directions"></div>
+
+        <div class="ui-li ui-li-divider ui-btn ui-bar-b ui-corner-bottom ui-btn-up-undefined"></div>
+        
+        <div id="direction_notes">
+            {{ tour_stop.direction_notes|safe }}
+        </div>
+
+        {% include "tour/includes/liblogo.html" %}
+    </div>
+
+</div>
+{% endblock content %}
+
+{% block footer %}
+    <div class="rounded-corners">
+<!--        <div data-role="navbar" data-iconpos="bottom" data-position="fixed" data-tap-toggle="false" id="tabs">
+          <ul>
+            
+            <li><a href="#history" class="ui-btn-active ui-state-persist" data-href="details">History</a></li>
+            <li><a href="#directions" data-href="map">Directions</a></li>
+            <li><a href="#gallery" data-href="media">Gallery</a></li>
+          </ul>
+        </div>
+    -->
+
+      {% if page.has_previous %}
+        <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.previous_page_number %}" class="ui-btn ui-corner-all ui-icon-arrow-l ui-btn-icon-left ui-nodisc-icon ui-alt-icon pull-left" data-transition="slideup" data-direction="reverse">Prev Stop</a>
+        {% endif %}
+
+
+        {% if page.has_next %}
+        <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.next_page_number %}" class="ui-btn ui-corner-all ui-icon-arrow-r ui-btn-icon-right ui-nodisc-icon ui-alt-icon pull-right" data-transition="slideup">Next Stop</a>
+        {% endif %}
+    </div>
+{% endblock footer %}

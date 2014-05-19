@@ -5,3 +5,6 @@ tours/static
 tours/media
 tour.json
 mydatabase
+*.DS_Store
+data.json
+tours.komodoproject

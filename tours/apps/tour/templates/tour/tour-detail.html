@@ -7,61 +7,6 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/maps/jquery.ui.map.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/maps/jquery.ui.map.extensions.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/local.js"></script>
-<script type="text/javascript">
-
-  /*
-  click on marker loads data per stop and changes color of marker.
-  get directions.
-  */
-  function addMarker(map, lat, lng, label, num_icon, infowindow) {
-    map.addMarker({
-      position: new google.maps.LatLng(lat, lng),
-      bounds: true,
-      icon: num_icon,
-    }).click(function() {
-      $('#map_container').gmap('openInfoWindow', {'content': infowindow}, this);
-      //window.location = get_native_map_link(lat, lng, label);
-    });
-}
-  function initializeMap() {
-    /**
-      Initialize markers separately to slightly improve readability
-    */
-    $("#map_container").width('100%').height('350px').gmap({
-      //mapTypeId: google.maps.MapTypeId.TERRAIN,
-      //zoom: 10,
-    callback: function(map) {
-      var self = this;
-
-      {% for ts in tour_stops %}
-        var infowindow = "<a href=\"{{ ts.get_absolute_url }}\">{{ts.name}}</a><p>{{ ts.metadescription }}</p>";
-        addMarker(this, {{ts.lat}}, {{ts.lng}}, "{{ts.name}}", "{{ STATIC_URL }}markers/marker{{ forloop.counter }}.png", infowindow) 
-      {% endfor %}
-
-      self.getCurrentPosition(function(position, status) {
-          if ( status === 'OK' ) {
-            var clientPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-            self.addMarker({'position': clientPosition, 'bounds': true, icon: '{{ STATIC_URL }}markers/mylocation.png'});
-          }
-        }); 
-      }
-    });
-  }
-
-  $("div:jqmData(role='page')").on('pageshow', function() {
-    $('div:jqmData(id="map")').bind('init-tab', function() {
-      initializeMap();
-    });
-  });
-
-    $(document).on( "expand", "#scroll", function( event, ui ){
-        console.log('Open');
-        //$("html,body").scrollTop($(document).height());
-        
-        $("html, body").animate({ scrollTop: $(document).height() });
-    });
-
-</script>
 
 {% endblock page_scripts %}
 
@@ -99,17 +44,13 @@
     </ul>
 </div>
 
-
-<div data-id="map" class="tab-content">
-  <div id="map_container"></div>
-</div>
 {% endblock content %}
 
 {% block footer %}
-<div data-role="navbar" data-iconpos="bottom">
+<div data-iconpos="bottom">
   <ul>
     <li><a href="#" class="ui-btn-active" data-href="details">Tour Stops</a></li>
-    <li><a href="#" data-href="map">Map</a></li>
+    <li><a href="{% url 'tour:tour-map' tour.slug %}" data-href="map">Map</a></li>
   </ul>
 </div>
 {% endblock footer %}
