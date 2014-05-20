@@ -28,6 +28,7 @@
             bounds: true,
             icon: num_icon,
             //zoom: 5,
+
         }).click(function() {
             // alert(get_native_map_link(lat, lng));
             window.location = get_native_map_link(lat, lng, label);
@@ -40,12 +41,19 @@
         * Initialize markers separately to slightly improve readability
         */
 
-        $('.ui-page-active #map_container').width('100%').height('350px').gmap({
+        $('.ui-page-active #map_container').width('100%').height('400px').gmap({
             //mapTypeId: google.maps.MapTypeId.TERRAIN,
-            zoom: 16,
+            zoom: 12,
             center: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}}),
             callback: function(map) {
                 var self = this;
+                $('.loading').show();
+                var maxZoom= 11;
+                google.maps.event.addListener(map, 'zoom_changed', function(){ 
+                   if(map.getZoom() < maxZoom){ 
+                        map.setZoom(maxZoom); 
+                    }
+                }); 
 
                 // Request the user's current location.
                 self.getCurrentPosition(function(position, status) {
@@ -103,7 +111,6 @@
                         var destination = '{{tour_stop.lat}}, {{tour_stop.lng}}';
                     }
 
-                    if( typeof (displayDirections) === "function"){}
                     // Show the turn-by-turn directions.
                     self.displayDirections({
                         'origin': clientPosition,
@@ -113,6 +120,7 @@
                             // If the user's location is known, give him/her the directions...
                             if ( status === 'OK' ) {
                                 // alert('Results found!');
+                                $('.loading').fadeOut(500);
                             }
                             // Otherwise just provide the user with the stop's markers and geocoded address.
                             else {
@@ -124,27 +132,20 @@
                         });
                 });
             }
-        });
+        });//end gmap
     }
-</script>
 
-<script>
    $("div:jqmData(role='page')").on('pageshow', function() {
       $(document).ready(function () {  
-      //  initializeMap();
-      //});
 
-      //$(document).on('pagecreate',function(){
          $('#map_container').gmap('destroy');
          // Clear the turn-by-turn directions.
           $('#directions').empty();
 
-         //$(document).on('click','#tabs .ui-block-b a',function(){
-            initializeMap();
-         //});
+        initializeMap();
 
-         $(document).on('change','#mode',function() {
-            // Destroy the map
+        $(document).on('change','#mode',function() {
+        // Destroy the map
             $('#map_container').gmap('destroy');
 
             // Clear the turn-by-turn directions.
@@ -163,13 +164,13 @@
                 url: 'http://{{ request.get_host }}/tour/update_directionsmode/' + selectedMode + '/',
                 type: 'post',
                 headers: {
-                    'X-CSRFToken': csrftoken,
+                'X-CSRFToken': csrftoken,
                 },
                 success: function (data) {}
             });
             // And redraw the map.
             initializeMap();
-        });
+        });//end doc.ready
 
         $('.menu-btn').on('click',function(){
             var $this = $(this),
@@ -187,8 +188,7 @@
         });
 
         $('.ui-content').css('min-height',$(window).height());
-      //});
-   });
+        });
    });
 
 </script>
@@ -209,9 +209,7 @@
       <div class="btn-right btn-map">
           <ul>
             <li>
-               <a href="{% url 'tour:stop-detail' tour.slug page.number %}">
-                  History
-               </a>
+                <a href="{% url 'tour:stop-detail' tour.slug page.number %}" data-transition="flip" class="ui-btn" data-href="details">History</a>
             </li>
           </ul>
         </div>
@@ -222,13 +220,23 @@
 {% block content %}
 
 <div data-role="tabs" id="tabs">
+<div data-role="navbar">
+    <ul>
+      <li><a href="#map" class="ui-btn-active" data-ajax="false">Map</a></li>
+      <li><a href="#map-text" data-ajax="false">Directions</a></li>
+      <li><a href="#notes-text" data-ajax="false">Notes</a></li>
+  </ul>
+</div>
+
 <!--DETAILS -->
 
-    <div data-id="map" class="tab-content hidden" data-role="tab">
-        <div>
-            {{ tour_stop.directions_intro }}
+    <div data-id="map" class="ui-content" data-role="tab" id="map">
+        
+        <div class="loading">
+            <div class="ui-loader ui-corner-all ui-body-a ui-loader-verbose"><span class="ui-icon-loading"></span><h1>loading</h1></div>
         </div>
-        <div id="select">
+
+        <div id="select" class="detail">
             <select id="mode">
                 {% for mode in modes %}
                     <option value="{{ mode.mode }}" {% if mode.mode == directions %} selected="selected" {% endif %}>{{ mode.mode }}</option>
@@ -243,12 +251,25 @@
 
         <div id="static_map"></div>
 
-        <div class="ui-li ui-li-divider ui-btn ui-bar-b ui-corner-top ui-btn-up-undefined" id="directions_head"></div>
+    </div>
+
+    <div data-id="text" class="ui-content" data-role="tab" id="map-text">
+        <div class="detail">
+            <p class="h4 text-center">
+                {{ tour_stop.directions_intro }}
+            </p>
+        </div>
+
+        <hr/> 
 
         <div id="directions"></div>
 
-        <div class="ui-li ui-li-divider ui-btn ui-bar-b ui-corner-bottom ui-btn-up-undefined"></div>
-        
+        <hr/>
+
+        {% include "tour/includes/liblogo.html" %}
+    </div>
+
+    <div data-id="text" class="ui-content" data-role="tab" id="notes-text">
         <div id="direction_notes">
             {{ tour_stop.direction_notes|safe }}
         </div>
@@ -261,15 +282,6 @@
 
 {% block footer %}
     <div class="rounded-corners">
-<!--        <div data-role="navbar" data-iconpos="bottom" data-position="fixed" data-tap-toggle="false" id="tabs">
-          <ul>
-            
-            <li><a href="#history" class="ui-btn-active ui-state-persist" data-href="details">History</a></li>
-            <li><a href="#directions" data-href="map">Directions</a></li>
-            <li><a href="#gallery" data-href="media">Gallery</a></li>
-          </ul>
-        </div>
-    -->
 
       {% if page.has_previous %}
         <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.previous_page_number %}" class="ui-btn ui-corner-all ui-icon-arrow-l ui-btn-icon-left ui-nodisc-icon ui-alt-icon pull-left" data-transition="slideup" data-direction="reverse">Prev Stop</a>

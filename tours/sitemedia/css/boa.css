@@ -31,6 +31,14 @@ h1.tour-name.ui-title {
     margin-top: -30px;
 }
 
+.h4{
+    font-size: 1.1em;
+}
+
+.text-center{
+    text-align: center;
+}
+
 .ui-page, .ui-content{
     
 }
@@ -88,6 +96,22 @@ h1.tour-name.ui-title {
     text-shadow: 0 1px 0 #5A5A5A;
     font-weight: normal;
 }
+
+
+.btn-right.btn-map ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.btn-right.btn-map ul li,.btn-right.btn-map ul li a{
+    display: block;
+    float: left;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
 
 #home-content {
     padding-left: 0px;
@@ -259,31 +283,22 @@ h1.tour-name.ui-title {
 .btn-right.btn-map .ui-btn{
     padding:0;
     width:100px;
-    height: 100px;
-}
-
-.btn-right.btn-map .ui-grid-a>.ui-block-a, .btn-right.btn-map .ui-grid-a>.ui-block-b{
-    width: 100%;
-    height: 100px;
-}
-
-.ui-header .btn-right.btn-map .ui-grid-a>.ui-block-a a, .ui-header .ui-grid-a>.ui-block-b a{
-    width: 100px;
+    margin: 0;
     top: -1px;
     right:0;
     height: 100px;
     position: absolute;
-    background-color: #8EDBA6;
+    background-color: #DBB98E;
     border-top-color: transparent;
     border-top-right-radius: 15px;
-    text-shadow: 0 1px 0 #17AC7C;
+    text-shadow: 0 1px 0 #AC5F17;
+    line-height: 5.5em;
+    border-left: 1px solid #C5A36F;
 }
 
-.ui-header .btn-right.btn-map .ui-grid-a>.ui-block-a a:hover,
-.ui-header .btn-right.btn-map .ui-grid-a>.ui-block-a a:focus,
-.ui-header .btn-right.btn-map .ui-grid-a>.ui-block-b a:hover,
-.ui-header .btn-right.btn-map .ui-grid-a>.ui-block-b a:focus{
-    background-color: #66D49B;
+.btn-right.btn-map .ui-btn:hover,
+.btn-right.btn-map .ui-btn:focus{
+    background-color: #C7A57A;
     
 }
 
@@ -302,10 +317,12 @@ h1.tour-name.ui-title {
     border-bottom: 1px solid #DDD;
 }
 
-.ui-page-theme-a .ui-listview>li>.ui-btn {
+.ui-page-theme-a .ui-listview>li.ui-li-has-thumb>.ui-btn {
     background-color:#F6F6F6;
     background-color: rgba(255, 255, 255, 0.64);
     border-color: #EEE;
+    padding-left: 5.5em;
+    min-height: 3.2em;
 }
 .ui-page-theme-a .ui-listview>li>.ui-btn:hover,
 .ui-page-theme-a .ui-listview>li>.ui-btn:focus{
@@ -322,8 +339,8 @@ h1.tour-name.ui-title {
 
 .ui-listview .ui-li-has-thumb>img:first-child, .ui-listview .ui-li-has-thumb>.ui-btn>img:first-child, .ui-listview .ui-li-has-thumb .ui-li-thumb {
     height: 100%;
-    max-width: 6em;
-    max-height: 6em;
+    max-width: 5em;
+    max-height: 5em;
 }
 
 .ui-listview>li h1, .ui-listview>li h2, .ui-listview>li h3, .ui-listview>li h4, .ui-listview>li h5, .ui-listview>li h6{
@@ -346,7 +363,7 @@ h1.tour-name.ui-title {
 .tour-stop-detail .ui-title{
     width: 66%;
     text-align: left;
-    font-size: 1.25em;
+    font-size: 1.1em;
     margin: 0 25px;
     padding-top: 0px;
     font-weight: bold;
@@ -957,6 +974,69 @@ p.caption img {
 
 
 /********* GOOGLE MAP *******/
+
+div#tabs {
+    margin: -1.2em -1.2em;
+}
+
+.ui-content#map {
+    padding: 1em 0;
+}
+
+#map .detail {
+    padding: 1em;
+    position: relative;
+    z-index: 2;
+    background: #F8F4ED;
+    margin-top: -1em;
+}
+
+div#map_container {
+    position: absolute!important;
+    top: 4em;
+    z-index: 1;
+}
+div.ui-navbar {
+    position: relative;
+    z-index: 2;
+}
+
+.loading {
+    display: block;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    padding: 180px 0;
+    background-color: rgba(87, 84, 59, 0.46);
+    z-index: 2;
+    text-align: center;
+    margin-top:4em;
+}
+
+#map .detail:before,
+.loading:before{
+    content: '';
+    background-image: url(../images/arches.png);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: block;
+    top: 0;
+    opacity: 0.5;
+    left: 0;
+}
+
+#map .detail:before{
+    opacity:0.2;
+}
+
+.loading .ui-loader {
+    display: block;
+    top: 35%;
+    position: absolute;
+
+}
+
 td.adp-text {
     padding-left: 2em;
 }
@@ -964,6 +1044,14 @@ table.adp-directions {
     width: 100%;
 }
 
+
+div#tour-map {
+    margin: -1em;
+    position: absolute;
+    width: 100%;
+    top: -5px;
+    height: 100%;
+}
 
 div.ui-footer.ui-bar-inherit.ui-footer-fixed {
     background-color: #EEEBE2;
@@ -986,3 +1074,22 @@ div.ui-footer.ui-bar-inherit.ui-footer-fixed {
 .ui-page-theme-a div.ui-footer.ui-bar-inherit .ui-btn:focus{
     background-color: #EFF4FF;
 }
+
+.ui-page-theme-a .ui-tabs .ui-tabs-nav .ui-btn.ui-btn-active {
+    background-color: #4DC38A;
+    border-color: #A2C2AC;
+    box-shadow: none;
+}
+
+.btn-right.btn-map .ui-btn.btn-no-border{
+    border-left: none;
+}
+
+.ui-listview>li h1, .ui-listview>li h2, .ui-listview>li h3, .ui-listview>li h4, .ui-listview>li h5, .ui-listview>li h6 {
+    text-overflow: initial;
+    overflow: visible;
+    white-space: initial;
+    font-size: 1em;
+    font-weight: normal;
+    margin: 0 0.5em;
+}   

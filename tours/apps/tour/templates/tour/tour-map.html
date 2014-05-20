@@ -12,7 +12,7 @@
   /*
   click on marker loads data per stop and changes color of marker.
   get directions.
-  */
+  */ 
   function addMarker(map, lat, lng, label, num_icon, infowindow) {
     map.addMarker({
       position: new google.maps.LatLng(lat, lng),
@@ -27,7 +27,7 @@
     /**
       Initialize markers separately to slightly improve readability
     */
-    $("#map_container").width('100%').height('350px').gmap({
+    $("#map_container").width('100%').height('450px').gmap({
       //mapTypeId: google.maps.MapTypeId.TERRAIN,
       //zoom: 10,
     callback: function(map) {
@@ -67,7 +67,8 @@
 {% endblock page_scripts %}
 
 {% block header %}
-  <a href="/" class="ui-btn back-btn" data-mini="true" data-transition="slide" data-direction="reverse"><span>Back</span></a>
+  <a href="{% url 'tour:detail' tour.slug %}" class="ui-btn back-btn" data-mini="true" data-transition="slide" data-direction="reverse"><span>Back</span></a>
+  
   <h1 class="tour-name">{{ tour.name }}</h1>
   <div class="ui-btn-right" data-role="controlgroup" data-type="horizontal">
      <a href="#auxMenu" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-icon-bars ui-nodisc-icon menu-btn" data-transition="pop"> Menu</a>
@@ -85,16 +86,17 @@
     </ul>
   </div>
 
-  <div data-id="map" class="tab-content">
+  <div id="tour-map">
     <div id="map_container"></div>
   </div>
 {% endblock content %}
 
 {% block footer %}
-<divdata-iconpos="bottom">
-  <ul>
-    <li><a href="{% url 'tour:detail' tour.slug %}" data-href="details">Tour Stops</a></li>
+<div data-role="navbar">
+    <ul>
+    <li><a href="{% url 'tour:detail' tour.slug %}">Tour Stops</a></li>
     <li><a href="#" class="ui-btn-active" data-href="map">Map</a></li>
-  </ul>
-</div>
+    </ul>
+</div><!-- /navbar -->
+
 {% endblock footer %}

@@ -5,7 +5,7 @@
     sort of global header or footer.
 */
 
-$(document).delegate('.ui-navbar ul li > a', 'click', function() {
+$(document).delegate('.tabs .ui-navbar ul li > a', 'click', function() {
   //search the navbar to deactivate the active button
   $(this).closest('.ui-navbar').find('a').removeClass('ui-btn-active');
 

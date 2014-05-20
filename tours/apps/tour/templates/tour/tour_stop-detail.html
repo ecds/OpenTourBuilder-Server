@@ -81,10 +81,8 @@
       </h2>
       <div class="btn-right btn-map">
           <ul>
-            
-            <li><a href="#history" class="ui-btn-active ui-state-persist" data-href="details">History</a></li>
             <li>
-               <a href="{% url 'tour:stop-map' tour.slug page.number %}">
+               <a href="{% url 'tour:stop-map' tour.slug page.number %}" data-transition="flip" data-ajax="false" class="ui-btn btn-menu btn-no-border">
                     <img src="http://maps.googleapis.com/maps/api/staticmap?zoom=14&amp;size=100x100&amp;maptype=roadmap{% if tour_stop.parking_block %}&amp;path=color:blue%7Cweight:5%7Cfillcolor:blue%7C{{ tour_stop.parking_block }}{% endif %}&amp;markers=color:red%7C{{ tour_stop.lat }},{{ tour_stop.lng }}&amp;sensor=false&amp;key=AIzaSyBx6Zz6NMBoTBzIU0sbZQezxXgFMZdKZeI" alt="Map to {{ tour_stop.name }}"/>
                 </a>
             </li>

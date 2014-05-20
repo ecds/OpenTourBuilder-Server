@@ -47,10 +47,11 @@
 {% endblock content %}
 
 {% block footer %}
-<div data-iconpos="bottom">
-  <ul>
-    <li><a href="#" class="ui-btn-active" data-href="details">Tour Stops</a></li>
-    <li><a href="{% url 'tour:tour-map' tour.slug %}" data-href="map">Map</a></li>
-  </ul>
-</div>
+<div data-role="navbar">
+    <ul>
+      <li><a href="#" class="ui-btn-active">Tour Stops</a></li>
+      <li><a href="{% url 'tour:tour-map' tour.slug %}" data-ajax="false">Map</a></li>
+    </ul>
+</div><!-- /navbar -->
+
 {% endblock footer %}
