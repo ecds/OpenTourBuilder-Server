@@ -207,11 +207,7 @@
         {{tour_stop.name}}
       </h2>
       <div class="btn-right btn-map">
-          <ul>
-            <li>
-                <a href="{% url 'tour:stop-detail' tour.slug page.number %}" data-transition="flip" class="ui-btn" data-href="details">History</a>
-            </li>
-          </ul>
+            <a href="{% url 'tour:stop-detail' tour.slug page.number %}" data-transition="flip" class="ui-btn" data-href="details">History</a>
         </div>
     </div>
     

@@ -98,21 +98,6 @@ h1.tour-name.ui-title {
 }
 
 
-.btn-right.btn-map ul {
-    padding: 0;
-    margin: 0;
-    list-style: none;
-}
-
-.btn-right.btn-map ul li,.btn-right.btn-map ul li a{
-    display: block;
-    float: left;
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-
-
 #home-content {
     padding-left: 0px;
     padding-right: 0px;
@@ -257,27 +242,6 @@ h1.tour-name.ui-title {
 .jqm-header{
     border: 0px;
     z-index: 1;
-}
-
-.btn-right.btn-map{
-    position: absolute;
-    top:0px;
-    height: 100%;
-    right: 0;
-}
-
-.ui-header .btn-right.btn-map .ui-grid-a>.ui-block-a a {
-    padding-top: 3em;
-}
-
-@media (min-width:800px){
-    .ui-header .btn-right.btn-map .ui-grid-a>.ui-block-a a {
-        padding-top: 2.5em;
-    }
-}
-
-.btn-right.btn-map .ui-btn-active{
-    display:none;
 }
 
 .btn-right.btn-map .ui-btn{
@@ -927,7 +891,8 @@ p.caption img {
 }
 
 .social-media.ui-controlgroup .ui-controlgroup-controls {
-    width: 100%;
+    width: 209%;
+    margin-left: -5px;
 }
 
 .social-media.ui-controlgroup iframe, .social-media.ui-controlgroup .fb_iframe_widget {
