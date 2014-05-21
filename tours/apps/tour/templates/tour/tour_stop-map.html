@@ -215,6 +215,11 @@
 
 {% block content %}
 
+{% if tour_stop.position = 0 %}
+   <div>
+      {{ tour_stop.direction_notes|safe }}
+   </div>
+{% else %}
 <div data-role="tabs" id="tabs">
 <div data-role="navbar">
     <ul>
@@ -274,6 +279,7 @@
     </div>
 
 </div>
+{% endif %}
 {% endblock content %}
 
 {% block footer %}

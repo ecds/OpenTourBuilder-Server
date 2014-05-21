@@ -34,8 +34,10 @@
       var self = this;
 
       {% for ts in tour_stops %}
+        {% if not forloop.first %}
         var infowindow = "<a href=\"{{ ts.get_absolute_url }}\">{{ts.name}}</a><p>{{ ts.metadescription }}</p>";
-        addMarker(this, {{ts.lat}}, {{ts.lng}}, "{{ts.name}}", "{{ STATIC_URL }}markers/marker{{ forloop.counter }}.png", infowindow) 
+        addMarker(this, {{ts.lat}}, {{ts.lng}}, "{{ts.name}}", "{{ STATIC_URL }}markers/marker{{ ts.position }}.png", infowindow)
+        {% endif %}
       {% endfor %}
 
       self.getCurrentPosition(function(position, status) {
