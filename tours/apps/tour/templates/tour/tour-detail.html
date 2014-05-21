@@ -14,7 +14,7 @@
   <a href="/" class="ui-btn back-btn" data-mini="true" data-transition="slide" data-direction="reverse"><span>Back</span></a>
   <h1 class="tour-name">{{ tour.name }}</h1>
   <div class="ui-btn-right" data-role="controlgroup" data-type="horizontal">
-     <a href="#auxMenu" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-icon-bars ui-nodisc-icon menu-btn" data-transition="pop"> Menu</a>
+    <a href="#auxMenu" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-left ui-icon-bars ui-nodisc-icon menu-btn" data-transition="pop"> Menu</a>
   </div>
 {% endblock header %}
 
@@ -29,20 +29,37 @@
     </ul>
   </div>
 
+  {% comment %}
+  Here we grab the first stop from the list to be shown as an introduction to the tour.
+  {% endcomment %}
+  <div>
+    <ul data-role="listview" data-split-icon="gear" data-split-theme="a" data-inset="true" data-shadow="false" data-corners="false">
+      <li>
+        <a href="{{ tour_stops.0.get_absolute_url }}"  data-transition="slide">
+          <h3>{{ tour_stops.0.name }}</h3>
+        </a>
+      </li>
+    </ul>
+  </div>
+
   <div data-id="details" class="tab-content jqm-content">
     <h2>Tour Stops</h2>
-
     <ul data-role="listview" data-split-icon="gear" data-split-theme="a" data-inset="true" data-shadow="false" data-corners="false">
       {% for tour_stop in tour_stops %}
+        {% comment %}
+        Here we get all the stops except the first one as the first one is the intro above.
+        {% endcomment %}
+        {% if not forloop.first %}
         <li {% if forloop.last %} id='scroll'{% endif %}>
           <a href="{{ tour_stop.get_absolute_url }}"  data-transition="slide">
-            <img src="http://maps.googleapis.com/maps/api/staticmap?zoom=16&amp;size=240x200&amp;maptype=roadmap{% if tour_stop.parking_block %}&amp;path=color:blue%7Cweight:5%7Cfillcolor:blue%7C{{ tour_stop.parking_block }}{% endif %}&amp;markers=color:red%7C{{ tour_stop.lat }},{{ tour_stop.lng }}&amp;sensor=false&amp;key=AIzaSyBx6Zz6NMBoTBzIU0sbZQezxXgFMZdKZeI" alt="Map to {{ tour_stop.name }}"/>
-            <h3>{{ forloop.counter }}. {{ tour_stop.name }}</h3>
+            <img src="http://maps.googleapis.com/maps/api/staticmap?zoom=16&amp;size=240x200&amp;maptype=roadmap&amp;markers=color:red%7C{{ tour_stop.lat }},{{ tour_stop.lng }}&amp;sensor=false&amp;key=AIzaSyBx6Zz6NMBoTBzIU0sbZQezxXgFMZdKZeI" alt="Map to {{ tour_stop.name }}"/>
+            <h3>{{ tour_stop.position }}. {{ tour_stop.name }}</h3>
           </a>
         </li>
+        {% endif %}
       {% endfor %}
     </ul>
-</div>
+  </div>
 
 {% endblock content %}
 

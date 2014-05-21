@@ -96,7 +96,6 @@ class TourStop(models.Model):
     lng = models.FloatField(null=True, blank=True)
     park_lat = models.FloatField(null=True, blank=True)
     park_lng = models.FloatField(null=True, blank=True)
-    parking_block = models.TextField(blank=True, default='')
     directions_intro = models.TextField(blank=True, default='', validators=[MaxLengthValidator(350)])
     direction_notes = HTMLField(blank=True, default='')
 

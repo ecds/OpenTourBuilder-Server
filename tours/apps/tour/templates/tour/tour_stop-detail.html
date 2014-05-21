@@ -45,46 +45,42 @@
 
 {% block page_scripts %}
 <script type="text/javascript">
-    // Don't allow JQM override the page title
-    $(":jqmData(role='page')").attr("data-title", document.title);
+   // Don't allow JQM override the page title
+   $(":jqmData(role='page')").attr("data-title", document.title);
 </script>
 
-
-
 {% if tour.fb_app_id %}
-    <script>
-    $(document).on('pagecreate',function(){
-        // Code from Facebook
-        $(function initializeFB(d, s, id) {
+   <script>
+      $(document).on('pagecreate',function(){
+         // Code from Facebook
+         $(function initializeFB(d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
             if (d.getElementById(id)) return;
             js = d.createElement(s); js.id = id;
             js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId={{ tour.fb_app_id }}";
             fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-    });
-    </script>
+         }(document, 'script', 'facebook-jssdk'));
+   });
+   </script>
 {% endif %}
 
 {% endblock page_scripts %}
 
 {% block header %}
-    <div class="tour-stop-detail rounded-corners">
-      <div class="" data-role="controlgroup" data-type="horizontal">
-
-        <a href="/tour/{{ tour.slug }}" data-role="button" class="back-btn" data-transition="slide" data-direction="reverse" ><span>Back</span></a>
-        <h1 class="tour-title">{{ tour.name }}</h1>
-      </div>
-
-      <h2 class="ui-title">
-        {{tour_stop.name}}
-      </h2>
-        <div class="btn-right btn-map">
-           <a href="{% url 'tour:stop-map' tour.slug page.number %}" data-ajax="false" class="ui-btn btn-menu btn-no-border">
-                <img src="http://maps.googleapis.com/maps/api/staticmap?zoom=14&amp;size=100x100&amp;maptype=roadmap{% if tour_stop.parking_block %}&amp;path=color:blue%7Cweight:5%7Cfillcolor:blue%7C{{ tour_stop.parking_block }}{% endif %}&amp;markers=color:red%7C{{ tour_stop.lat }},{{ tour_stop.lng }}&amp;sensor=false&amp;key=AIzaSyBx6Zz6NMBoTBzIU0sbZQezxXgFMZdKZeI" alt="Map to {{ tour_stop.name }}"/>
-            </a>
-        </div>
-    </div>
+<div class="tour-stop-detail rounded-corners">
+   <div class="" data-role="controlgroup" data-type="horizontal">
+      <a href="/tour/{{ tour.slug }}" data-role="button" class="back-btn" data-transition="slide" data-direction="reverse" ><span>Back</span></a>
+      <h1 class="tour-title">{{ tour.name }}</h1>
+   </div>
+   <h2 class="ui-title">
+      {{tour_stop.name}}
+   </h2>
+   <div class="btn-right btn-map">
+      <a href="{% url 'tour:stop-map' tour.slug page.number %}" data-ajax="false" class="ui-btn btn-menu btn-no-border">
+         <img src="http://maps.googleapis.com/maps/api/staticmap?zoom=14&amp;size=100x100&amp;maptype=roadmap&amp;markers=color:red%7C{{ tour_stop.lat }},{{ tour_stop.lng }}&amp;sensor=false&amp;key=AIzaSyBx6Zz6NMBoTBzIU0sbZQezxXgFMZdKZeI" alt="Map to {{ tour_stop.name }}"/>
+      </a>
+   </div>
+</div>
     
 {% endblock header %}
 
@@ -92,86 +88,70 @@
 
 <div data-role="tabs" id="tabs">
 <!--DETAILS -->
-    <div data-id="details" class="tab-content" data-role="tab">
-        <article>
-            <div class="m-carousel m-fluid m-carousel-photos">
-                <div class="m-carousel-inner" style="width:
-                {% if tour_stop.video_embed %}
-                    {{ images |length |add:'1'}}00%
-                {% else %}
-                    {{ images |length }}00%
-                {% endif %}
-                ">
+   <div data-id="details" class="tab-content" data-role="tab">
+      <article>
+         <div class="m-carousel m-fluid m-carousel-photos">
+            <div class="m-carousel-inner" style="width:
+               {% if tour_stop.video_embed %}
+                  {{ images |length |add:'1'}}00%
+               {% else %}
+                  {{ images |length }}00%
+               {% endif %}
+               ">
                 <!-- the items -->
-                    {% if tour_stop.video_embed %}
-                        <div class="m-item">
-                            <iframe id="youtube" width="290" height="190" src="{{ tour_stop.video_embed }}?controls=2&amp;modestbranding=1&amp;rel=0&amp;showinfo=0&amp;theme=light" frameborder="0" allowfullscreen></iframe>
-                        </div>
-                    {% endif %}
-                    {% if images %}
-                        {% for ts_image in images %}
-                            <div class="m-item">
-                                <a data-rel="dialog" data-transition="slidedown" href="{% url 'tour:stop-media-detail' tour_stop.tour.slug ts_image.id %}"><img src="{{ts_image.image|thumbnail:"300x0"}}" alt="{{ ts_image.title }}"/></a>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                    </div>
-                <!-- the controls -->
-                <div class="m-carousel-controls m-carousel-bulleted">
-                    {% if images %}
-                        <a href="#" data-slide="prev" class="slide-static ui-btn ui-icon-carat-l ui-btn-icon-notext ui-corner-all">No text</a>
-                        {% if tour_stop.video_embed %}
-                            <a href="#" data-slide="1" class="">1</a>
-                            {% for ts_image in images %}
-                                <a href="#" data-slide="{{forloop.counter|add:'1'}}" class="">{{forloop.counter|add:'1'}}</a>
-                            {% endfor %}
-
-                        {% else %}
-                            {% for ts_image in images %}
-                                <a href="#" data-slide="{{forloop.counter}}" class="">{{forloop.counter}}</a>
-                            {% endfor %}
-                        {% endif %}
-                       
-                        <a href="#" data-slide="next" class="slide-static ui-btn ui-icon-carat-r ui-btn-icon-notext ui-corner-all">No text</a>
-                    {% endif %}
-                </div>
+               {% if tour_stop.video_embed %}
+                  <div class="m-item">
+                     <iframe id="youtube" width="290" height="190" src="{{ tour_stop.video_embed }}?controls=2&amp;modestbranding=1&amp;rel=0&amp;showinfo=0&amp;theme=light" frameborder="0" allowfullscreen></iframe>
+                  </div>
+               {% endif %}
+               {% if images %}
+                  {% for ts_image in images %}
+                     <div class="m-item">
+                        <a data-rel="dialog" data-transition="slidedown" href="{% url 'tour:stop-media-detail' tour_stop.tour.slug ts_image.id %}"><img src="{{ts_image.image|thumbnail:"300x0"}}" alt="{{ ts_image.title }}"/></a>
+                     </div>
+                  {% endfor %}
+               {% endif %}
             </div>
-            <script>$('.m-carousel').carousel()</script>
-            <div data-role="content">
-                {{ tour_stop.description|safe }}
-
-                <div class="social-media" data-role="controlgroup" data-type="horizontal">
-                    {% include "tour/includes/social_media.html" %}
-                </div>
-                <div class="clearfix"></div>
-                {% include "tour/includes/liblogo.html" %}
-
-                
+            <!-- the controls -->
+            <div class="m-carousel-controls m-carousel-bulleted">
+               {% if images %}
+                  <a href="#" data-slide="prev" class="slide-static ui-btn ui-icon-carat-l ui-btn-icon-notext ui-corner-all">No text</a>
+                  {% if tour_stop.video_embed %}
+                     <a href="#" data-slide="1" class="">1</a>
+                     {% for ts_image in images %}
+                        <a href="#" data-slide="{{forloop.counter|add:'1'}}" class="">{{forloop.counter|add:'1'}}</a>
+                     {% endfor %}
+                  {% else %}
+                     {% for ts_image in images %}
+                        <a href="#" data-slide="{{forloop.counter}}" class="">{{forloop.counter}}</a>
+                     {% endfor %}
+                  {% endif %}
+                       <a href="#" data-slide="next" class="slide-static ui-btn ui-icon-carat-r ui-btn-icon-notext ui-corner-all">No text</a>
+                    {% endif %}
             </div>
-        </article>
-    </div>
+         </div>
+         <script>$('.m-carousel').carousel()</script>
+         <div data-role="content">
+            {{ tour_stop.description|safe }}
+            <div class="social-media" data-role="controlgroup" data-type="horizontal">
+               {% include "tour/includes/social_media.html" %}
+            </div>
+            <div class="clearfix"></div>
+               {% include "tour/includes/liblogo.html" %}
+         </div>
+      </article>
+   </div>
 </div>
 {% endblock content %}
 
 {% block footer %}
-    <div class="rounded-corners">
-<!--        <div data-role="navbar" data-iconpos="bottom" data-position="fixed" data-tap-toggle="false" id="tabs">
-          <ul>
-            
-            <li><a href="#history" class="ui-btn-active ui-state-persist" data-href="details">History</a></li>
-            <li><a href="#directions" data-href="map">Directions</a></li>
-            <li><a href="#gallery" data-href="media">Gallery</a></li>
-          </ul>
-        </div>
-    -->
+<div class="rounded-corners">
+   {% if page.has_previous %}
+      <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.previous_page_number %}" class="ui-btn ui-corner-all ui-icon-arrow-l ui-btn-icon-left ui-nodisc-icon ui-alt-icon pull-left" data-transition="slideup" data-direction="reverse">Prev Stop</a>
+   {% endif %}
 
-      {% if page.has_previous %}
-        <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.previous_page_number %}" class="ui-btn ui-corner-all ui-icon-arrow-l ui-btn-icon-left ui-nodisc-icon ui-alt-icon pull-left" data-transition="slideup" data-direction="reverse">Prev Stop</a>
-        {% endif %}
-
-
-        {% if page.has_next %}
-        <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.next_page_number %}" class="ui-btn ui-corner-all ui-icon-arrow-r ui-btn-icon-right ui-nodisc-icon ui-alt-icon pull-right" data-transition="slideup">Next Stop</a>
-        {% endif %}
-    </div>
+   {% if page.has_next %}
+      <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.next_page_number %}" class="ui-btn ui-corner-all ui-icon-arrow-r ui-btn-icon-right ui-nodisc-icon ui-alt-icon pull-right" data-transition="slideup">Next Stop</a>
+   {% endif %}
+</div>
 {% endblock footer %}
