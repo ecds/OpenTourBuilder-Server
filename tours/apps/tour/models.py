@@ -140,7 +140,6 @@ class TourStopMedia(models.Model):
     title = models.CharField(max_length=50, blank=True, default='')
     caption = models.CharField(max_length=255, blank=True, default='')
     image = models.ImageField(upload_to='stops/', verbose_name='Image')
-    #inline = models.ImageField(upload_to='stops/inline/', blank=True, null=True)
     source_link = models.CharField(max_length=525, blank=True, default='')
     metadata = HTMLField(blank=True, default='')
     
@@ -171,7 +170,7 @@ class TourStopMedia(models.Model):
             if self.image != orig.image:
                 image_update = True
                 
-        if self.position == None and self.tour_stop:
+        if self.position == None:
             self.position = new_media_position(self, self.tour_stop_id)
 
         #if self.image and not self.inline or image_update:
@@ -179,19 +178,19 @@ class TourStopMedia(models.Model):
 
         super(TourStopMedia, self).save(*args, **kwargs)
 
-    def generate_thumbnail(self):
-        thumbnail_size = (290, 290)
-    
-        return self._resize_imagefield(thumbnail_size, self.inline)
-
-    def _resize_imagefield(self, size, field):
-        image = Image.open(self.image)
-        # NOTE: using thumbnail for both resize/thumb
-        # because it resizes the current image rather than resize,
-        # which returns a new Image object
-        image.thumbnail(size, Image.ANTIALIAS)
-        tmp = tempfile.NamedTemporaryFile(suffix='.png')
-        image.save(tmp.name, 'png')
-        content = File(tmp)
-        field.save('%s' % self.image, content, save=False)
+    #def generate_thumbnail(self):
+    #    thumbnail_size = (290, 290)
+    #
+    #    return self._resize_imagefield(thumbnail_size, self.inline)
+    #
+    #def _resize_imagefield(self, size, field):
+    #    image = Image.open(self.image)
+    #    # NOTE: using thumbnail for both resize/thumb
+    #    # because it resizes the current image rather than resize,
+    #    # which returns a new Image object
+    #    image.thumbnail(size, Image.ANTIALIAS)
+    #    tmp = tempfile.NamedTemporaryFile(suffix='.png')
+    #    image.save(tmp.name, 'png')
+    #    content = File(tmp)
+    #    field.save('%s' % self.image, content, save=False)
 
