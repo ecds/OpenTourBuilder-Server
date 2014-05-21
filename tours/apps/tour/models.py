@@ -56,12 +56,25 @@ class Tour(models.Model):
 
     def __unicode__(self):
         return "%s" % (self.name)
+    
+def new_position(instance, tour_id):
+    return TourStop.objects.filter(tour_id=tour_id).count()
+
+def new_info_position(instance, tour_id):
+    return TourStop.objects.filter(tour_id=tour_id).count()
+
+def new_media_position(instance, tour_stop_id):
+    return TourStopMedia.objects.filter(tour_stop_id=tour_stop_id).count()
+
+def validate_https(value):
+    if 'https' not in value:
+        raise ValidationError('Make sure your embed link uses HTTPS.')
 
 class TourInfo(models.Model):
     tour = models.ForeignKey(Tour)
     name = models.CharField(max_length=50)
     description = HTMLField(blank=True, default='')
-    position = models.PositiveSmallIntegerField("Position", default=1)
+    position = models.PositiveSmallIntegerField("Position", blank=True, null=True)
     info_slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
 
     class Meta:
@@ -76,16 +89,11 @@ class TourInfo(models.Model):
 
     def get_absolute_url(self):
         return reverse('tour:info-detail', kwargs={"slug":  self.tour.slug, "info": self.info_slug})
-
-def new_position(instance, tour_id):
-    return TourStop.objects.filter(tour_id=tour_id).count()
-
-def new_media_position(instance, tour_stop_id):
-    return TourStopMedia.objects.filter(tour_stop_id=tour_stop_id).count()
-
-def validate_https(value):
-    if 'https' not in value:
-        raise ValidationError('Make sure your embed link uses HTTPS.')
+    
+    def save(self, force_insert=False, force_update=False):
+        if self.position == None:# and self.tour:
+            self.position = new_position(self, self.tour_id)
+        super(TourInfo, self).save(force_insert, force_update)
 
 class TourStop(models.Model):
     tour = models.ForeignKey(Tour)
@@ -103,7 +111,7 @@ class TourStop(models.Model):
     direction_notes = HTMLField(blank=True, default='')
 
     # used in drag and drop reodering as well as tour stop order
-    position = models.PositiveSmallIntegerField("Position", blank=True, null=True, default='')
+    position = models.PositiveSmallIntegerField("Position", blank=True, null=True)
 
     class Meta:
         verbose_name = _('Tour Stop')
@@ -123,7 +131,7 @@ class TourStop(models.Model):
         return slugify(self.name)
 
     def save(self, force_insert=False, force_update=False):
-        if self.position == None:
+        if self.position == None:# and self.tour:
             self.position = new_position(self, self.tour_id)
         super(TourStop, self).save(force_insert, force_update)
 
@@ -137,7 +145,7 @@ class TourStopMedia(models.Model):
     metadata = HTMLField(blank=True, default='')
     
     # used in drag and drop reodering as well as tour stop order
-    position = models.PositiveSmallIntegerField("Position", blank=True, null=True, default=0)
+    position = models.PositiveSmallIntegerField("Position", blank=True, null=True)
 
     class Meta:
         verbose_name = _('Tour Stop Media')
@@ -163,7 +171,7 @@ class TourStopMedia(models.Model):
             if self.image != orig.image:
                 image_update = True
                 
-        if self.position == None:
+        if self.position == None and self.tour_stop:
             self.position = new_media_position(self, self.tour_stop_id)
 
         #if self.image and not self.inline or image_update:

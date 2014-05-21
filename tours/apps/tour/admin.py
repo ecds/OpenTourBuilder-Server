@@ -10,10 +10,9 @@ class TourStopMediaInline(admin.StackedInline, SortableInline, CollapsibleInline
     model = TourStopMedia
     extra = 0
     start_collapsed = True
-#    exclude = ('thumbnail',)
 
 class TourStopMediaAdmin(admin.ModelAdmin):
-    exclude = ('inline',)
+    exclude = ('inline', 'position')
 
 class TourInfoInline(admin.StackedInline, SortableInline, CollapsibleInline):
     model = TourInfo
