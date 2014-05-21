@@ -6,9 +6,10 @@ from django_admin_bootstrapped.admin.models import SortableInline, CollapsibleIn
 
 from tours.apps.tour.models import Tour, TourInfo, TourStop, TourStopMedia, DirectionsMode
 
-class TourStopMediaInline(admin.TabularInline, SortableInline):
+class TourStopMediaInline(admin.StackedInline, SortableInline, CollapsibleInline):
     model = TourStopMedia
-    extra = 1
+    extra = 0
+    start_collapsed = True
 #    exclude = ('thumbnail',)
 
 class TourStopMediaAdmin(admin.ModelAdmin):

@@ -80,6 +80,9 @@ class TourInfo(models.Model):
 def new_position(instance, tour_id):
     return TourStop.objects.filter(tour_id=tour_id).count()
 
+def new_media_position(instance, tour_stop_id):
+    return TourStopMedia.objects.filter(tour_stop_id=tour_stop_id).count()
+
 def validate_https(value):
     if 'https' not in value:
         raise ValidationError('Make sure your embed link uses HTTPS.')
@@ -129,13 +132,19 @@ class TourStopMedia(models.Model):
     title = models.CharField(max_length=50, blank=True, default='')
     caption = models.CharField(max_length=255, blank=True, default='')
     image = models.ImageField(upload_to='stops/', verbose_name='Image')
-    inline = models.ImageField(upload_to='stops/inline/', blank=True, null=True)
+    #inline = models.ImageField(upload_to='stops/inline/', blank=True, null=True)
     source_link = models.CharField(max_length=525, blank=True, default='')
     metadata = HTMLField(blank=True, default='')
+    
+    # used in drag and drop reodering as well as tour stop order
+    position = models.PositiveSmallIntegerField("Position", blank=True, null=True, default=0)
 
     class Meta:
         verbose_name = _('Tour Stop Media')
         verbose_name_plural = _('Tour Stop Media')
+        
+        #set default ordering for the manager
+        ordering = ['position']
 
     def __unicode__(self):
         return self.title
@@ -153,9 +162,12 @@ class TourStopMedia(models.Model):
             orig = TourStopMedia.objects.get(pk=self.pk)
             if self.image != orig.image:
                 image_update = True
+                
+        if self.position == None:
+            self.position = new_media_position(self, self.tour_stop_id)
 
-        if self.image and not self.inline or image_update:
-            self.generate_thumbnail()
+        #if self.image and not self.inline or image_update:
+        #    self.generate_thumbnail()
 
         super(TourStopMedia, self).save(*args, **kwargs)
 
