@@ -75,7 +75,7 @@
    <h2 class="ui-title">
       {{tour_stop.name}}
    </h2>
-   <div class="btn-right btn-map">
+   <div class="btn-map map">
       <a href="{% url 'tour:stop-map' tour.slug page.number %}" data-ajax="false" class="ui-btn btn-menu btn-no-border">
          <img src="http://maps.googleapis.com/maps/api/staticmap?zoom=14&amp;size=100x70&amp;maptype=roadmap&amp;markers=color:red%7C{{ tour_stop.lat }},{{ tour_stop.lng }}&amp;sensor=false&amp;key=AIzaSyBx6Zz6NMBoTBzIU0sbZQezxXgFMZdKZeI" alt="Map to {{ tour_stop.name }}"/>
       </a>

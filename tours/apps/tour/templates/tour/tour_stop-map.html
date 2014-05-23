@@ -206,9 +206,9 @@
       <h2 class="ui-title">
         {{tour_stop.name}}
       </h2>
-      <div class="btn-right btn-map">
-            <a href="{% url 'tour:stop-detail' tour.slug page.number %}" data-transition="flip" class="ui-btn" data-href="details">History</a>
-        </div>
+      <div class="btn-map">
+        <a href="{% url 'tour:stop-detail' tour.slug page.number %}" data-transition="flip" class="ui-btn" data-href="details">History</a>
+      </div>
     </div>
     
 {% endblock header %}

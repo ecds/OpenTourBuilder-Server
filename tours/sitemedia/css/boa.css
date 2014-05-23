@@ -98,21 +98,6 @@ h1.tour-name.ui-title {
 }
 
 
-.btn-right.btn-map ul {
-    padding: 0;
-    margin: 0;
-    list-style: none;
-}
-
-.btn-right.btn-map ul li,.btn-right.btn-map ul li a{
-    display: block;
-    float: left;
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-
-
 #home-content {
     padding-left: 0px;
     padding-right: 0px;
@@ -259,7 +244,7 @@ h1.tour-name.ui-title {
     z-index: 1;
 }
 
-.btn-right.btn-map{
+.btn-map{
     position: absolute;
     top:0px;
     height: 100px;
@@ -267,38 +252,27 @@ h1.tour-name.ui-title {
     width: 103px;
 }
 
-.ui-header .btn-right.btn-map .ui-grid-a>.ui-block-a a {
-    padding-top: 3em;
-}
-
-@media (min-width:800px){
-    .ui-header .btn-right.btn-map .ui-grid-a>.ui-block-a a {
-        padding-top: 2.5em;
-    }
-}
-
-.btn-right.btn-map .ui-btn-active{
-    display:none;
-}
-
-.btn-right.btn-map .ui-btn{
-    padding:0;
-    width:100px;
-    margin: 0;
-    top: -1px;
-    right:0;
-    height: 100px;
-    position: absolute;
+.ui-page-theme-a .btn-map .ui-btn{
     background-color: #DBB98E;
     border-top-color: transparent;
     border-top-right-radius: 15px;
     text-shadow: 0 1px 0 #AC5F17;
     line-height: 5.5em;
     border-left: 1px solid #C5A36F;
+    top: -7px;
+    padding: 0px;
+    min-width: 103px;
+    min-height: 103px;
 }
 
-.btn-right.btn-map .ui-btn:hover,
-.btn-right.btn-map .ui-btn:focus{
+.ui-page-theme-a .btn-map.map .ui-btn{
+    background-color: transparent;
+    border: 0px;
+    width: 104px;
+}
+
+.ui-page-theme-a .btn-map .ui-btn:hover,
+.ui-page-theme-a .btn-map .ui-btn:focus{
     background-color: #C7A57A;
     
 }
