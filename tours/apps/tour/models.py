@@ -19,6 +19,7 @@ import tempfile
 
 import re
 import os
+import humanfriendly
 
 from cStringIO import StringIO
 
@@ -158,6 +159,13 @@ class TourStopMedia(models.Model):
 
     def get_absolute_url(self):
         return reverse('tour:stop-media-detail', kwargs={"slug":  self.tour_stop.tour.slug, "id": self.id})
+    
+    @property
+    def size(self):
+        size = os.path.getsize('tours%s%s' % ( settings.MEDIA_URL, self.image))
+        return humanfriendly.format_size(size)
+        #foo = 'foo'
+        #return self.image
 
     def save(self, *args, **kwargs):
         # override save method to resize image and generate thumbnail
