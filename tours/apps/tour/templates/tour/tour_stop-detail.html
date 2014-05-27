@@ -69,13 +69,13 @@
 {% block header %}
 <div class="tour-stop-detail rounded-corners">
    <div class="" data-role="controlgroup" data-type="horizontal">
-      <a href="/tour/{{ tour.slug }}" data-role="button" class="back-btn" data-transition="slide" data-direction="reverse" ><span>Home</span></a>
+      <a href="/tour/{{ tour.slug }}" data-role="button" class="back-btn" data-transition="slide" data-direction="reverse" ><span>Back</span></a>
       <h1 class="tour-title">{{ tour.name }}</h1>
    </div>
    <h2 class="ui-title">
       {{tour_stop.name}}
    </h2>
-   <div class="btn-map map">
+   <div class="btn-right btn-map">
       <a href="{% url 'tour:stop-map' tour.slug page.number %}" data-ajax="false" class="ui-btn btn-menu btn-no-border">
          <img src="http://maps.googleapis.com/maps/api/staticmap?zoom=14&amp;size=100x70&amp;maptype=roadmap&amp;markers=color:red%7C{{ tour_stop.lat }},{{ tour_stop.lng }}&amp;sensor=false&amp;key=AIzaSyBx6Zz6NMBoTBzIU0sbZQezxXgFMZdKZeI" alt="Map to {{ tour_stop.name }}"/>
       </a>
@@ -133,6 +133,9 @@
          <script>$('.m-carousel').carousel()</script>
          <div data-role="content">
             {{ tour_stop.description|safe }}
+            {% if tour_stop.article_link %}
+               <div><a href="{{ tour_stop.article_link }}" target="_blank">Learn more.</a></div>
+            {% endif %}
             <div class="social-media" data-role="controlgroup" data-type="horizontal">
                {% include "tour/includes/social_media.html" %}
             </div>
