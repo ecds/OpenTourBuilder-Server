@@ -199,16 +199,16 @@
     <div class="tour-stop-detail rounded-corners">
       <div class="" data-role="controlgroup" data-type="horizontal">
 
-        <a href="/tour/{{ tour.slug }}" data-role="button" class="back-btn" data-transition="slide" data-direction="reverse" ><span>Back</span></a>
+        <a href="/tour/{{ tour.slug }}" data-role="button" class="back-btn" data-transition="slide" data-direction="reverse" ><span>Home</span></a>
         <h1 class="tour-title">{{ tour.name }}</h1>
       </div>
 
       <h2 class="ui-title">
         {{tour_stop.name}}
       </h2>
-      <div class="btn-right btn-map">
-            <a href="{% url 'tour:stop-detail' tour.slug page.number %}" data-transition="flip" class="ui-btn" data-href="details">History</a>
-        </div>
+      <div class="btn-map">
+        <a href="{% url 'tour:stop-detail' tour.slug page.number %}" data-transition="flip" class="ui-btn" data-href="details">History</a>
+      </div>
     </div>
     
 {% endblock header %}

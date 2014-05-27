@@ -244,24 +244,35 @@ h1.tour-name.ui-title {
     z-index: 1;
 }
 
-.btn-right.btn-map .ui-btn{
-    padding:0;
-    width:100px;
-    margin: 0;
-    top: -1px;
-    right:0;
-    height: 100px;
+.btn-map{
     position: absolute;
+    top:0px;
+    height: 100px;
+    right: 0;
+    width: 103px;
+}
+
+.ui-page-theme-a .btn-map .ui-btn{
     background-color: #DBB98E;
     border-top-color: transparent;
     border-top-right-radius: 15px;
     text-shadow: 0 1px 0 #AC5F17;
     line-height: 5.5em;
     border-left: 1px solid #C5A36F;
+    top: -7px;
+    padding: 0px;
+    min-width: 103px;
+    min-height: 103px;
 }
 
-.btn-right.btn-map .ui-btn:hover,
-.btn-right.btn-map .ui-btn:focus{
+.ui-page-theme-a .btn-map.map .ui-btn{
+    background-color: transparent;
+    border: 0px;
+    width: 104px;
+}
+
+.ui-page-theme-a .btn-map .ui-btn:hover,
+.ui-page-theme-a .btn-map .ui-btn:focus{
     background-color: #C7A57A;
     
 }
@@ -891,8 +902,7 @@ p.caption img {
 }
 
 .social-media.ui-controlgroup .ui-controlgroup-controls {
-    width: 209%;
-    margin-left: -5px;
+    width: 100%;
 }
 
 .social-media.ui-controlgroup iframe, .social-media.ui-controlgroup .fb_iframe_widget {
@@ -957,8 +967,8 @@ div#tabs {
 }
 
 div#map_container {
-    position: absolute!important;
-    top: 4em;
+    /* position: absolute!important; */
+    top: 0;
     z-index: 1;
 }
 div.ui-navbar {
@@ -984,7 +994,7 @@ div.ui-navbar {
     background-image: url(../images/arches.png);
     position: absolute;
     width: 100%;
-    height: 100%;
+    height: 120%;
     display: block;
     top: 0;
     opacity: 0.5;
@@ -1058,3 +1068,17 @@ div.ui-footer.ui-bar-inherit.ui-footer-fixed {
     font-weight: normal;
     margin: 0 0.5em;
 }   
+
+div.popup.ui-header.ui-bar-inherit {
+    background: #D8CFC2;
+    padding-bottom: 5px;
+}
+
+.ui-dialog .jqm-content.ui-content.ui-body-a {
+    background-color: rgb(235, 230, 230);
+    padding-top: 0;
+}
+
+.ui-dialog .jqm-content h2{
+    margin-bottom:6px;
+}
