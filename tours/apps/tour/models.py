@@ -164,8 +164,6 @@ class TourStopMedia(models.Model):
     def size(self):
         size = os.path.getsize('tours%s%s' % ( settings.MEDIA_URL, self.image))
         return humanfriendly.format_size(size)
-        #foo = 'foo'
-        #return self.image
 
     def save(self, *args, **kwargs):
         # override save method to resize image and generate thumbnail
