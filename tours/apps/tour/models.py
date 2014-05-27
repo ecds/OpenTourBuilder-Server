@@ -162,7 +162,7 @@ class TourStopMedia(models.Model):
     
     @property
     def size(self):
-        size = os.path.getsize('tours%s%s' % ( settings.MEDIA_URL, self.image))
+        size = os.path.getsize('%s/%s' % ( settings.MEDIA_ROOT, self.image))
         return humanfriendly.format_size(size)
 
     def save(self, *args, **kwargs):
