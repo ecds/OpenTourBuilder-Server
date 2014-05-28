@@ -1022,7 +1022,7 @@ table.adp-directions {
 
 div#tour-map {
     margin: -1em;
-    position: absolute;
+    /*position: absolute;*/
     width: 100%;
     top: -5px;
     height: 100%;
