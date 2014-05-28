@@ -29,6 +29,7 @@ def validate_twitter(value):
 
 class DirectionsMode(models.Model):
     mode = models.CharField(max_length=50)
+    active = models.BooleanField(default=True)
 
     def __unicode__(self):
         return "%s" % (self.mode)

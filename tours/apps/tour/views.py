@@ -108,7 +108,7 @@ def tour_stop_map(request, slug, page):
     page = paginator.page(int(page))
     directions(request, slug)
     directions_pref = request.session["directions"]
-    modes = DirectionsMode.objects.all()
+    modes = DirectionsMode.objects.filter(active=True)
     
     return render(request, "tour/tour_stop-map.html",
         {
