@@ -60,13 +60,11 @@ def tour_detail(request, slug):
 @check_published
 def tour_map(request, slug):
     tour = get_object_or_404(Tour, slug=slug)
-    tour_info = tour.tourinfo_set.all()
     tour_stops = tour.tourstop_set.all()
 
     return render(request, "tour/tour-map.html",
         {
             'tour': tour,
-            'tour_info': tour_info,
             'tour_stops': tour_stops,
         }
     )
@@ -104,14 +102,16 @@ def tour_stop_detail(request, slug, page):
 @check_published
 def tour_stop_map(request, slug, page):
     tour = get_object_or_404(Tour, slug=slug)
+    tour_stops = tour.tourstop_set.all()
     paginator = Paginator(tour.tourstop_set.all(), 1)
     page = paginator.page(int(page))
     directions(request, slug)
     directions_pref = request.session["directions"]
-    modes = DirectionsMode.objects.filter(active=True)
+    modes = DirectionsMode.objects.all()
     
     return render(request, "tour/tour_stop-map.html",
         {
+            'tour_stops': tour_stops,
             'tour': tour,
             'tour_stop': page[0],
             'page': page,
