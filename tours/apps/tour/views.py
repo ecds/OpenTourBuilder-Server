@@ -119,13 +119,23 @@ def tour_stop_map(request, slug, page):
             'modes': modes
         }
     )
-    
-    
 
 @check_published
 def tour_stop_media_detail(request, slug, id):
     tour_stop_media = get_object_or_404(TourStopMedia, pk=id)
 
-    return render_to_response("tour/tour_stop_media-detail.html", {
+    return render(request, "tour/tour_stop_media-detail.html",
+        {
             'tour_stop_media': tour_stop_media
-        }, context_instance=RequestContext(request))
+        }
+    )
+
+@check_published
+def tour_stop_video_detail(request, slug, id):
+    tour_stop = get_object_or_404(TourStop, pk=id)
+
+    return render(request, "tour/tour_stop_video-detail.html",
+        {
+            'tour_stop': tour_stop
+        }
+    )
