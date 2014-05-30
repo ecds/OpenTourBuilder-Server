@@ -1,0 +1,17 @@
+{% extends "site_base.html" %}
+{% load thumbnail %}
+{% block header %}
+<div data-role="header">
+  <div class="ui-btn-right" data-role="controlgroup" data-type="horizontal">
+     <a href="#" data-rel="back" data-transition="slide" data-direction="reverse" class="ui-btn ui-icon-delete ui-btn-icon-notext ui-corner-all" >Return to Tour</a>
+  </div>
+{% endblock header %}
+
+{% block content %}
+<div id="image-detail">
+  <iframe id="youtube" width="290" height="190" src="{{ tour_stop.video_embed }}?controls=2&amp;modestbranding=1&amp;rel=0&amp;showinfo=0&amp;theme=light" frameborder="0" allowfullscreen></iframe>  
+</div>
+{% endblock content %}
+
+{% block footer %}
+{% endblock footer %}
