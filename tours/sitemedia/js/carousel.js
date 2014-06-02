@@ -421,11 +421,21 @@ Mobify.UI.Carousel = (function($, Utils) {
     };
 
     Carousel.prototype.next = function() {
-        this.move(this._index + 1);
+        if(this._index == this._length){
+            this.move(1);
+        }
+        else{
+            this.move(this._index + 1);
+        }
     };
     
     Carousel.prototype.prev = function() {
-        this.move(this._index - 1);
+        if(this._index ==1){
+            this.move(this._length+1);
+        }
+        else{
+            this.move(this._index - 1);
+        }
     };
 
     return Carousel;

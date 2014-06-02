@@ -475,6 +475,7 @@ a.ui-btn.ui-icon-delete.ui-btn-icon-notext.ui-corner-all {
     either  NONE  or  'center'  or  'right'
 
 */
+
 .m-carousel  {
     position:  relative;
     overflow:  hidden;
@@ -575,6 +576,7 @@ a.ui-btn.ui-icon-delete.ui-btn-icon-notext.ui-corner-all {
 .m-carousel-controls {
     padding-top: 10px;
     text-align: center;
+    z-index: 10;
 }
 
 .m-carousel-controls a {
@@ -880,6 +882,9 @@ a.ui-btn.ui-icon-delete.ui-btn-icon-notext.ui-corner-all {
     }
 }
 
+.m-carousel~div.ui-content {
+    padding-top: 0;
+}
 
 .m-item a img{
     border: 1px solid #E4E4E4;
@@ -940,14 +945,14 @@ p.caption img {
 }
 
 .social-media.ui-controlgroup .ui-controlgroup-controls {
-    width: 100%;
+    width: 120%;
 }
 
 .social-media.ui-controlgroup iframe, .social-media.ui-controlgroup .fb_iframe_widget {
     display: block;
-    margin-top: 0px;
-    display: block;
-    float: left;
+    margin-top: -3px;
+    display: inline-block;
+    /* float: left; */
     margin-left: 10px;
     position: relative;
 }
@@ -1134,12 +1139,19 @@ div#video-detail iframe {
     background: #D5D5D5;
 }
 
+div.video-container {
+    position: relative;
+    width: 100%;
+    margin: auto;
+    height: 14em;
+}
+
 /*****
     PLAY BUTTON
 ******/
 
 .play_border {
-    margin:5px;
+    margin: auto;
     border: 2px solid rgba(255, 255, 255, 0.7);
     -webkit-border-radius: 100%;
     -moz-border-radius: 100%;
@@ -1155,9 +1167,9 @@ div#video-detail iframe {
     -ms-transition: all 0.5s ease;
     transition: all 0.5s ease;
     cursor: pointer;
-    position: absolute;
-    top: 4em;
-    left: 34%;
+    position: relative;
+    top: -10em;
+    margin-bottom: -10em;
     background: rgba(0, 0, 0, 0.68);
 }
 .play_border:hover{

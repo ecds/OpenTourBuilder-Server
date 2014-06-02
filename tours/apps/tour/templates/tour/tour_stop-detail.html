@@ -90,16 +90,19 @@
 <!--DETAILS -->
    <div data-id="details" class="tab-content" data-role="tab">
       <article>
-         <div class="m-carousel m-fluid m-carousel-photos">
+         <div class="m-carousel m-fluid m-center m-carousel-photos">
             <div class="m-carousel-inner">
                 <!-- the items -->
                {% if tour_stop.video_embed %}
                   <div class="m-item video">
                      <!--<iframe id="youtube" width="290" height="190" src="{{ tour_stop.video_embed }}?controls=2&amp;modestbranding=1&amp;rel=0&amp;showinfo=0&amp;theme=light" frameborder="0" allowfullscreen></iframe>-->
-                     <a data-rel="dialog" data-transition="slidedown" href="{% url 'tour:stop-video-detail' tour_stop.tour.slug tour_stop.id %}"><img src="{{ images.0.image|thumbnail:"300x0" }}" alt="Video about {{ tour_stop.name }}"/>
-                         <div class="play_border">
-                            <div class="play_button"></div>
-                        </div> 
+                     <a data-rel="dialog" data-transition="slidedown" href="{% url 'tour:stop-video-detail' tour_stop.tour.slug tour_stop.id %}">
+                        <div class="video-container">
+                           <img src="{{ images.0.image|thumbnail:"300x0" }}" alt="Video about {{ tour_stop.name }}"/>
+                            <div class="play_border">
+                               <div class="play_button"></div>
+                           </div> 
+                        </div>
                      </a>
                   </div>
                {% endif %}
