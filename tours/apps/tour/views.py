@@ -35,7 +35,7 @@ def check_published(view):
 def directions(request, slug):
     tour = tour = get_object_or_404(Tour, slug=slug)
     if  "directions" not in request.session:
-        mode = str(tour.mode)
+        mode = str(tour.default_mode)
         request.session["directions"] = mode
 
 def update_directionsmode(request, mode):
@@ -107,7 +107,7 @@ def tour_stop_map(request, slug, page):
     page = paginator.page(int(page))
     directions(request, slug)
     directions_pref = request.session["directions"]
-    modes = DirectionsMode.objects.all()
+    #modes = DirectionsMode.objects.all()
     
     return render(request, "tour/tour_stop-map.html",
         {
@@ -116,7 +116,7 @@ def tour_stop_map(request, slug, page):
             'tour_stop': page[0],
             'page': page,
             'directions': directions_pref,
-            'modes': modes
+            'modes': tour.modes
         }
     )
 

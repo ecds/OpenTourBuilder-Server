@@ -61,7 +61,7 @@
 
         <div id="select" class="detail">
             <select id="mode">
-                {% for mode in modes %}
+                {% for mode in tour.modes.all %}
                     <option value="{{ mode.mode }}" {% if mode.mode == directions %} selected="selected" {% endif %}>{{ mode.mode }}</option>
                 {% endfor %}
             </select>

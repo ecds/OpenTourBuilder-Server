@@ -32,13 +32,26 @@ class DirectionsMode(models.Model):
 
     def __unicode__(self):
         return "%s" % (self.mode)
+    
+def get_options():
+    modes = DirectionsMode.objects.all()
+    options = []
+    for mode in modes:
+        options.insert(0, (mode.mode, mode.mode))
+    return options
 
 class Tour(models.Model):
+    
+    options = get_options
+    
     name = models.CharField(max_length=50)
     published = models.BooleanField(default=False)
     description = HTMLField()
     slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
-    mode = models.ForeignKey(DirectionsMode, default=1)
+    #mode = models.ForeignKey(DirectionsMode, default=1)
+    modes = models.ManyToManyField(DirectionsMode)
+    default_mode = models.CharField(max_length = 50, choices = options(), blank=True, default='')
+    #default_mode = models.ForeignKey(DirectionsMode, related_name='modes', default=1)
     fb_app_id = models.CharField(max_length=50, blank=True)
     fb_page_id = models.CharField(max_length=50, blank=True)
     twitter_acct = models.CharField(max_length=50, blank=True, validators=[validate_twitter])
