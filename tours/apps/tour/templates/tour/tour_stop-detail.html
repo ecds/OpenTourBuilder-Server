@@ -13,8 +13,8 @@
 <meta name="twitter:url" content="{{ request.build_absolute_uri }}#history" />
 {% if tour_stop.video_embed %}
 <meta name="twitter:card" content="player">
-{% if tour_stop.poster %}
-<meta name="twitter:image" content="http://{{ request.get_host }}{{ tour_stop.poster|thumbnail:"480x360" }}" />
+{% if tour_stop.video_poster %}
+<meta name="twitter:image" content="http://{{ request.get_host }}{{ tour_stop.video_poster|thumbnail:"480x360" }}" />
 {% elif images %}
 <meta name="twitter:image" content="http://{{ request.get_host }}{{ images.0.image|thumbnail:"480x360" }}" />
 {% else %}
@@ -98,7 +98,11 @@
                      <!--<iframe id="youtube" width="290" height="190" src="{{ tour_stop.video_embed }}?controls=2&amp;modestbranding=1&amp;rel=0&amp;showinfo=0&amp;theme=light" frameborder="0" allowfullscreen></iframe>-->
                      <a data-rel="dialog" data-transition="slidedown" href="{% url 'tour:stop-video-detail' tour_stop.tour.slug tour_stop.id %}">
                         <div class="video-container">
-                           <img src="{{ images.0.image|thumbnail:"300x0" }}" alt="Video about {{ tour_stop.name }}"/>
+                           {% if tour_stop.video_poster %}
+                              <img src="{{ tour_stop.video_poster|thumbnail:"300x0" }}" alt="Video about {{ tour_stop.name }}"/>
+                           {% else %}
+                              <img src="{{ tour.splashimage|thumbnail:"300x0" }}" alt="Video about {{ tour_stop.name }}"/>
+                           {% endif %}
                             <div class="play_border">
                                <div class="play_button"></div>
                            </div> 
