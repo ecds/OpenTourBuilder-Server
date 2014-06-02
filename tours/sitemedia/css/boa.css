@@ -17,6 +17,7 @@ img{
     max-width: 100%;
 }
 
+
 p {
     font-size: 1em;
     line-height: 1.6;
@@ -158,8 +159,8 @@ h1.tour-name.ui-title {
 
     .jumbotron .jumbo-header {
         font-size:5em;
-    
-}
+        line-height: 1;
+    }
     .jumbotron p {
         font-size:2em;
     }
@@ -178,6 +179,7 @@ h1.tour-name.ui-title {
     top: 0;
     padding: 0;
 }
+
 
 
 #home-content .jumbotron.multiple{
@@ -201,13 +203,13 @@ h1.tour-name.ui-title {
     width: 80%;
     position: absolute;
     top: 0;
-    background: -moz-linear-gradient(top,  rgba(51,51,51,0.8) 0%, rgba(26,26,26,0.8) 50%, rgba(0,0,0,0) 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(51,51,51,0.8)), color-stop(50%,rgba(26,26,26,0.8)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  rgba(51,51,51,0.8) 0%,rgba(26,26,26,0.8) 50%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top,  rgba(51,51,51,0.8) 0%,rgba(26,26,26,0.8) 50%,rgba(0,0,0,0) 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top,  rgba(51,51,51,0.8) 0%,rgba(26,26,26,0.8) 50%,rgba(0,0,0,0) 100%); /* IE10+ */
-    background: linear-gradient(to bottom,  rgba(51,51,51,0.8) 0%,rgba(26,26,26,0.8) 50%,rgba(0,0,0,0) 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cc333333', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
+    background: -moz-linear-gradient(top,  rgba(0,0,0,0.47) 0%, rgba(0,0,0,0.47) 42%, rgba(0,0,0,0) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.47)), color-stop(42%,rgba(0,0,0,0.47)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(0,0,0,0.47) 0%,rgba(0,0,0,0.47) 42%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(0,0,0,0.47) 0%,rgba(0,0,0,0.47) 42%,rgba(0,0,0,0) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(0,0,0,0.47) 0%,rgba(0,0,0,0.47) 42%,rgba(0,0,0,0) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(0,0,0,0.47) 0%,rgba(0,0,0,0.47) 42%,rgba(0,0,0,0) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#78000000', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
 }
 
 @media screen and (min-width: 768px) {
@@ -274,7 +276,12 @@ h1.tour-name.ui-title {
 .ui-page-theme-a .btn-map .ui-btn:hover,
 .ui-page-theme-a .btn-map .ui-btn:focus{
     background-color: #C7A57A;
-    
+}
+
+.ui-page-theme-a .btn-map .ui-btn img {
+    height: 100px;
+    width: 100px;
+    max-width: none;
 }
 
 .jqm-content > h2 {
@@ -458,6 +465,9 @@ a.ui-btn.ui-icon-delete.ui-btn-icon-notext.ui-corner-all {
     background-color: #FFF;
 }
 
+.ui-dialog .ui-btn-left{
+    display: none;
+}
 
 /*  Classes  on  outer  slideshow  wrapper:
     either  NONE  or  'fraction'  or  'fraction'  +  one  of  'fraction1'...'fraction10'.
@@ -476,7 +486,7 @@ a.ui-btn.ui-icon-delete.ui-btn-icon-notext.ui-corner-all {
     .m-carousel.m-center  {
         text-align:  center;  }
     .m-carousel.m-fluid > .m-carousel-inner > *  {
-        width:  100%;  
+        width: 99%;  
         min-width: 300px;
         text-align: center;
         position: relative;
@@ -754,7 +764,7 @@ a.ui-btn.ui-icon-delete.ui-btn-icon-notext.ui-corner-all {
 /* Default Themes/Sytles for Slider */
 
 .m-fluid .m-item {
-    margin-right: 20px;
+    margin-right: 0;
 }
 
 /* Fluid Width Photo Carousel
@@ -873,7 +883,7 @@ a.ui-btn.ui-icon-delete.ui-btn-icon-notext.ui-corner-all {
 
 .m-item a img{
     border: 1px solid #E4E4E4;
-    padding:10px;
+    padding: 5px;
     margin: 5px;
     background-color: #FFFFFF;
     box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.05);
@@ -1110,4 +1120,67 @@ div.popup.ui-header.ui-bar-inherit {
 
 .ui-dialog .jqm-content h2{
     margin-bottom:6px;
+    text-overflow:initial;
+    overflow: auto;
+    white-space: normal;
+    margin: 0 15%;
 }
+
+div#video-detail iframe {
+    width: 110%;
+    margin: -5%;
+    padding-top: 4em;
+    padding-bottom: 3em;
+    background: #D5D5D5;
+}
+
+/*****
+    PLAY BUTTON
+******/
+
+.play_border {
+    margin:5px;
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
+    width: 70px;
+    height: 70px;
+    /* -webkit-box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.5); */
+    -moz-box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 0px 5px 2px rgba(187, 187, 187, 0.5);
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+    cursor: pointer;
+    position: absolute;
+    top: 4em;
+    left: 34%;
+    background: rgba(0, 0, 0, 0.68);
+}
+.play_border:hover{
+    border-color: transparent;
+    -webkit-box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.2);
+}
+.play_border:hover .play_button{
+    border-left: 34px solid rgba(253, 253, 253, 1);
+}
+.play_border:active,.play_border:focus{
+    -webkit-box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0px 0px 5.play_button:hoverpx 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.2);
+}
+.play_button {
+    position:relative;
+    top: 15px;
+    left: 34%;
+    width: 0;
+    height: 0;
+    border-top: 20px solid rgba(0, 0, 0, 0);
+    border-bottom: 20px solid rgba(0, 0, 0, 0);
+    border-left: 34px solid rgba(255, 255, 255, 0.8);
+} 
