@@ -11,6 +11,12 @@
 <meta content="{{ tour.fb_page_id }}" property="fb:page_id"/>
 <meta content="{{ tour.fb_app_id }}" property="fb:app_id"/>
 <meta name="twitter:url" content="{{ request.build_absolute_uri }}#history" />
+{% comment %}
+First we check to see if there is a video associated with a stop and will make a video Twitter card.
+We will also check to see if there is a poster for the video. If there isn't, we use the first image
+associated with the stop. If there are no images associated with the stop we will fall back to the
+splash image for the tour.
+{% endcomment %}
 {% if tour_stop.video_embed %}
 <meta name="twitter:card" content="player">
 {% if tour_stop.video_poster %}
@@ -23,6 +29,11 @@
 <meta name="twitter:player" content="{{ tour_stop.video_embed }}">
 <meta name="twitter:player:width" content="480">
 <meta name="twitter:player:height" content="360">
+{% comment %}
+If there isn't a video associated with the tour, we will make a photo Twitter card. We will first try to
+get the first image that is associated with the stop. If there are no images associated with the stop we
+will fall back to the tour's splash image.
+{% endcomment %}
 {% else %}
 <meta name="twitter:card" content="summary_large_image">
 {% if images %}
