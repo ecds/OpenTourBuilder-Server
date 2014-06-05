@@ -47,6 +47,7 @@ class Tour(models.Model):
     name = models.CharField(max_length=50)
     published = models.BooleanField(default=False)
     description = HTMLField()
+    metadescription = models.TextField(blank=True, default='', validators=[MaxLengthValidator(350)])
     slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
     #mode = models.ForeignKey(DirectionsMode, default=1)
     modes = models.ManyToManyField(DirectionsMode)

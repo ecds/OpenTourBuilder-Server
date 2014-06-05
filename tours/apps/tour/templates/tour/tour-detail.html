@@ -2,6 +2,10 @@
 {% load truncate_html %}
 {% load thumbnail %}
 
+{% block meta %}
+<meta name="description" content="{{ tour.metadescription }}" />
+{% endblock meta %}
+
 {% block page_scripts %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/maps/jquery.ui.map.js"></script>
