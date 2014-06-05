@@ -1,3 +1,3 @@
-![alt text](https://travis-ci.org/emory-libraries-disc/battleofatlanta.png?branch=develop "Travis Build Status")
+License
 
-hello
+Tours is distributed under the `Apache 2.0 License <http://www.apache.org/licenses/LICENSE-2.0>`_.
