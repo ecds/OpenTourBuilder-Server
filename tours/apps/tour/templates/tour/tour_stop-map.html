@@ -60,14 +60,13 @@
         </div>
 
         <div id="select" class="detail">
-            <select id="mode">
+            <select id="mode" data-native-menu="false">
                 {% for mode in tour.modes.all %}
                     <option value="{{ mode.mode }}" {% if mode.mode == directions %} selected="selected" {% endif %}>{{ mode.mode }}</option>
                 {% endfor %}
             </select>
             <input type="hidden" value="{{ csrf_token }}" />
         </div>
-
         <div class="map_stop_container" data-eul="{{tour_stop}}"></div>
 
         <div id="map_container"></div>
