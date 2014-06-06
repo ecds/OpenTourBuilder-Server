@@ -116,7 +116,7 @@ class TourStop(models.Model):
     description = HTMLField(blank=True, default='')
     metadescription = models.TextField(blank=True, default='', validators=[MaxLengthValidator(350)])
     article_link = models.CharField(max_length=525, blank=True, default='')
-    video_embed = models.CharField(max_length=50, blank=True, default='', validators=[URLValidator(), validate_https])
+    video_embed = models.CharField(max_length=50, blank=True, default='')
     video_poster = models.ImageField(upload_to='stops/', verbose_name='Video Poster', null=True, blank=True)
     # geo fields
     lat = models.FloatField(null=True, blank=True)
