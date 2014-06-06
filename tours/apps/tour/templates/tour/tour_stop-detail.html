@@ -107,8 +107,7 @@ will fall back to the tour's splash image.
                {% if tour_stop.video_embed %}
                   <div class="m-item video">
                      <!--<iframe id="youtube" width="290" height="190" src="{{ tour_stop.video_embed }}?controls=2&amp;modestbranding=1&amp;rel=0&amp;showinfo=0&amp;theme=light" frameborder="0" allowfullscreen></iframe>-->
-                     <a data-rel="dialog" data-transition="slidedown" href="{% url 'tour:stop-video-detail' tour_stop.tour.slug tour_stop.id %}">
-                        <div class="video-container">
+                     <a data-rel="dialog" data-transition="slidedown" href="{% url 'tour:stop-video-detail' tour_stop.tour.slug tour_stop.id %}" class="video-container">
                            {% if tour_stop.video_poster %}
                               <img src="{{ tour_stop.video_poster|thumbnail:"300x0" }}" alt="Video about {{ tour_stop.name }}"/>
                            {% else %}
@@ -117,7 +116,6 @@ will fall back to the tour's splash image.
                             <div class="play_border">
                                <div class="play_button"></div>
                            </div> 
-                        </div>
                      </a>
                   </div>
                {% endif %}

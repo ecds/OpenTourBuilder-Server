@@ -590,9 +590,13 @@ a.ui-btn.ui-icon-delete.ui-btn-icon-notext.ui-corner-all {
 */
 
 .m-carousel-controls {
-    padding-top: 10px;
+    padding-top: 20px;
     text-align: center;
     z-index: 10;
+    display: block;
+    position: relative;
+    margin: auto;
+    width: 100%;
 }
 
 .m-carousel-controls a {
@@ -619,7 +623,7 @@ a.ui-btn.ui-icon-delete.ui-btn-icon-notext.ui-corner-all {
     height: 0;
     margin: 0 3px;
     color: #333;
-    background-color: rgba(255,255,255,0.3);
+    background-color: rgba(228, 214, 198, 0.62);
     -webkit-transition: background-color 0.1s ease-in;
     -moz-transition: background-color 0.1s ease-in;
     -o-transition: background-color 0.1s ease-in;
@@ -630,15 +634,19 @@ a.ui-btn.ui-icon-delete.ui-btn-icon-notext.ui-corner-all {
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px;
-    top: -9px;
+    margin-top: -15px;
     position: relative;
+}
+
+.m-carousel-bulleted .ui-btn{
+    top: -15px;
 }
 .m-carousel-bulleted a:hover, .m-carousel-bulleted a:focus {
     text-decoration: none;
     background-color: rgba(255,255,255,0.6);
 }
 .m-carousel-bulleted a.m-active {
-    background-color: rgba(255,255,255,1);
+    background-color: #CC725C;
     -webkit-box-shadow: rgba(0,0,0,0.25) 0 1px 2px;
     -moz-box-shadow: rgba(0,0,0,0.25) 0 1px 2px;
     box-shadow: rgba(0,0,0,0.25) 0 1px 2px;
@@ -879,6 +887,7 @@ a.ui-btn.ui-icon-delete.ui-btn-icon-notext.ui-corner-all {
 .m-item a{
     width:100%;
     margin-left:-10%;
+    position: relative;
 }
 
 .m-item iframe{
@@ -1188,6 +1197,10 @@ div#video-detail iframe {
     background: #D5D5D5;
 }
 
+.video-container img {
+    position: relative;
+    top: 0;
+}
 
 .ui-select {
     margin-top: 0;
@@ -1253,8 +1266,9 @@ div.refresh-btn .ui-btn-icon-left:after{
     -ms-transition: all 0.5s ease;
     transition: all 0.5s ease;
     cursor: pointer;
-    position: relative;
-    top: -8em;
+    position: absolute;
+    top: 3.5em;
+    left: 40%;
     margin-bottom: -10em;
     background: rgba(0, 0, 0, 0.68);
 }
