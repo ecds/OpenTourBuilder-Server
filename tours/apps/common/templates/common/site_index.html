@@ -1,9 +1,13 @@
 {% extends "site_base.html" %}
 {% load thumbnail %}
 
+{% block meta %}
+<meta name="description" content="Mobile tour(s) aobut {{ tour.metadescription }}" />
+{% endblock meta %}
+
 {% block header_class %}sr-only{% endblock %}
 {% block header %}
-    <h1>Battle of Atlanta</h1>
+    <h1>Tours</h1>
 {% endblock header %}
 
  {% block content_attributes %}id="home-content"{% endblock %}
