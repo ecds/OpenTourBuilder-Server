@@ -2,7 +2,7 @@
 {% load thumbnail %}
 
 {% block meta %}
-<meta name="description" content="Mobile tour(s) aobut {{ tour.metadescription }}" />
+<meta name="description" content="Mobile tour(s) aobut {{ tours.all|join:", " }}" />
 {% endblock meta %}
 
 {% block header_class %}sr-only{% endblock %}
