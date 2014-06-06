@@ -1272,6 +1272,11 @@ div.refresh-btn .ui-btn-icon-left:after{
     margin-bottom: -10em;
     background: rgba(0, 0, 0, 0.68);
 }
+@media(min-width:500px){
+    .play_border {
+        left: 45%;
+    }
+}
 .play_border:hover{
     border-color: transparent;
     -webkit-box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.2);
