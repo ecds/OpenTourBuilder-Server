@@ -67,6 +67,17 @@
             </select>
             <input type="hidden" value="{{ csrf_token }}" />
         </div>
+        <div class="location-warning" style="display:none;">
+          <div class="callout callout-warning">
+            <h2>Location Services Disabled</h2>
+            <p>Sorry, we need to be able to access your location in order to display directions.</p>
+          </div>
+        </div>
+        {% if tour_stop.position != 0 %}
+          <div class="refresh-btn">
+            <button href="#" class="ui-btn ui-shadow ui-btn-icon-left ui-icon-refresh">Refresh</button>
+          </div>
+        {% endif %}
         <div class="map_stop_container" data-eul="{{tour_stop}}"></div>
 
         <div id="map_container"></div>
@@ -81,12 +92,26 @@
                 {{ tour_stop.directions_intro }}
             </p>
         </div>
+        <div class="location-warning" style="display:none;">
+          <div class="callout callout-warning">
+            <h2>Location Services Disabled</h2>
+            <p>Sorry, we need to be able to access your location in order to display directions.</p>
+          </div>
+        </div>
 
-        <hr/> 
+        <div class="directions-list">
+          <div class="loading">
+              <div class="ui-loader ui-corner-all ui-body-a ui-loader-verbose"><span class="ui-icon-loading"></span><h1>loading</h1></div>
+          </div>
+          {% if tour_stop.position != 0 %}
+            <div class="refresh-btn">
+              <button href="#" class="ui-btn ui-shadow ui-btn-icon-left ui-icon-refresh">Refresh</button>
+            </div>
+          {% endif %}
 
-        <div id="directions"></div>
+          <div id="directions"></div>
 
-        <hr/>
+        </div>
 
         {% include "tour/includes/liblogo.html" %}
     </div>

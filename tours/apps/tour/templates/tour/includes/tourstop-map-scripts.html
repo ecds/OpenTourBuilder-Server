@@ -73,7 +73,8 @@
                             geocoder.geocode({ 'latLng': location }, function (results, status) {
                                 // Return the address if Google gives us one.
                                 if (status == google.maps.GeocoderStatus.OK) {
-                                    console.log(results[0].formatted_address);
+                                    $('.location-warning').show();
+                                $('.loading').fadeOut(500);
                                     $("#directions_head").html('Address');
                                     $("#directions").html(results[0].formatted_address);
                                 }
@@ -112,6 +113,8 @@
                             }
                             // Otherwise just provide the user with the stop's markers and geocoded address.
                             else {
+                                $('.location-warning').show();
+                                $('.loading').fadeOut(500);
                                 addMarker(self, {{tour_stop.lat}}, {{tour_stop.lng}}, "{{tour_stop.name}}", "{{ STATIC_URL }}markers/marker{{tour_stop.position}}.png")
                                 {% if tour_stop.park_lat and tour_stop.park_lng %}
                                 addMarker(this, {{tour_stop.park_lat}}, {{tour_stop.park_lng}}, "Parking: {{tour_stop.name}}", "{{ STATIC_URL }}markers/blue-parking.png")
@@ -121,7 +124,9 @@
                 });
             }
         });//end gmap
-    }
+    }// end initializeMap()
+
+
 
    $("div:jqmData(role='page')").on('pageshow', function() {
       $(document).ready(function () {  
@@ -131,6 +136,13 @@
           $('#directions').empty();
 
         initializeMap();
+
+        $(document).on('click','.refresh-btn .ui-btn',function(evt){
+            evt.preventDefault();
+            $('#map_container').gmap('destroy');
+            $('#directions').empty();
+            initializeMap()
+        });
 
         $(document).on('change','#mode',function() {
         // Destroy the map

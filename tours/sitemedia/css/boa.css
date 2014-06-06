@@ -349,10 +349,17 @@ h1.tour-name.ui-title {
     font-size: 1em;
     color: #555555;
     text-shadow: 0 1px 0 #DFDFDF;
+    font-size:80%;
+}
+
+@media (min-width:767px){
+    .tour-stop-detail .tour-title{
+        fontize:100%;
+    }
 }
 
 .tour-stop-detail .ui-title{
-    width: 66%;
+    width: 56%;
     text-align: left;
     font-size: 1.1em;
     margin: 0 25px;
@@ -1012,11 +1019,19 @@ div#tabs {
 }
 
 #map .detail {
-    padding: 1em;
+    padding: 1em 3% 7px;
     position: relative;
     z-index: 2;
     background: #F8F4ED;
     margin-top: -1em;
+    float: left;
+    width: 94%;
+}
+
+div.callout.callout-warning {
+    padding: 5px 15px;
+    font-size: 0.8em;
+    background-color: #FFF7CD;
 }
 
 div#map_container {
@@ -1027,6 +1042,16 @@ div#map_container {
 div.ui-navbar {
     position: relative;
     z-index: 2;
+}
+
+.directions-list .loading{
+    margin-left:-20px;
+    margin-right:-20px;
+    padding-left:40px
+}
+
+.directions-list .loading .ui-loader{
+    top:6em;
 }
 
 .loading {
@@ -1072,6 +1097,20 @@ td.adp-text {
 table.adp-directions {
     width: 100%;
 }
+
+.directions-list {
+    padding-top: 2em;
+    position: relative;
+}
+
+.directions-list div.refresh-btn {
+    width: 105%;
+    position: absolute;
+    left: -5%;
+    top: 0;
+    padding-right: 5%;
+}
+
 
 
 div#tour-map {
@@ -1149,10 +1188,48 @@ div#video-detail iframe {
     background: #D5D5D5;
 }
 
-div.video-container {
+
+.ui-select {
+    margin-top: 0;
+    margin-bottom: .5em;
     position: relative;
+    width: 100%%;
+    float: left;
+}
+
+div.refresh-btn {
+    float: left;
+    position: relative;
+    padding: 0;
     width: 100%;
-    margin: auto;
+    background-color: #F3EFE7;
+    z-index:99;
+}
+
+div.refresh-btn .ui-btn {
+    margin-top: 0;
+    background-color: transparent;
+    padding: 5px 18px;
+    margin: 0;
+    font-size: 10px;
+    float: right;
+    width: 15em;
+    border-color: transparent;
+    box-shadow:none;
+}
+
+div.refresh-btn .ui-btn:hover, 
+div.refresh-btn .ui-btn:focus{
+    background-color: #F3D586;
+    border-color: transparent;
+}
+
+div.refresh-btn .ui-btn-icon-left:after{
+    height:15px;
+    width:16px;
+    top:15px;
+    left:15px;
+    background-size:10px 8px;
 }
 
 /*****
