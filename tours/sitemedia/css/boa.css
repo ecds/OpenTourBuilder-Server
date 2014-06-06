@@ -1281,4 +1281,8 @@ div.refresh-btn .ui-btn-icon-left:after{
     border-top: 20px solid rgba(0, 0, 0, 0);
     border-bottom: 20px solid rgba(0, 0, 0, 0);
     border-left: 34px solid rgba(255, 255, 255, 0.8);
-} 
+}
+
+#select {
+    display: none;
+}
