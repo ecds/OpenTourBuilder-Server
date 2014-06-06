@@ -903,6 +903,7 @@ a.ui-btn.ui-icon-delete.ui-btn-icon-notext.ui-corner-all {
     box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.05);
     border-radius: 3px;
     max-height:200px;
+    max-width: 250px;
 }
 
 a.slide-static.ui-btn {
@@ -1152,7 +1153,6 @@ div.video-container {
     position: relative;
     width: 100%;
     margin: auto;
-    height: 14em;
 }
 
 /*****
@@ -1177,7 +1177,7 @@ div.video-container {
     transition: all 0.5s ease;
     cursor: pointer;
     position: relative;
-    top: -10em;
+    top: -8em;
     margin-bottom: -10em;
     background: rgba(0, 0, 0, 0.68);
 }
