@@ -131,6 +131,7 @@ h1.tour-name.ui-title {
     font-size: 1.5em;
     font-weight: 200;
     margin-top: 0;
+    line-height: 1.4;
 }
 
 .container .jumbotron {
@@ -142,8 +143,17 @@ h1.tour-name.ui-title {
 
 .jumbotron .jumbo-header {
     font-size: 3em;
-    margin-bottom: 0;
+    margin-bottom: 15px;
     margin-top: 0.5em;
+    line-height: 1;
+    width: 70%;
+}
+
+@media screen and (min-width: 500px) {
+
+    .jumbotron .jumbo-header {
+        width:100%;
+    }
 }
 
 @media screen and (min-width: 768px) {
@@ -159,7 +169,6 @@ h1.tour-name.ui-title {
 
     .jumbotron .jumbo-header {
         font-size:5em;
-        line-height: 1;
     }
     .jumbotron p {
         font-size:2em;
