@@ -130,7 +130,6 @@
 
    $("div:jqmData(role='page')").on('pageshow', function() {
       $(document).ready(function () {  
-
          $('#map_container').gmap('destroy');
          // Clear the turn-by-turn directions.
           $('#directions').empty();
@@ -140,7 +139,6 @@
         $(document).on('click','.refresh-btn .ui-btn',function(evt){
             evt.preventDefault();
             $('#map_container').gmap('destroy');
-            $('#directions').empty();
             initializeMap()
         });
 

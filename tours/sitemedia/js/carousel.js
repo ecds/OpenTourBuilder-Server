@@ -314,6 +314,7 @@ Mobify.UI.Carousel = (function($, Utils) {
                 } else {
                     self.prev();
                 }
+                
             } else {
                 // Reset back to regular position
                 self._offsetDrag = 0;
