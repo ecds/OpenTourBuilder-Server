@@ -71,6 +71,28 @@ will fall back to the tour's splash image.
             js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId={{ tour.fb_app_id }}";
             fjs.parentNode.insertBefore(js, fjs);
          }(document, 'script', 'facebook-jssdk'));
+
+         function getCookie(name){
+             var pattern = RegExp(name + "=.[^;]*")
+             matched = document.cookie.match(pattern)
+             if(matched){
+                 var cookie = matched[0].split('=')
+                 return cookie[1]
+             }
+             return false
+         }
+         $(document).on('click','.m-carousel .m-carousel-inner a',function(evt){
+            var current = parseInt($(this).attr('id').replace('link',''))+1;
+            console.log(current);
+            document.cookie = "msliderPos="+current+"; expires=0; path=/";
+         });
+
+
+          window.setTimeout(function(){
+            var active =  getCookie('msliderPos');
+         console.log(active);
+               $('.m-carousel').carousel('move',active);                 
+          },400);
    });
    </script>
 {% endif %}
@@ -107,7 +129,7 @@ will fall back to the tour's splash image.
                {% if tour_stop.video_embed %}
                   <div class="m-item video">
                      <!--<iframe id="youtube" width="290" height="190" src="{{ tour_stop.video_embed }}?controls=2&amp;modestbranding=1&amp;rel=0&amp;showinfo=0&amp;theme=light" frameborder="0" allowfullscreen></iframe>-->
-                     <a data-rel="dialog" data-transition="slidedown" href="{% url 'tour:stop-video-detail' tour_stop.tour.slug tour_stop.id %}" class="video-container">
+                     <a id="link1" data-rel="dialog" data-transition="slidedown" href="{% url 'tour:stop-video-detail' tour_stop.tour.slug tour_stop.id %}" class="video-container">
                            {% if tour_stop.video_poster %}
                               <img src="{{ tour_stop.video_poster|thumbnail:"300x0" }}" alt="Video about {{ tour_stop.name }}"/>
                            {% else %}
@@ -122,7 +144,7 @@ will fall back to the tour's splash image.
                {% if images %}
                   {% for ts_image in images %}
                      <div class="m-item">
-                        <a data-rel="dialog" data-transition="slidedown" href="{% url 'tour:stop-media-detail' tour_stop.tour.slug ts_image.id %}"><img src="{{ts_image.image|thumbnail:"300x0"}}" alt="{{ ts_image.title }}"/></a>
+                        <a id="link{{forloop.counter}}" data-ajax="false" data-rel="dialog" data-transition="slidedown" href="{% url 'tour:stop-media-detail' tour_stop.tour.slug ts_image.id %}"><img src="{{ts_image.image|thumbnail:"300x0"}}" alt="{{ ts_image.title }}"/></a>
                      </div>
                   {% endfor %}
                {% endif %}

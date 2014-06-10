@@ -1,13 +1,13 @@
 {% extends "site_base.html" %}
 {% load thumbnail %}
 {% block header %}
-<div data-role="header">
+<div data-role="header" class="dialog">
   <div class="ui-btn-right" data-role="controlgroup" data-type="horizontal">
-     <a href="#" data-rel="back" data-transition="slide" data-direction="reverse" class="ui-btn ui-icon-delete ui-btn-icon-notext ui-corner-all" >Return to Tour</a>
+     <a href="#" id="media-back" data-ajax="false" data-rel="back" data-transition="slide" data-direction="reverse" class="ui-btn ui-icon-delete ui-btn-icon-notext ui-corner-all" >Return to Tour</a>
   </div>
 {% endblock header %}
 
-{% block content %}
+{% block content %} 
 <div id="image-detail">
   <h2 class="ui-title">{{ tour_stop_media.title }}</h2>
   <div class="caption">
