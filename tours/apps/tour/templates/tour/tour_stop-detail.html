@@ -83,14 +83,16 @@ will fall back to the tour's splash image.
          }
          $(document).on('click','.m-carousel .m-carousel-inner a',function(evt){
             var current = parseInt($(this).attr('id').replace('link',''))+1;
-            console.log(current);
             document.cookie = "msliderPos="+current+"; expires=0; path=/";
+         });
+
+         $(document).on('click','#stop-footer',function(){
+          document.cookie = "msliderPos=1; expires=0; path=/";
          });
 
 
           window.setTimeout(function(){
             var active =  getCookie('msliderPos');
-         console.log(active);
                $('.m-carousel').carousel('move',active);                 
           },400);
    });
@@ -185,7 +187,7 @@ will fall back to the tour's splash image.
 {% endblock content %}
 
 {% block footer %}
-<div class="rounded-corners">
+<div class="rounded-corners" id="stop-footer">
    {% if page.has_previous %}
       <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.previous_page_number %}" class="ui-btn ui-corner-all ui-icon-arrow-l ui-btn-icon-left ui-nodisc-icon ui-alt-icon pull-left" data-transition="slideup" data-direction="reverse">Prev Stop</a>
    {% endif %}

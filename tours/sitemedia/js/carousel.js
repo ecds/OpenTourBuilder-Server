@@ -426,7 +426,8 @@ Mobify.UI.Carousel = (function($, Utils) {
             this.move(1);
         }
         else{
-            this.move(this._index + 1);
+            var x = parseInt(this._index) + 1
+            this.move(x);
         }
     };
     
