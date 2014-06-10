@@ -7,4 +7,3 @@ django-tinymce
 pillow
 docutils
 python-magic
-humanfriendly

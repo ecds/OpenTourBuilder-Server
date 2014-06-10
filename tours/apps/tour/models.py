@@ -19,7 +19,6 @@ import tempfile
 
 import re
 import os
-import humanfriendly
 
 from cStringIO import StringIO
 
@@ -177,8 +176,8 @@ class TourStopMedia(models.Model):
     
     @property
     def size(self):
-        size = os.path.getsize('%s/%s' % ( settings.MEDIA_ROOT, self.image))
-        return humanfriendly.format_size(size)
+        return os.path.getsize('%s/%s' % ( settings.MEDIA_ROOT, self.image))
+        #return humanfriendly.format_size(size)
 
     def save(self, *args, **kwargs):
         # override save method to resize image and generate thumbnail

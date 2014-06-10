@@ -17,7 +17,7 @@
   <img src="{{tour_stop_media.image|thumbnail:"580x0"}}" alt="{{ tour_stop_media.title }}"/>
   <div class="clearfix"></div>
   <div>
-    <a href="{{ MEDIA_URL }}{{ tour_stop_media.image }}" target="_blank">See larger image {{tour_stop_media.size}}</a>
+    <a href="{{ MEDIA_URL }}{{ tour_stop_media.image }}">See larger image {{tour_stop_media.size|filesizeformat}}</a>
   </div>
   <div class="metadata">
     {{ tour_stop_media.metadata|safe }}
