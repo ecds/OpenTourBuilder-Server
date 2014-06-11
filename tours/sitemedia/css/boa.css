@@ -188,7 +188,6 @@ h1.tour-name.ui-title {
     margin: 0;
     top: 0;
     padding: 0;
-    min-height: 400px;
 }
 
 
@@ -489,7 +488,7 @@ a.ui-btn.ui-icon-delete.ui-btn-icon-notext.ui-corner-all {
 
 
 div.dialog~.ui-content {
-    background: #6D6D6D;
+    background: #313131;
     min-height: 41em;
     position: absolute;
     width: 100%;
@@ -504,16 +503,24 @@ div.dialog~.ui-content .ui-title{
     margin: 0 10%;
 }
 div#image-detail {
-    background: #C0C0C0;
-    position: absolute;
+    position: relative;
     width: 100%;
     left: 0;
-    top: 0;
+    top: -2em;
     padding-bottom: 1em;
 }
 #image-detail {
     text-align: center;
 }
+
+#image-detail h2{
+    margin:1em auto;
+}
+
+#image-detail img{
+    margin-top:1.5em;
+}
+
 #image-detail .ui-link {
     padding: 1em;
     font-weight: normal;
