@@ -32,7 +32,7 @@
         <a href="{% url 'tour:stop-detail' tour.slug page.number %}" data-transition="flip" class="ui-btn" data-href="details">History</a>
       </div>
     </div>
-    
+     
 {% endblock header %}
 
 {% block content %}
@@ -75,7 +75,7 @@
         </div>
         {% if tour_stop.position != 0 %}
           <div class="refresh-btn">
-            <button href="#" class="ui-btn ui-shadow ui-btn-icon-left ui-icon-refresh">Refresh</button>
+            <button href="#" class="ui-btn ui-shadow ui-btn-icon-left ui-icon-refresh">Refresh Map</button>
           </div>
         {% endif %}
         <div class="map_stop_container" data-eul="{{tour_stop}}"></div>
@@ -105,7 +105,7 @@
           </div>
           {% if tour_stop.position != 0 %}
             <div class="refresh-btn">
-              <button href="#" class="ui-btn ui-shadow ui-btn-icon-left ui-icon-refresh">Refresh</button>
+              <button href="#" class="ui-btn ui-shadow ui-btn-icon-left ui-icon-refresh">Refresh Directions</button>
             </div>
           {% endif %}
 
