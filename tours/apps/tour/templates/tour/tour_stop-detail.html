@@ -26,7 +26,7 @@ splash image for the tour.
 {% else %}
 <meta name="twitter:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ tour.splashimage|thumbnail:"480x360" }}" />
 {% endif %}
-<meta name="twitter:player" content="{{ tour_stop.video_embed }}">
+<meta name="twitter:player" content="https://youtube.com/embed/{{ tour_stop.video_embed }}">
 <meta name="twitter:player:width" content="480">
 <meta name="twitter:player:height" content="360">
 {% comment %}
