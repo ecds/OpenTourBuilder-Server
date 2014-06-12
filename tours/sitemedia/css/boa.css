@@ -41,6 +41,7 @@ h1.tour-name.ui-title {
 }
 
 .ui-page, .ui-content{
+    overflow: hidden;
     
 }
 
@@ -188,7 +189,6 @@ h1.tour-name.ui-title {
     margin: 0;
     top: 0;
     padding: 0;
-    min-height: 400px;
 }
 
 
@@ -489,7 +489,7 @@ a.ui-btn.ui-icon-delete.ui-btn-icon-notext.ui-corner-all {
 
 
 div.dialog~.ui-content {
-    background: #6D6D6D;
+    background: #313131;
     min-height: 41em;
     position: absolute;
     width: 100%;
@@ -504,16 +504,24 @@ div.dialog~.ui-content .ui-title{
     margin: 0 10%;
 }
 div#image-detail {
-    background: #C0C0C0;
-    position: absolute;
+    position: relative;
     width: 100%;
     left: 0;
-    top: 0;
+    top: -2em;
     padding-bottom: 1em;
 }
 #image-detail {
     text-align: center;
 }
+
+#image-detail h2{
+    margin:1em auto;
+}
+
+#image-detail img{
+    margin-top:1.5em;
+}
+
 #image-detail .ui-link {
     padding: 1em;
     font-weight: normal;
@@ -1014,6 +1022,15 @@ p.caption img {
     border-bottom: 1px solid #F6F6F6;
 }
 
+#fb_like_button { 
+    width: 80px; 
+}
+#fb_like_button span, 
+#fb_like_button iframe {.
+    width: 80px !important;
+    height: 25px !important;
+}
+
 .social-media.ui-controlgroup .ui-controlgroup-controls {
     width: 120%;
 }
@@ -1266,13 +1283,14 @@ div.refresh-btn {
 div.refresh-btn .ui-btn {
     margin-top: 0;
     background-color: transparent;
-    padding: 5px 18px;
+    padding: 5px 15px 5px 40px;
     margin: 0;
     font-size: 10px;
     float: right;
-    width: 15em;
+    width: 17em;
     border-color: transparent;
     box-shadow:none;
+    text-align: left;
 }
 
 div.refresh-btn .ui-btn:hover, 
