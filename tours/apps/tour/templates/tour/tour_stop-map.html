@@ -1,0 +1,143 @@
+{% extends "site_base.html" %}
+{% load thumbnail %}
+{% load truncate_html %}
+
+{% comment %}
+  The page_scripts block is where you add scripts to ajax loaded pages.
+  This is necessary due to the nature of jquery mobiles ajax page loading.
+  JQM only looks at data-role="page" elements in the ajax response data, 
+  which means that scripts outside that element get thrown away.
+{% endcomment %}
+
+{% block page_scripts %}
+   {% if tour_stop.position = 0 %}
+      {% include "tour/includes/overview-map-scripts.html" %}
+   {% else %}
+      {% include "tour/includes/tourstop-map-scripts.html" %}
+   {% endif %}
+{% endblock page_scripts %}
+
+{% block header %}
+    <div class="tour-stop-detail rounded-corners">
+      <div class="" data-role="controlgroup" data-type="horizontal">
+
+        <a href="/tour/{{ tour.slug }}" data-role="button" class="back-btn" data-transition="slide" data-direction="reverse" ><span>Home</span></a>
+        <h1 class="tour-title">{{ tour.name }}</h1>
+      </div>
+
+      <h2 class="ui-title">
+        {{tour_stop.name}}
+      </h2>
+      <div class="btn-map">
+        <a href="{% url 'tour:stop-detail' tour.slug page.number %}" data-transition="flip" class="ui-btn" data-href="details">History</a>
+      </div>
+    </div>
+     
+{% endblock header %}
+
+{% block content %}
+
+{% if tour_stop.position = 0 %}
+   <div>
+      {% include "tour/includes/overview-map.html" %}
+   </div>
+{% else %}
+<div data-role="tabs" id="tabs">
+<div data-role="navbar">
+    <ul>
+      <li><a href="#map" class="ui-btn-active" data-ajax="false">Map</a></li>
+      <li><a href="#map-text" data-ajax="false">Directions</a></li>
+      <li><a href="#notes-text" data-ajax="false">Notes</a></li>
+  </ul>
+</div>
+
+<!--DETAILS -->
+
+    <div data-id="map" class="ui-content" data-role="tab" id="map">
+        
+        <div class="loading">
+            <div class="ui-loader ui-corner-all ui-body-a ui-loader-verbose"><span class="ui-icon-loading"></span><h1>loading</h1></div>
+        </div>
+
+        <div id="select" class="detail">
+            <select id="mode" data-native-menu="false">
+                {% for mode in tour.modes.all %}
+                    <option value="{{ mode.mode }}" {% if mode.mode == directions %} selected="selected" {% endif %}>{{ mode.mode }}</option>
+                {% endfor %}
+            </select>
+            <input type="hidden" value="{{ csrf_token }}" />
+        </div>
+        <div class="location-warning" style="display:none;">
+          <div class="callout callout-warning">
+            <h2>Location Services Disabled</h2>
+            <p>Sorry, we need to be able to access your location in order to display directions.</p>
+          </div>
+        </div>
+        {% if tour_stop.position != 0 %}
+          <div class="refresh-btn">
+            <button href="#" class="ui-btn ui-shadow ui-btn-icon-left ui-icon-refresh">Refresh Map</button>
+          </div>
+        {% endif %}
+        <div class="map_stop_container" data-eul="{{tour_stop}}"></div>
+
+        <div id="map_container"></div>
+
+        <div id="static_map"></div>
+
+    </div>
+
+    <div data-id="text" class="ui-content" data-role="tab" id="map-text">
+        <div class="detail">
+            <p>
+                {{ tour_stop.directions_intro }}
+            </p>
+        </div>
+        <div class="location-warning" style="display:none;">
+          <div class="callout callout-warning">
+            <h2>Location Services Disabled</h2>
+            <p>Sorry, we need to be able to access your location in order to display directions.</p>
+          </div>
+        </div>
+
+        <div class="directions-list">
+          <div class="loading">
+              <div class="ui-loader ui-corner-all ui-body-a ui-loader-verbose"><span class="ui-icon-loading"></span><h1>loading</h1></div>
+          </div>
+          {% if tour_stop.position != 0 %}
+            <div class="refresh-btn">
+              <button href="#" class="ui-btn ui-shadow ui-btn-icon-left ui-icon-refresh">Refresh Directions</button>
+            </div>
+          {% endif %}
+
+          <div id="directions"></div>
+
+        </div>
+
+        {% include "tour/includes/liblogo.html" %}
+    </div>
+
+    <div data-id="text" class="ui-content" data-role="tab" id="notes-text">
+        <div id="direction_notes">
+            {{ tour_stop.direction_notes|safe }}
+        </div>
+
+        {% include "tour/includes/liblogo.html" %}
+    </div>
+
+</div>
+{% endif %}
+{% endblock content %}
+
+{% block footer %}
+    <div class="rounded-corners">
+
+      {% if page.has_previous %}
+        <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.previous_page_number %}" class="ui-btn ui-corner-all ui-icon-arrow-l ui-btn-icon-left ui-nodisc-icon ui-alt-icon pull-left" data-transition="slideup" data-direction="reverse">Prev Stop</a>
+        {% endif %}
+
+
+        {% if page.has_next %}
+        <a href="{% url 'tour:stop-detail' tour_stop.tour.slug page.next_page_number %}" class="ui-btn ui-corner-all ui-icon-arrow-r ui-btn-icon-right ui-nodisc-icon ui-alt-icon pull-right" data-transition="slideup">Next Stop</a>
+        {% endif %}
+    </div>
+{% endblock footer %}

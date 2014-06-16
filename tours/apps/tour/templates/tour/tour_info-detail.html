@@ -1,11 +1,10 @@
 {% extends "site_base.html" %}
 {% load truncate_html %}
 
+
 {% block header %}
-<div data-role="header">
-<div class="ui-btn-left" data-role="controlgroup" data-type="horizontal"  data-position="fixed">
-</div>
-<span class="ui-title">{{ tour_info.name }}</span>
+  <a href="/tour/{{tour.slug}}" class="ui-btn back-btn" data-mini="true" data-transition="slide" data-direction="reverse"><span>Back</span></a>
+  <h1 class="tour-name">{{ tour_info.name }}</h1>
 {% endblock header %}
 
 {% block content %}
@@ -14,10 +13,5 @@
 </div>
 {% endblock content %}
 {% block footer %}
-<div class="{% block footer_class %}{% endblock %}" data-role="footer" data-position="fixed">
-        <div data-role="navbar" data-iconpos="bottom">
-  <ul>
-    <li><a href="#" class="ui-btn-active" data-icon="back" data-rel="back" >Back</a></li>
-  </ul>
-</div>
+
 {% endblock footer %}

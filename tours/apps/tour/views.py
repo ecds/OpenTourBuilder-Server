@@ -1,6 +1,6 @@
 # file tours/apps/tour/views.py
 
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, render, get_object_or_404
 from django.template import RequestContext
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
@@ -35,7 +35,7 @@ def check_published(view):
 def directions(request, slug):
     tour = tour = get_object_or_404(Tour, slug=slug)
     if  "directions" not in request.session:
-        mode = str(tour.mode)
+        mode = str(tour.default_mode)
         request.session["directions"] = mode
 
 def update_directionsmode(request, mode):
@@ -58,6 +58,18 @@ def tour_detail(request, slug):
         }, context_instance=RequestContext(request))
 
 @check_published
+def tour_map(request, slug):
+    tour = get_object_or_404(Tour, slug=slug)
+    tour_stops = tour.tourstop_set.all()
+
+    return render(request, "tour/tour-map.html",
+        {
+            'tour': tour,
+            'tour_stops': tour_stops,
+        }
+    )
+
+@check_published
 def tour_info_detail(request, slug, info):
     tour = get_object_or_404(Tour, slug=slug)
     tour_info = tour.tourinfo_set.filter(info_slug=info)
@@ -73,30 +85,57 @@ def tour_info_detail(request, slug, info):
 def tour_stop_detail(request, slug, page):
     tour = get_object_or_404(Tour, slug=slug)
 
-    directions(request, slug)
-
     paginator = Paginator(tour.tourstop_set.all(), 1)
 
     page = paginator.page(int(page))
 
-    directions_pref = request.session["directions"]
-
-    modes = DirectionsMode.objects.all()
-
-    return render_to_response("tour/tour_stop-detail.html", {
+    return render( request, "tour/tour_stop-detail.html",
+        {
             'tour': tour,
             'tour_stop': page[0],
             'images': page[0].tourstopmedia_set.all(),
             'page': page,
+            'sub': settings.SUB_URL,
+        }
+    )
+
+@check_published
+def tour_stop_map(request, slug, page):
+    tour = get_object_or_404(Tour, slug=slug)
+    tour_stops = tour.tourstop_set.all()
+    paginator = Paginator(tour.tourstop_set.all(), 1)
+    page = paginator.page(int(page))
+    directions(request, slug)
+    directions_pref = request.session["directions"]
+    #modes = DirectionsMode.objects.all()
+    
+    return render(request, "tour/tour_stop-map.html",
+        {
+            'tour_stops': tour_stops,
+            'tour': tour,
+            'tour_stop': page[0],
+            'page': page,
             'directions': directions_pref,
-            'modes': modes,
-    	    'sub': settings.SUB_URL,
-        }, context_instance=RequestContext(request))
+            'modes': tour.modes
+        }
+    )
 
 @check_published
 def tour_stop_media_detail(request, slug, id):
     tour_stop_media = get_object_or_404(TourStopMedia, pk=id)
 
-    return render_to_response("tour/tour_stop_media-detail.html", {
+    return render(request, "tour/tour_stop_media-detail.html",
+        {
             'tour_stop_media': tour_stop_media
-        }, context_instance=RequestContext(request))
+        }
+    )
+
+@check_published
+def tour_stop_video_detail(request, slug, id):
+    tour_stop = get_object_or_404(TourStop, pk=id)
+
+    return render(request, "tour/tour_stop_video-detail.html",
+        {
+            'tour_stop': tour_stop
+        }
+    )

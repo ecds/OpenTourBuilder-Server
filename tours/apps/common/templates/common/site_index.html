@@ -1,37 +1,53 @@
 {% extends "site_base.html" %}
 {% load thumbnail %}
 
-{% block extrajs %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/jqm.navtabs.js"></script>
-{% endblock extrajs %}
+{% block meta %}
+<meta name="description" content="Mobile tour(s) aobut {{ tours.all|join:", " }}" />
+{% endblock meta %}
 
+{% block header_class %}sr-only{% endblock %}
 {% block header %}
-<div data-role="header" data-position="fixed">
-<h1>Tours</h1>
+    <h1>Tours</h1>
 {% endblock header %}
 
+ {% block content_attributes %}id="home-content"{% endblock %}
 {% block content %}
-<div class="lead-media">
-</div>
-    <div data-role="collapsible-set" data-corners="false" data-theme="b" data-content-theme="d">
-        {% for tour in tours %}
-        <div data-role="collapsible">
-        <h3>{{ tour.name }}</h3>
-            <div>
+
+    {% for tour in tours %}
+        <div class="jumbotron {{tour.slug}} {% if tours|length > 1 %} multiple {% endif %}">
+            
                 {% if tour.splashimage %}
-                <a href="{% url 'tour:detail' tour.slug %}">
-                    <img src="{{ tour.splashimage|thumbnail:"290x190" }}" alt="Default image for {{ tour.name }}"/>
-                </a>
+                    <style>
+                        .{{tour.slug}}{
+                            background-image: url({{ tour.splashimage|thumbnail:"767x0" }});
+                        }
+                        @media(min-width:767px){
+                            .{{tour.slug}}{
+                                background-image: url({{ tour.splashimage|thumbnail:"993x0" }});
+                                background-position: center 70%;
+                            }
+                        }
+                        @media(min-width:993px){
+                            .{{tour.slug}}{
+                                background-image: url({{ tour.splashimage|thumbnail:"1400x0" }});
+                            }
+                        }
+                    </style>
                 {% endif %}
-                {{ tour.description|safe }}
-                <a href="{% url 'tour:detail' tour.slug %}">Start Tour</a>
-            </div>
+                <div class="container">
+                    <h2 class="jumbo-header">{{ tour.name }}</h2>
+                    {{ tour.description|safe }}
+                    <a class="ui-btn ui-icon-carat-r ui-btn-icon-right ui-nodisc-icon ui-alt-icon ui-btn-c" href="{% url 'tour:detail' tour.slug %}" data-transition="slide">
+                        Start Tour
+                    </a>
+                </div>
+            {% include "tour/includes/liblogo-white.html" %}
         </div>
-        {% endfor %}
-    </div>
+    {% endfor %}
+
 {% endblock content %}
 
 
 {% block footer %}
-<div class="{% block footer_class %}{% endblock %}" data-role="footer" data-position="fixed">
+
 {% endblock footer %}

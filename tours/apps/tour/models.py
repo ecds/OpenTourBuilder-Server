@@ -31,13 +31,27 @@ class DirectionsMode(models.Model):
 
     def __unicode__(self):
         return "%s" % (self.mode)
+    
+def get_options():
+    modes = DirectionsMode.objects.all()
+    options = []
+    for mode in modes:
+        options.insert(0, (mode.mode, mode.mode))
+    return options
 
 class Tour(models.Model):
+    
+    options = get_options
+    
     name = models.CharField(max_length=50)
     published = models.BooleanField(default=False)
     description = HTMLField()
+    metadescription = models.TextField(blank=True, default='', validators=[MaxLengthValidator(350)])
     slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
-    mode = models.ForeignKey(DirectionsMode, default=1)
+    #mode = models.ForeignKey(DirectionsMode, default=1)
+    modes = models.ManyToManyField(DirectionsMode)
+    default_mode = models.CharField(max_length = 50, choices = options(), blank=True, default='')
+    #default_mode = models.ForeignKey(DirectionsMode, related_name='modes', default=1)
     fb_app_id = models.CharField(max_length=50, blank=True)
     fb_page_id = models.CharField(max_length=50, blank=True)
     twitter_acct = models.CharField(max_length=50, blank=True, validators=[validate_twitter])
@@ -56,12 +70,25 @@ class Tour(models.Model):
 
     def __unicode__(self):
         return "%s" % (self.name)
+    
+def new_position(instance, tour_id):
+    return TourStop.objects.filter(tour_id=tour_id).count()
+
+def new_info_position(instance, tour_id):
+    return TourStop.objects.filter(tour_id=tour_id).count()
+
+def new_media_position(instance, tour_stop_id):
+    return TourStopMedia.objects.filter(tour_stop_id=tour_stop_id).count()
+
+def validate_https(value):
+    if 'https' not in value:
+        raise ValidationError('Make sure your embed link uses HTTPS.')
 
 class TourInfo(models.Model):
     tour = models.ForeignKey(Tour)
     name = models.CharField(max_length=50)
     description = HTMLField(blank=True, default='')
-    position = models.PositiveSmallIntegerField("Position", default=1)
+    position = models.PositiveSmallIntegerField("Position", blank=True, null=True)
     info_slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
 
     class Meta:
@@ -76,13 +103,11 @@ class TourInfo(models.Model):
 
     def get_absolute_url(self):
         return reverse('tour:info-detail', kwargs={"slug":  self.tour.slug, "info": self.info_slug})
-
-def new_position(instance, tour_id):
-    return TourStop.objects.filter(tour_id=tour_id).count()
-
-def validate_https(value):
-    if 'https' not in value:
-        raise ValidationError('Make sure your embed link uses HTTPS.')
+    
+    def save(self, force_insert=False, force_update=False):
+        if self.position == None:# and self.tour:
+            self.position = new_position(self, self.tour_id)
+        super(TourInfo, self).save(force_insert, force_update)
 
 class TourStop(models.Model):
     tour = models.ForeignKey(Tour)
@@ -90,18 +115,18 @@ class TourStop(models.Model):
     description = HTMLField(blank=True, default='')
     metadescription = models.TextField(blank=True, default='', validators=[MaxLengthValidator(350)])
     article_link = models.CharField(max_length=525, blank=True, default='')
-    video_embed = models.CharField(max_length=50, blank=True, default='', validators=[URLValidator(), validate_https])
+    video_embed = models.CharField(max_length=50, blank=True, default='')
+    video_poster = models.ImageField(upload_to='stops/', verbose_name='Video Poster', null=True, blank=True)
     # geo fields
     lat = models.FloatField(null=True, blank=True)
     lng = models.FloatField(null=True, blank=True)
     park_lat = models.FloatField(null=True, blank=True)
     park_lng = models.FloatField(null=True, blank=True)
-    parking_block = models.TextField(blank=True, default='')
-
+    directions_intro = models.TextField(blank=True, default='', validators=[MaxLengthValidator(350)])
     direction_notes = HTMLField(blank=True, default='')
 
     # used in drag and drop reodering as well as tour stop order
-    position = models.PositiveSmallIntegerField("Position", blank=True, null=True, default='')
+    position = models.PositiveSmallIntegerField("Position", blank=True, null=True)
 
     class Meta:
         verbose_name = _('Tour Stop')
@@ -121,7 +146,7 @@ class TourStop(models.Model):
         return slugify(self.name)
 
     def save(self, force_insert=False, force_update=False):
-        if self.position == None:
+        if self.position == None:# and self.tour:
             self.position = new_position(self, self.tour_id)
         super(TourStop, self).save(force_insert, force_update)
 
@@ -130,19 +155,29 @@ class TourStopMedia(models.Model):
     title = models.CharField(max_length=50, blank=True, default='')
     caption = models.CharField(max_length=255, blank=True, default='')
     image = models.ImageField(upload_to='stops/', verbose_name='Image')
-    inline = models.ImageField(upload_to='stops/inline/', blank=True, null=True)
     source_link = models.CharField(max_length=525, blank=True, default='')
     metadata = HTMLField(blank=True, default='')
+    
+    # used in drag and drop reodering as well as tour stop order
+    position = models.PositiveSmallIntegerField("Position", blank=True, null=True)
 
     class Meta:
         verbose_name = _('Tour Stop Media')
         verbose_name_plural = _('Tour Stop Media')
+        
+        #set default ordering for the manager
+        ordering = ['position']
 
     def __unicode__(self):
         return self.title
 
     def get_absolute_url(self):
         return reverse('tour:stop-media-detail', kwargs={"slug":  self.tour_stop.tour.slug, "id": self.id})
+    
+    @property
+    def size(self):
+        return os.path.getsize('%s/%s' % ( settings.MEDIA_ROOT, self.image))
+        #return humanfriendly.format_size(size)
 
     def save(self, *args, **kwargs):
         # override save method to resize image and generate thumbnail
@@ -154,25 +189,28 @@ class TourStopMedia(models.Model):
             orig = TourStopMedia.objects.get(pk=self.pk)
             if self.image != orig.image:
                 image_update = True
+                
+        if self.position == None:
+            self.position = new_media_position(self, self.tour_stop_id)
 
-        if self.image and not self.inline or image_update:
-            self.generate_thumbnail()
+        #if self.image and not self.inline or image_update:
+        #    self.generate_thumbnail()
 
         super(TourStopMedia, self).save(*args, **kwargs)
 
-    def generate_thumbnail(self):
-        thumbnail_size = (290, 290)
-    
-        return self._resize_imagefield(thumbnail_size, self.inline)
-
-    def _resize_imagefield(self, size, field):
-        image = Image.open(self.image)
-        # NOTE: using thumbnail for both resize/thumb
-        # because it resizes the current image rather than resize,
-        # which returns a new Image object
-        image.thumbnail(size, Image.ANTIALIAS)
-        tmp = tempfile.NamedTemporaryFile(suffix='.png')
-        image.save(tmp.name, 'png')
-        content = File(tmp)
-        field.save('%s' % self.image, content, save=False)
+    #def generate_thumbnail(self):
+    #    thumbnail_size = (290, 290)
+    #
+    #    return self._resize_imagefield(thumbnail_size, self.inline)
+    #
+    #def _resize_imagefield(self, size, field):
+    #    image = Image.open(self.image)
+    #    # NOTE: using thumbnail for both resize/thumb
+    #    # because it resizes the current image rather than resize,
+    #    # which returns a new Image object
+    #    image.thumbnail(size, Image.ANTIALIAS)
+    #    tmp = tempfile.NamedTemporaryFile(suffix='.png')
+    #    image.save(tmp.name, 'png')
+    #    content = File(tmp)
+    #    field.save('%s' % self.image, content, save=False)
 
