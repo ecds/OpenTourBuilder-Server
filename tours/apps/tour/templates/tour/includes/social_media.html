@@ -9,7 +9,7 @@
     </script>
     {% endif %}
     {% if tour.twitter_acct %}
-    <a href="https://twitter.com/share" class="twitter-share-button" data-via="{{ tour.twitter_acct }}" data-text="{{ tour_stop.metadescription }}" data-url="{{ request.build_absolute_uri }}">Tweet</a>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-via="{{ tour.twitter_acct }}" data-text="{{ tour_stop.title }}" data-url="{{ request.build_absolute_uri }}">Tweet</a>
     <script>
 	    $(document).bind('pagebeforeload', function(){
 	    	$('#twitter-wjs').remove();
