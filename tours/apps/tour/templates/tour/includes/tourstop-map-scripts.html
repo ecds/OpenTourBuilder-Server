@@ -138,8 +138,9 @@
 
         $(document).on('click','.refresh-btn .ui-btn',function(evt){
             evt.preventDefault();
+            $("#directions").empty();
             $('#map_container').gmap('destroy');
-            initializeMap()
+            initializeMap();
         });
 
         $(document).on('change','#mode',function() {
