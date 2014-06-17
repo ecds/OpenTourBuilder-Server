@@ -58,8 +58,10 @@
                     // If the user didn't share his/her location:
                     else {
                         self.addMarker({position: new google.maps.LatLng({{tour_stop.lat}}, {{tour_stop.lng}})});
+                        {% if tour_stop.park_lat and tour_stop.park_lng %}
                         self.addMarker({position: new google.maps.LatLng({{tour_stop.park_lat}}, {{tour_stop.park_lng}}), icon: "{{ STATIC_URL }}markers/blue_MarkerP.png"});
-            
+                        {% endif %}
+                        
                         // Use Google's geocoder to get the address base on the lat and lng.
                         var geocoder = new google.maps.Geocoder();
                         // Use the parking location if there is one
