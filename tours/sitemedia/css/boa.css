@@ -84,6 +84,7 @@ h1.tour-name.ui-title {
     color: #FFF;
     text-shadow: 0 1px 0 #818181;
     position: relative;
+    width: 100%;
 }
 
 .jqm-header.ui-header .ui-btn{
@@ -424,7 +425,7 @@ a.back-btn.ui-btn:before {
     width: 21px;
 }
 
-.jqm-header .ui-btn-right.ui-controlgroup .ui-btn.menu-btn:hover, 
+.jqm-header .ui-btn-right.ui-controlgroup .ui-btn.menu-btn:hover, 
 .jqm-header .ui-btn-right.ui-controlgroup .ui-btn.menu-btn:focus {
     border-color: #91A1CA;
 }
@@ -495,6 +496,7 @@ div.dialog~.ui-content {
     width: 100%;
     z-index: -1;
     padding: 2em 0;
+    height: 100%;
 }
 div.dialog~.ui-content .ui-title{
     text-overflow:initial;
