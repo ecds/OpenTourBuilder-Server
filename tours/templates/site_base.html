@@ -58,5 +58,5 @@
   </div><!--end .page-->
 
 </body>
-{{ tour.google_analytics|safe }}
+{% autoescape off %}{{ tour.google_analytics }}{% endautoescape %}
 </html>
