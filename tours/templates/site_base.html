@@ -2,8 +2,6 @@
 <html lang="en">
 <head>
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="googlebot" content="noindex">
-  <meta name="bingbot" content="noindex">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {% if tour_stop %}
   <title>{{ tour_stop.name}}: {{ tour_stop.tour }}</title>
@@ -60,5 +58,5 @@
   </div><!--end .page-->
 
 </body>
-{{ tour.google_analytics }}
+{{ tour.google_analytics|safe }}
 </html>
