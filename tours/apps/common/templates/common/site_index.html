@@ -3,6 +3,7 @@
 
 {% block meta %}
 <meta name="description" content="Mobile tour(s) about {{ tours.all|join:", " }}" />
+<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ tours.0.splashimage}}"/>
 {% endblock meta %}
 
 {% block header_class %}sr-only{% endblock %}
