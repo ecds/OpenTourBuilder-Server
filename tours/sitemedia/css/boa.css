@@ -425,7 +425,7 @@ a.back-btn.ui-btn:before {
     width: 21px;
 }
 
-.jqm-header .ui-btn-right.ui-controlgroup .ui-btn.menu-btn:hover, 
+.jqm-header .ui-btn-right.ui-controlgroup .ui-btn.menu-btn:hover, 
 .jqm-header .ui-btn-right.ui-controlgroup .ui-btn.menu-btn:focus {
     border-color: #91A1CA;
 }
@@ -492,7 +492,7 @@ a.ui-btn.ui-icon-delete.ui-btn-icon-notext.ui-corner-all {
 div.dialog~.ui-content {
     background: #313131;
     min-height: 41em;
-    position: absolute;
+    position: relative;
     width: 100%;
     z-index: -1;
     padding: 2em 0;
