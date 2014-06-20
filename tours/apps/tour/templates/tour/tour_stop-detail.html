@@ -11,6 +11,9 @@
 <meta content="{{ tour.fb_page_id }}" property="fb:page_id"/>
 <meta content="{{ tour.fb_app_id }}" property="fb:app_id"/>
 <meta name="twitter:url" content="{{ request.build_absolute_uri }}" />
+{% if tour.splashimage %}
+<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ tour.splashimage}}"/>
+{% endif %}
 {% comment %}
 First we check to see if there is a video associated with a stop and will make a video Twitter card.
 We will also check to see if there is a poster for the video. If there isn't, we use the first image
