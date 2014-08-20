@@ -1,9 +1,12 @@
 # requirements/common.txt
 Django==1.6
-South==0.7.6
+South
 django-admin-bootstrapped
 django-autoslug
 django-tinymce
 pillow
 docutils
 python-magic
+MySQL-python
+django-debug-toolbar
+django-nose
