@@ -138,6 +138,7 @@ INSTALLED_APPS = (
     'tinymce',
 
     # admin apps
+    'django_admin_bootstrapped.bootstrap3',
     'django_admin_bootstrapped',
     'django.contrib.admin',
     'django.contrib.admindocs',
