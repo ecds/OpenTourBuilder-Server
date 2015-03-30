@@ -4,6 +4,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.core.files import File
 from django.db import models
+from django.db.utils import ProgrammingError
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 from django.conf import settings
@@ -33,10 +34,13 @@ class DirectionsMode(models.Model):
         return "%s" % (self.mode)
     
 def get_options():
-    modes = DirectionsMode.objects.all()
     options = []
-    for mode in modes:
-        options.insert(0, (mode.mode, mode.mode))
+    try:
+        modes = DirectionsMode.objects.all()
+        for mode in modes:
+            options.insert(0, (mode.mode, mode.mode))
+    except ProgrammingError:
+        pass
     return options
 
 class Tour(models.Model):
@@ -110,7 +114,7 @@ class TourInfo(models.Model):
         super(TourInfo, self).save(force_insert, force_update)
 
 class TourStop(models.Model):
-    tour = models.ForeignKey(Tour)
+    tour = models.ForeignKey(Tour, related_name='stops')
     name = models.CharField(max_length=50)
     description = HTMLField(blank=True, default='')
     metadescription = models.TextField(blank=True, default='', validators=[MaxLengthValidator(350)])
@@ -145,13 +149,15 @@ class TourStop(models.Model):
     def slug(self):
         return slugify(self.name)
 
+
+
     def save(self, force_insert=False, force_update=False):
         if self.position == None:# and self.tour:
             self.position = new_position(self, self.tour_id)
         super(TourStop, self).save(force_insert, force_update)
 
 class TourStopMedia(models.Model):
-    tour_stop = models.ForeignKey(TourStop)
+    tour_stop = models.ForeignKey(TourStop, related_name='images')
     title = models.CharField(max_length=50, blank=True, default='')
     caption = models.CharField(max_length=255, blank=True, default='')
     image = models.ImageField(upload_to='stops/', verbose_name='Image')

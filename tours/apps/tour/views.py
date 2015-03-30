@@ -3,11 +3,13 @@
 from django.shortcuts import render_to_response, render, get_object_or_404
 from django.template import RequestContext
 from django.core.paginator import Paginator
-from django.http import HttpResponseRedirect
 from django.http import HttpResponse, HttpResponseForbidden
 from django.core.context_processors import csrf
 from django.conf import settings
 from tours.apps.tour.models import Tour, TourInfo, TourStop, TourStopMedia, DirectionsMode
+
+from rest_framework import viewsets, generics
+from tours.apps.tour.serializers import ToursSerializer, TourStopSerializer
 
 '''
 Decerator that will only display a tour if:
@@ -139,3 +141,43 @@ def tour_stop_video_detail(request, slug, id):
             'tour_stop': tour_stop
         }
     )
+
+
+######################
+# START API STUFF HERE
+######################
+
+class ToursViewSet(viewsets.ModelViewSet):
+    serializer_class = ToursSerializer
+    model = Tour
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned tours to a given tour,
+        by filtering against a `slug` query parameter in the URL.
+        """
+
+        tour_id = self.request.QUERY_PARAMS.get('id', None)
+        if tour_id is not None:
+            return Tour.objects.filter(pk=tour_id)
+        else:
+            return Tour.objects.all()
+
+class TourStopViewSet(viewsets.ModelViewSet):
+    serializer_class = TourStopSerializer
+    model = TourStop
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned tour stop to a given tour stop,
+        by filtering against a tour's `slug` and a stop's `position` query
+        parameter in the URL.
+        """
+
+        tour_id = self.request.QUERY_PARAMS.get('tour', None)
+        page = self.request.QUERY_PARAMS.get('page', None)
+        if tour_id is not None and page is not None:
+            #tour = Tour.objects.get(pk=tour_id)
+            return TourStop.objects.filter(position=page).filter(tour_id=tour_id)
+        else:
+            return TourStop.objects.all()

@@ -35,9 +35,9 @@ class TourStopAdmin(admin.ModelAdmin):
 
 class TourAdmin(admin.ModelAdmin):
     
-    def get_form(self, request, obj=None, **kwargs):
-        kwargs['formfield_callback'] = partial(self.formfield_for_dbfield, request=request, obj=obj)
-        return super(TourAdmin, self).get_form(request, obj, **kwargs)
+    # def get_form(self, request, obj=None, **kwargs):
+    #     kwargs['formfield_callback'] = partial(self.formfield_for_dbfield, request=request, obj=obj)
+    #     return super(TourAdmin, self).get_form(request, obj, **kwargs)
     
     #def formfield_for_dbfield(self, field, **kwargs):
     #    if field.name == 'id':
