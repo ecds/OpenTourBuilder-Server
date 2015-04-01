@@ -3,12 +3,14 @@
 from django.shortcuts import render_to_response, render, get_object_or_404
 from django.template import RequestContext
 from django.core.paginator import Paginator
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, Http404
 from django.core.context_processors import csrf
 from django.conf import settings
 from tours.apps.tour.models import Tour, TourInfo, TourStop, TourStopMedia, DirectionsMode
 
-from rest_framework import viewsets, generics
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 from tours.apps.tour.serializers import ToursSerializer, TourStopSerializer
 
 '''
@@ -147,37 +149,64 @@ def tour_stop_video_detail(request, slug, id):
 # START API STUFF HERE
 ######################
 
-class ToursViewSet(viewsets.ModelViewSet):
-    serializer_class = ToursSerializer
-    model = Tour
+class TourList(APIView):
+    """
+    List all tours.
+    """
+    def get(self, request, format=None):
+        tours = Tour.objects.all()
+        serializer = ToursSerializer(tours, many=True)
+        return Response(serializer.data)
 
-    def get_queryset(self):
-        """
-        Optionally restricts the returned tours to a given tour,
-        by filtering against a `slug` query parameter in the URL.
-        """
+class TourDetail(APIView):
+    """
+    Retrieve a tour instance.
+    """
+    def get_object(self, slug):
+        try:
+            return Tour.objects.get(slug=slug)
+        except Tour.DoesNotExist:
+            raise Http404
 
-        tour_id = self.request.QUERY_PARAMS.get('id', None)
-        if tour_id is not None:
-            return Tour.objects.filter(pk=tour_id)
-        else:
-            return Tour.objects.all()
+    def get(self, request, slug, format=None):
+        tour = self.get_object(slug=slug)
+        serializer = ToursSerializer(tour)
+        return Response(serializer.data)
 
-class TourStopViewSet(viewsets.ModelViewSet):
-    serializer_class = TourStopSerializer
-    model = TourStop
 
-    def get_queryset(self):
-        """
-        Optionally restricts the returned tour stop to a given tour stop,
-        by filtering against a tour's `slug` and a stop's `position` query
-        parameter in the URL.
-        """
+# class ToursViewSet(views.APIView):
+#     serializer_class = ToursSerializer
+#     model = Tour
 
-        tour_id = self.request.QUERY_PARAMS.get('tour', None)
-        page = self.request.QUERY_PARAMS.get('page', None)
-        if tour_id is not None and page is not None:
-            #tour = Tour.objects.get(pk=tour_id)
-            return TourStop.objects.filter(position=page).filter(tour_id=tour_id)
-        else:
-            return TourStop.objects.all()
+#     def get_object(self):
+#         """
+#         Optionally restricts the returned tours to a given tour,
+#         by filtering against a `slug` query parameter in the URL.
+#         """
+
+#         slug = self.request.QUERY_PARAMS.get('slug', None)
+#         if slug is not None:
+#             print(slug)
+#             return Tour.objects.filter(slug=slug)
+#         else:
+#             return Tour.objects.all()
+
+
+# class TourStopViewSet(viewsets.ModelViewSet):
+#     serializer_class = TourStopSerializer
+#     model = TourStop
+
+#     def get_queryset(self):
+#         """
+#         Optionally restricts the returned tour stop to a given tour stop,
+#         by filtering against a tour's `slug` and a stop's `position` query
+#         parameter in the URL.
+#         """
+
+#         tour_id = self.request.QUERY_PARAMS.get('tour', None)
+#         page = self.request.QUERY_PARAMS.get('page', None)
+#         if tour_id is not None and page is not None:
+#             #tour = Tour.objects.get(pk=tour_id)
+#             return TourStop.objects.filter(position=page).filter(tour_id=tour_id)
+#         else:
+#             return TourStop.objects.all()
