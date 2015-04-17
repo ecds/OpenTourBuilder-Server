@@ -22,16 +22,33 @@ class ModeSerializer(serializers.ModelSerializer):
 class MediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = TourStopMedia
-        #fields = ('name', 'description')
+        fields = ('title', 'original_image', 'size', 'image_preview', \
+                'position', 'phone_thumb', 'phone_full', 'tablet_thumb', \
+                'tablet_full')
+
+class ToursSerializer(serializers.ModelSerializer):
+    stop_ids = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    info_ids = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    modes = ModeSerializer(many=True)
+    class Meta:
+        model = Tour
+        fields = ('id', 'name', 'slug', 'description', 'stop_ids', \
+                'info_ids', 'modes', 'published', 'geospatial')
 
 class TourStopSerializer(serializers.ModelSerializer):
     images = MediaSerializer(many=True)
     class Meta:
         model = TourStop
+        fields = ('id', 'name', 'description', 'metadescription', \
+                'article_link', 'position', 'map_image',\
+                'video_embed', 'video_poster', 'geospatial', \
+                'lat', 'lng', 'park_lat', 'park_lng', \
+                'directions_intro', 'direction_notes', 'tour', \
+                'direction_modes', 'tour_slug', 'stop_link', \
+                'position', 'page', 'images', 'next_stop', \
+                'previous_stop', 'intro')
 
-class ToursSerializer(serializers.ModelSerializer):
-    stops = TourStopSerializer(many=True)
-    modes = ModeSerializer(many=True)
+class TourInfoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Tour
-        #fields = ('name', 'description', 'stops')
+        model = TourInfo
+        fields = ('id', 'name', 'description', 'position')

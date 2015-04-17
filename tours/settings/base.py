@@ -45,6 +45,8 @@ USE_TZ = True
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+UPLOAD_TO = os.path.join(BASE_DIR, 'media/upload')
+
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
@@ -129,13 +131,14 @@ INSTALLED_APPS = (
     'tinymce',
 
     # admin apps
-    'django_admin_bootstrapped.bootstrap3',
     'django_admin_bootstrapped',
     'django.contrib.admin',
     'django.contrib.admindocs',
 
     'rest_framework',
     'corsheaders',
+    'django_image_tools',
+    'sorl.thumbnail',
 
     #'storages',
 
@@ -225,4 +228,3 @@ TINYMCE_DEFAULT_CONFIG = {
     'convert_urls': False,
     'content_css': '/static/css/extra.css',
 }
-

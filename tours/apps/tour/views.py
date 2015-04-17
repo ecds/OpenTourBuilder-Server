@@ -11,7 +11,7 @@ from tours.apps.tour.models import Tour, TourInfo, TourStop, TourStopMedia, Dire
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from tours.apps.tour.serializers import ToursSerializer, TourStopSerializer
+from tours.apps.tour.serializers import ToursSerializer, TourStopSerializer, TourInfoSerializer
 
 '''
 Decerator that will only display a tour if:
@@ -97,7 +97,7 @@ def tour_stop_detail(request, slug, page):
         {
             'tour': tour,
             'tour_stop': page[0],
-            'images': page[0].tourstopmedia_set.all(),
+            #'images': page[0].tourstopmedia_set.all(),
             'page': page,
             'sub': settings.SUB_URL,
         }
@@ -173,40 +173,33 @@ class TourDetail(APIView):
         serializer = ToursSerializer(tour)
         return Response(serializer.data)
 
+class TourStopDetail(APIView):
+    """
+    Retrieve a tour stop instance
+    """
+    def get_object(self, id):
+        try:
+            return TourStop.objects.get(pk=id)
+        except TourStop.DoesNotExist:
+            raise Http404
 
-# class ToursViewSet(views.APIView):
-#     serializer_class = ToursSerializer
-#     model = Tour
+    def get(self, request, id, format=None):
+        tour_stop = self.get_object(id)
+        serializer = TourStopSerializer(tour_stop)
+        return Response(serializer.data)
 
-#     def get_object(self):
-#         """
-#         Optionally restricts the returned tours to a given tour,
-#         by filtering against a `slug` query parameter in the URL.
-#         """
+class TourInfoDetail(APIView):
+    """
+    Retrieve a tour info instance
+    """
+    def get_object(self, id):
+        try:
+            return TourInfo.objects.get(pk=id)
+        except TourInfo.DoesNotExist:
+            raise Http404
 
-#         slug = self.request.QUERY_PARAMS.get('slug', None)
-#         if slug is not None:
-#             print(slug)
-#             return Tour.objects.filter(slug=slug)
-#         else:
-#             return Tour.objects.all()
+    def get(self, request, id, format=None):
+        tour_info = self.get_object(id)
+        serializer = TourInfoSerializer(tour_info)
+        return Response(serializer.data)
 
-
-# class TourStopViewSet(viewsets.ModelViewSet):
-#     serializer_class = TourStopSerializer
-#     model = TourStop
-
-#     def get_queryset(self):
-#         """
-#         Optionally restricts the returned tour stop to a given tour stop,
-#         by filtering against a tour's `slug` and a stop's `position` query
-#         parameter in the URL.
-#         """
-
-#         tour_id = self.request.QUERY_PARAMS.get('tour', None)
-#         page = self.request.QUERY_PARAMS.get('page', None)
-#         if tour_id is not None and page is not None:
-#             #tour = Tour.objects.get(pk=tour_id)
-#             return TourStop.objects.filter(position=page).filter(tour_id=tour_id)
-#         else:
-#             return TourStop.objects.all()
