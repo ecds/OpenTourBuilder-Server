@@ -150,9 +150,6 @@ class TourStop(models.Model):
     def __unicode__(self):
         return "%s - %s" % (self.name, self.tour.name)
 
-    def get_absolute_url(self):
-        return reverse('tour:stop-detail', kwargs={"slug":  self.tour.slug, "page": self.position + 1})
-
     @property
     def slug(self):
         return slugify(self.name)
