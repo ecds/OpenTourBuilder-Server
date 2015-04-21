@@ -124,6 +124,7 @@ class TourInfo(models.Model):
 class TourStop(models.Model):
     tour = models.ForeignKey(Tour, related_name='stop_ids')
     name = models.CharField(max_length=50)
+    slug = AutoSlugField(populate_from='name', always_update=True)
     description = HTMLField(blank=True, default='')
     metadescription = models.TextField(blank=True, default='', validators=[MaxLengthValidator(350)])
     article_link = models.CharField(max_length=525, blank=True, default='')
@@ -151,20 +152,16 @@ class TourStop(models.Model):
         return "%s - %s" % (self.name, self.tour.name)
 
     @property
-    def slug(self):
-        return slugify(self.name)
-
-    @property
     def page(self):
         return self.position + 1
 
     @property
     def map_image(self):
-        image = 'http://maps.googleapis.com/maps/api/staticmap?zoom=16&'
-        image += 'size=240x200&maptype=roadmap&markers=color:red%7C'
-        image += '%s,%s' % (self.lat, self.lng)
-        image += '&sensor=false&key=AIzaSyBx6Zz6NMBoTBzIU0sbZQezxXgFMZdKZeI'
-        return image
+        map_image = 'http://maps.googleapis.com/maps/api/staticmap?zoom=16&'
+        map_image += 'size=150x150&maptype=roadmap&markers=color:red%7C'
+        map_image += '%s,%s' % (self.lat, self.lng)
+        map_image += '&sensor=false&key=AIzaSyBx6Zz6NMBoTBzIU0sbZQezxXgFMZdKZeI'
+        return map_image
 
     @property
     def next_stop(self):
@@ -175,7 +172,8 @@ class TourStop(models.Model):
             stop = self.tour.stop_ids.get(position=self.page)
             # For nested links on the Ember side, return this:
             #previous_link = '/tour/%s/%s' % (self.tour_slug, stop.pk)
-            return stop.slug
+            next = '%s/%s' % (stop.slug, stop.pk)
+            return stop.pk
 
     @property
     def previous_stop(self):
@@ -186,6 +184,7 @@ class TourStop(models.Model):
             stop = self.tour.stop_ids.get(position=previous)
             # For nested links on the Ember side, return this:
             #next_link = '/tour/%s/%s' % (self.tour_slug, stop.pk)
+            previous = '%s/%s' % (stop.slug, stop.pk)
             return stop.pk
     
 

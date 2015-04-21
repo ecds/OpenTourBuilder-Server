@@ -46,7 +46,7 @@ class TourStopSerializer(serializers.ModelSerializer):
                 'directions_intro', 'direction_notes', 'tour', \
                 'direction_modes', 'tour_slug', 'stop_link', \
                 'position', 'page', 'images', 'next_stop', \
-                'previous_stop', 'intro')
+                'previous_stop', 'intro', 'slug')
 
 class TourInfoSerializer(serializers.ModelSerializer):
     class Meta:
