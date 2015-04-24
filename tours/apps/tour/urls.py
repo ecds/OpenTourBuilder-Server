@@ -7,6 +7,7 @@ from tours.apps.tour.views import TourList, TourDetail, TourStopDetail, TourInfo
 
 urlpatterns = [
     url(r'^tourLists/$', TourList.as_view()),
+    url(r'^tourDetails/(?P<id>\d+)$', TourDetail.as_view()),
     url(r'^tourDetails/(?P<slug>[-\w]+)$', TourDetail.as_view()),
     url(r'^tourStopDetails/(?P<id>\d+)$', TourStopDetail.as_view()),
     url(r'^tourInfoDetails/(?P<id>\d+)$', TourInfoDetail.as_view()),

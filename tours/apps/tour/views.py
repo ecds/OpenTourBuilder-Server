@@ -162,44 +162,45 @@ class TourDetail(APIView):
     """
     Retrieve a tour instance.
     """
-    def get_object(self, slug):
+
+    def get(self, request, format=None, *args, **kwargs):
+        """
+        We want to return a tour based on a slug or id.
+        """
         try:
-            return Tour.objects.get(slug=slug)
+            if 'id' in kwargs:
+                tour = Tour.objects.get(pk=kwargs["id"])
+            elif 'slug' in kwargs:
+                tour = Tour.objects.get(slug=kwargs["slug"])
+            serializer = ToursSerializer(tour)
         except Tour.DoesNotExist:
             raise Http404
-
-    def get(self, request, slug, format=None):
-        tour = self.get_object(slug=slug)
-        serializer = ToursSerializer(tour)
         return Response(serializer.data)
 
 class TourStopDetail(APIView):
     """
     Retrieve a tour stop instance
     """
-    def get_object(self, id):
-        try:
-            return TourStop.objects.get(pk=id)
-        except TourStop.DoesNotExist:
-            raise Http404
 
     def get(self, request, id, format=None):
-        tour_stop = self.get_object(id)
-        serializer = TourStopSerializer(tour_stop)
+        try:
+            tour_stop = TourStop.objects.get(pk=id)
+            serializer = TourStopSerializer(tour_stop)
+        except TourStop.DoesNotExist:
+            raise Http404
         return Response(serializer.data)
 
 class TourInfoDetail(APIView):
     """
     Retrieve a tour info instance
     """
-    def get_object(self, id):
-        try:
-            return TourInfo.objects.get(pk=id)
-        except TourInfo.DoesNotExist:
-            raise Http404
+
 
     def get(self, request, id, format=None):
-        tour_info = self.get_object(id)
-        serializer = TourInfoSerializer(tour_info)
+        try:
+            tour_info = TourInfo.objects.get(pk=id)
+            serializer = TourInfoSerializer(tour_info)
+        except TourInfo.DoesNotExist:
+            raise Http404
         return Response(serializer.data)
 

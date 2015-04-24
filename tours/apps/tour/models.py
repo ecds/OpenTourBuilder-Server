@@ -157,6 +157,10 @@ class TourStop(models.Model):
 
     @property
     def map_image(self):
+        """
+        This concatenates a link to make an api call to the Google static
+        map images.
+        """
         map_image = 'http://maps.googleapis.com/maps/api/staticmap?zoom=16&'
         map_image += 'size=150x150&maptype=roadmap&markers=color:red%7C'
         map_image += '%s,%s' % (self.lat, self.lng)
@@ -203,7 +207,7 @@ class TourStop(models.Model):
         # print(tour_modes)
         # # modes = 'foo'
         for mode in tour_modes:
-            print(mode)
+            #print(mode)
             modes.append(str(mode))
 
         return modes
