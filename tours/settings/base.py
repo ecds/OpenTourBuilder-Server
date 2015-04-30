@@ -137,7 +137,6 @@ INSTALLED_APPS = (
 
     'rest_framework',
     'corsheaders',
-    'django_image_tools',
     'sorl.thumbnail',
 
     #'storages',

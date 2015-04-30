@@ -18,7 +18,6 @@ from autoslug import AutoSlugField
 from tinymce.models import HTMLField
 #from PIL import Image
 import tempfile
-from django_image_tools.models import Image
 from sorl.thumbnail import get_thumbnail
 from humanize import naturalsize
 
