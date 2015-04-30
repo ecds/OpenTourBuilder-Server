@@ -81,6 +81,42 @@ class Tour(models.Model):
 
     def __unicode__(self):
         return "%s" % (self.name)
+
+    def resize_image(self, dimensions):
+        """
+        Send the image through the sorl thumbnail library
+        and return the url to the file.
+        """
+        new_image = get_thumbnail('%s/%s' \
+            % (settings.MEDIA_ROOT, self.splashimage), \
+            'x%s' % dimensions, quality=70)
+        return Site.objects.get_current().domain + new_image.url
+
+    @property
+    def slug_class(self):
+        return ".%s" % self.slug
+    
+
+    @property
+    def phone_splash(self):
+        '''
+        Thumbnail for image on phone screens.
+        '''
+        return self.resize_image('767')
+
+    @property
+    def tablet_splash(self):
+        '''
+        Thumbnail for image on phone screens.
+        '''
+        return self.resize_image('993')
+
+    @property
+    def desktop_splash(self):
+        '''
+        Thumbnail for image on phone screens.
+        '''
+        return self.resize_image('1400')
     
 def new_position(instance, tour_id):
     return TourStop.objects.filter(tour_id=tour_id).count()
@@ -190,11 +226,6 @@ class TourStop(models.Model):
             #next_link = '/tour/%s/%s' % (self.tour_slug, stop.pk)
             previous = '%s/%s' % (stop.slug, stop.pk)
             return stop.pk
-    
-
-    @property
-    def tour_slug(self):
-        return self.tour.slug
 
     @property
     def stop_link(self):
@@ -281,6 +312,10 @@ class TourStopMedia(models.Model):
         return Site.objects.get_current().domain + preview.url
 
     def resize_image(self, dimensions):
+        """
+        Send the image through the sorl thumbnail library
+        and return the url to the file.
+        """
         new_image = get_thumbnail('%s/%s' \
             % (settings.MEDIA_ROOT, self.image), \
             'x%s' % dimensions, quality=70)

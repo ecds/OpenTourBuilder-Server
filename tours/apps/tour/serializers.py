@@ -33,7 +33,8 @@ class ToursSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
         fields = ('id', 'name', 'slug', 'description', 'stop_ids', \
-                'info_ids', 'modes', 'published', 'geospatial')
+                'info_ids', 'modes', 'published', 'geospatial', 'slug_class', \
+                'phone_splash', 'tablet_splash', 'desktop_splash')
 
 class TourStopSerializer(serializers.ModelSerializer):
     images = MediaSerializer(many=True)
@@ -44,7 +45,7 @@ class TourStopSerializer(serializers.ModelSerializer):
                 'video_embed', 'video_poster', 'geospatial', \
                 'lat', 'lng', 'park_lat', 'park_lng', \
                 'directions_intro', 'direction_notes', 'tour', \
-                'direction_modes', 'tour_slug', 'stop_link', \
+                'direction_modes', 'stop_link', \
                 'position', 'page', 'images', 'next_stop', \
                 'previous_stop', 'intro', 'slug')
 
