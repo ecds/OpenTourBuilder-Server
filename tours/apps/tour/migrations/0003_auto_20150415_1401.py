@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('django_image_tools', '__first__'),
+        #('django_image_tools', '__first__'),
         ('tour', '0002_auto_20150415_1341'),
     ]
 
