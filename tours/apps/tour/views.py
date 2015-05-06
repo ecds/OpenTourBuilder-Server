@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response, render, get_object_or_404
 from django.template import RequestContext
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, StreamingHttpResponse
 from django.core.context_processors import csrf
 from django.conf import settings
 from tours.apps.tour.models import Tour, TourInfo, TourStop, TourStopMedia, DirectionsMode
@@ -139,3 +139,35 @@ def tour_stop_video_detail(request, slug, id):
             'tour_stop': tour_stop
         }
     )
+
+@check_published
+def tour_geojson(request, slug):
+    tour = get_object_or_404(Tour, slug=slug)
+
+    stops = []
+
+    for stop in tour.tourstop_set.all():
+        if stop.position != 0:
+            stop_geojson = '{"type": "Feature",'
+            stop_geojson += '"geometry":{"type": "Point", "coordinates":['
+            stop_geojson += '%s,%s,0]},' % (stop.lng, stop.lat)
+            stop_geojson += '"properties": {'
+            stop_geojson += '"name": "%s",' % stop.name
+            stop.description += '<p><a href="%s" target="_blank">View on Mobile Tour</a></p>' % stop.fully_qualified_url
+
+            if stop.article_link:
+               stop.description += '<p><a href="%s" target="_blank">Read Full Article</a></p>' % stop.article_link
+            safe_description = stop.description.replace("\n", "")
+            safe_description = safe_description.replace("\r", "")
+            safe_description = safe_description.replace("\"", "\\\"")
+            stop_geojson += '"description": "%s",' % safe_description
+            stop_geojson += '"gx_media_links": "www.youtube.com/embed/%s"' % stop.video_embed
+            stop_geojson += '}}'
+
+            stops.append(stop_geojson)
+
+    geojson = '{"type": "FeatureCollection","features": ['
+    geojson += ','.join(map(str, stops))
+    geojson += ']}'
+
+    return StreamingHttpResponse(geojson, content_type='application/json')

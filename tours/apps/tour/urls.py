@@ -6,6 +6,7 @@ from django.conf.urls import patterns, url, include
 #handler403 = curry(permission_denied, template_name='403.html')
 urlpatterns = patterns('tours.apps.tour.views',
     url(r'^update_directionsmode/(?P<mode>[-\w]+)/$', 'update_directionsmode', name='mode'),
+    url(r'^tour_geojson/(?P<slug>[-\w]+)/$', 'tour_geojson', name='tour_geojson'),
     url(r'^(?P<slug>[-\w]+)/$', 'tour_detail', name='detail'),
     url(r'^(?P<slug>[-\w]+)/map/$', 'tour_map', name='tour-map'),
     url(r'^(?P<slug>[-\w]+)/(?P<page>\d+)/$', 'tour_stop_detail', name='stop-detail'),
