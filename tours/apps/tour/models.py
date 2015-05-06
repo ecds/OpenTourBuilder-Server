@@ -10,6 +10,7 @@ from django.conf import settings
 from django.db.models import Max
 from django import forms
 from django.core.validators import ValidationError, RegexValidator, MaxLengthValidator, URLValidator
+from django.contrib.sites.models import Site
 
 # third party imports
 from autoslug import AutoSlugField
@@ -67,6 +68,13 @@ class Tour(models.Model):
 
     def get_absolute_url(self):
         return reverse('detail', kwargs={'slug': self.slug})
+
+    @property
+    def fully_qualified_url(self):
+        '''
+        Full url for the stop.
+        '''
+        return "http://%s/tour/%s/%s" % (Site.objects.get_current().domain, self.tour.slug, (self.position + 1))
 
     def __unicode__(self):
         return "%s" % (self.name)
