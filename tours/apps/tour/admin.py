@@ -30,7 +30,7 @@ class TourStopInline(admin.StackedInline, SortableInline, CollapsibleInline):
 
 class TourStopAdmin(admin.ModelAdmin):
     list_filter = ('tour',)
-    inlines = ( TourStopMediaInline, )
+    inlines = ( TourStopMediaInline,)
     exclude = ('position',)
 
 class TourAdmin(admin.ModelAdmin):

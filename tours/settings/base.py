@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
     'tinymce',
 
     # admin apps
@@ -137,7 +138,7 @@ INSTALLED_APPS = (
 
     'rest_framework',
     'corsheaders',
-    'sorl.thumbnail',
+    'imagekit',
 
     #'storages',
 

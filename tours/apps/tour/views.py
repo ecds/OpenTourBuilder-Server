@@ -3,7 +3,8 @@
 from django.shortcuts import render_to_response, render, get_object_or_404
 from django.template import RequestContext
 from django.core.paginator import Paginator
-from django.http import HttpResponse, HttpResponseForbidden, Http404
+from django.core.serializers import serialize
+from django.http import HttpResponse, HttpResponseForbidden, Http404, StreamingHttpResponse
 from django.core.context_processors import csrf
 from django.conf import settings
 from tours.apps.tour.models import Tour, TourInfo, TourStop, TourStopMedia, DirectionsMode
@@ -195,7 +196,6 @@ class TourInfoDetail(APIView):
     Retrieve a tour info instance
     """
 
-
     def get(self, request, id, format=None):
         try:
             tour_info = TourInfo.objects.get(pk=id)
@@ -204,3 +204,28 @@ class TourInfoDetail(APIView):
             raise Http404
         return Response(serializer.data)
 
+def tour_geojson(request, slug):
+
+    print '!!!!!!!!!!!!\n%s\n!!!!!!!!!!!!!!!!!' % slug
+
+    tour = get_object_or_404(Tour, slug=slug)
+
+    stops = []
+
+    for stop in tour.stop_ids.all():
+        stop_geojson = '{"type": "Feature", "properties":{'
+        stop_geojson += '"name": "%s",' % stop.name
+        safe_description = stop.description.replace("\n", "")
+        safe_description = safe_description.replace("\r", "")
+        stop_geojson += '"description": "%s"' % safe_description
+        stop_geojson += '},'
+        stop_geojson += '"geometry":{"type": "Point", "coordinates":['
+        stop_geojson += '%s,%s,0]}}' % (stop.lat, stop.lng)
+
+        stops.append(stop_geojson)
+
+    geojson = '{"type": "FeatureCollection","features": ['
+    geojson += ','.join(map(str, stops))
+    geojson += ']}'
+
+    return StreamingHttpResponse(geojson, content_type='application/json')

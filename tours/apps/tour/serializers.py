@@ -22,9 +22,9 @@ class ModeSerializer(serializers.ModelSerializer):
 class MediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = TourStopMedia
-        fields = ('title', 'original_image', 'size', 'image_preview', \
+        fields = ('title', 'label', 'href', 'original_image', 'size', 'image_preview', \
                 'position', 'phone_thumb', 'phone_full', 'tablet_thumb', \
-                'tablet_full')
+                'tablet_full', 'desktop_thumb', 'desktop_full', 'caption', 'size', 'placeholder')
 
 class ToursSerializer(serializers.ModelSerializer):
     stop_ids = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
@@ -34,7 +34,8 @@ class ToursSerializer(serializers.ModelSerializer):
         model = Tour
         fields = ('id', 'name', 'slug', 'description', 'stop_ids', \
                 'info_ids', 'modes', 'published', 'geospatial', 'slug_class', \
-                'phone_splash', 'tablet_splash', 'desktop_splash')
+                'phone_splash', 'tablet_splash', 'desktop_splash', \
+                'phone_default', 'tablet_default', 'desktop_default')
 
 class TourStopSerializer(serializers.ModelSerializer):
     images = MediaSerializer(many=True)
@@ -47,7 +48,8 @@ class TourStopSerializer(serializers.ModelSerializer):
                 'directions_intro', 'direction_notes', 'tour', \
                 'direction_modes', 'stop_link', \
                 'position', 'page', 'images', 'next_stop', \
-                'previous_stop', 'intro', 'slug')
+                'previous_stop', 'intro', 'slug', 'phone_default', \
+                'tablet_default', 'desktop_default', 'placeholder')
 
 class TourInfoSerializer(serializers.ModelSerializer):
     class Meta:

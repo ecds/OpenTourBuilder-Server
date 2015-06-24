@@ -6,6 +6,7 @@ from django.core.files import File
 from django.db import models
 from django.db.utils import ProgrammingError
 from django.utils.translation import ugettext_lazy as _
+from django.utils.html import strip_tags, escape
 from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.db.models import Max
@@ -16,13 +17,16 @@ from django.contrib.sites.models import Site
 # third party imports
 from autoslug import AutoSlugField
 from tinymce.models import HTMLField
-#from PIL import Image
+from PIL import Image
 import tempfile
-from sorl.thumbnail import get_thumbnail
+
+from tours.apps.common.Resizers import Resize
+
 from humanize import naturalsize
 
 import re
 import os
+
 
 from cStringIO import StringIO
 
@@ -49,6 +53,7 @@ def get_options():
         pass
     #print(options)
     return options
+
 
 class Tour(models.Model):
     
@@ -78,19 +83,6 @@ class Tour(models.Model):
     def get_absolute_url(self):
         return reverse('detail', kwargs={'slug': self.slug})
 
-    def __unicode__(self):
-        return "%s" % (self.name)
-
-    def resize_image(self, dimensions):
-        """
-        Send the image through the sorl thumbnail library
-        and return the url to the file.
-        """
-        new_image = get_thumbnail('%s/%s' \
-            % (settings.MEDIA_ROOT, self.splashimage), \
-            'x%s' % dimensions, quality=70)
-        return Site.objects.get_current().domain + new_image.url
-
     @property
     def slug_class(self):
         return ".%s" % self.slug
@@ -101,21 +93,67 @@ class Tour(models.Model):
         '''
         Thumbnail for image on phone screens.
         '''
-        return self.resize_image('767')
+        if self.splashimage:
+            image = Resize(self.splashimage)
+            return Resize.splash_phone(image)
+        else:
+            return False
 
     @property
     def tablet_splash(self):
         '''
         Thumbnail for image on phone screens.
         '''
-        return self.resize_image('993')
+        if self.splashimage:
+            image = Resize(self.splashimage)
+            return Resize.splash_tablet(image)
+        else:
+            return False
 
     @property
     def desktop_splash(self):
         '''
         Thumbnail for image on phone screens.
         '''
-        return self.resize_image('1400')
+        if self.splashimage:
+            image = Resize(self.splashimage)
+            return Resize.splash_desktop(image)
+        else:
+            return False
+
+    @property
+    def phone_default(self):
+        '''
+        Thumbnail for image on phone screens.
+        '''
+        if self.splashimage:
+            image = Resize(self.splashimage)
+            return Resize.gallery_phone(image)
+        else:
+            return False
+
+    @property
+    def tablet_default(self):
+        '''
+        Thumbnail for image on phone screens.
+        '''
+        if self.splashimage:
+            image = Resize(self.splashimage)
+            return Resize.gallery_tablet(image)
+        else:
+            return False
+
+    @property
+    def desktop_default(self):
+        '''
+        Thumbnail for image on phone screens.
+        '''
+        if self.splashimage:
+            image = Resize(self.splashimage)
+            return Resize.gallery_desktop(image)
+        else:
+            return False
+    
     
 def new_position(instance, tour_id):
     return TourStop.objects.filter(tour_id=tour_id).count()
@@ -249,6 +287,24 @@ class TourStop(models.Model):
     @property
     def intro(self):
         return self.position == 0
+
+    @property
+    def phone_default(self):
+        return self.tour.phone_default
+
+    @property
+    def tablet_default(self):
+        return self.tour.tablet_default
+
+    @property
+    def desktop_default(self):
+        return self.tour.desktop_default
+
+    @property
+    def placeholder(self):
+        return Site.objects.get_current().domain + \
+                settings.MEDIA_URL + \
+                'placeholder.png'
     
 
     def save(self, force_insert=False, force_update=False):
@@ -282,6 +338,19 @@ class TourStopMedia(models.Model):
         #return ""
 
     @property
+    def label(self):
+        return "%s-%s" % (slugify(self.title), self.id)
+
+    @property
+    def href(self):
+        return "#%s-%s" % (slugify(self.title), self.id)
+
+    @property
+    def placeholder(self):
+        return self.tour_stop.placeholder
+    
+
+    @property
     def size(self):
         '''
         Returs the file size of origianl image so user can be
@@ -305,27 +374,30 @@ class TourStopMedia(models.Model):
         property to generate image prewiew. This is used on the
         list view when geospatial is turnedoff
         '''
-        preview = get_thumbnail('%s/%s' \
-            % (settings.MEDIA_ROOT, self.image), \
-            '80x80', crop='center', quality=70)
-        return Site.objects.get_current().domain + preview.url
+        # preview = get_thumbnail('%s/%s' \
+        #     % (settings.MEDIA_ROOT, self.image), \
+        #     '80x80', crop='center', quality=70)
+        # return Site.objects.get_current().domain + preview.url
+        return 'foo'
 
     def resize_image(self, dimensions):
         """
         Send the image through the sorl thumbnail library
         and return the url to the file.
         """
-        new_image = get_thumbnail('%s/%s' \
-            % (settings.MEDIA_ROOT, self.image), \
-            'x%s' % dimensions, quality=70)
-        return Site.objects.get_current().domain + new_image.url
+        # new_image = get_thumbnail('%s/%s' \
+        #     % (settings.MEDIA_ROOT, self.image), \
+        #     'x%s' % dimensions, quality=70)
+        # return Site.objects.get_current().domain + new_image.url
+        return 'foo'
 
     @property
     def phone_thumb(self):
         '''
         Thumbnail for image on phone screens.
         '''
-        return self.resize_image('100')
+        image = Resize(self.image)
+        return Resize.gallery_phone(image)
 
 
     @property
@@ -333,21 +405,40 @@ class TourStopMedia(models.Model):
         '''
         Detail image for gallery on phone.
         '''
-        return self.resize_image('300')
+        image = Resize(self.image)
+        return Resize.phone_full(image)
 
     @property
     def tablet_thumb(self):
         '''
         Thumbnail for image on tablet screens.
         '''
-        return self.resize_image('400')
+        image = Resize(self.image)
+        return Resize.gallery_tablet(image)
 
     @property
     def tablet_full(self):
         '''
         Detail image for gallery on phone.
         '''
-        return self.resize_image('600')
+        image = Resize(self.image)
+        return Resize.tablet_full(image)
+
+    @property
+    def desktop_thumb(self):
+        '''
+        Thumbnail for image on tablet screens.
+        '''
+        image = Resize(self.image)
+        return Resize.gallery_desktop(image)
+
+    @property
+    def desktop_full(self):
+        '''
+        Thumbnail for image on tablet screens.
+        '''
+        image = Resize(self.image)
+        return Resize.desktop_full(image)
 
     def save(self, *args, **kwargs):
         # override save method to resize image and generate thumbnail
