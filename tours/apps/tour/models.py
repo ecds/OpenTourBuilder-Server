@@ -169,11 +169,21 @@ def validate_https(value):
         raise ValidationError('Make sure your embed link uses HTTPS.')
 
 class TourInfo(models.Model):
+
+    ICON_CHOICES = (
+        ('fa-info-circle', 'Info'),
+        ('fa-certificate', 'Certificate'),
+        ('fa-circle-o-notch', 'Circle'),
+        ('fa-sticky-note', 'Sticky Note'),
+        ('fa-bookmark', 'Bookmark'),
+    )
+
     tour = models.ForeignKey(Tour, related_name='info_ids')
     name = models.CharField(max_length=50)
     description = HTMLField(blank=True, default='')
     position = models.PositiveSmallIntegerField("Position", blank=True, null=True)
     info_slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
+    icon = models.CharField(max_length=20, choices=ICON_CHOICES, default='fa-info-circle')
     
 
     class Meta:
@@ -299,6 +309,31 @@ class TourStop(models.Model):
     @property
     def desktop_default(self):
         return self.tour.desktop_default
+
+    @property
+    def phone_poster(self):
+        if self.video_poster:
+            image = Resize(self.video_poster)
+            return Resize.gallery_phone(image)
+        else:
+            return self.phone_default
+
+    @property
+    def tablet_poster(self):
+        if self.video_poster:
+            image = Resize(self.video_poster)
+            return Resize.gallery_tablet(image)
+        else:
+            return self.tablet_default
+
+    @property
+    def desktop_poster(self):
+        if self.video_poster:
+            image = Resize(self.video_poster)
+            return Resize.gallery_desktop(image)
+        else:
+            return self.desktop_default
+    
 
     @property
     def placeholder(self):

@@ -22,7 +22,7 @@ class ModeSerializer(serializers.ModelSerializer):
 class MediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = TourStopMedia
-        fields = ('title', 'label', 'href', 'original_image', 'size', 'image_preview', \
+        fields = ('id', 'title', 'label', 'href', 'original_image', 'size', 'image_preview', \
                 'position', 'phone_thumb', 'phone_full', 'tablet_thumb', \
                 'tablet_full', 'desktop_thumb', 'desktop_full', 'caption', 'size', 'placeholder')
 
@@ -49,9 +49,10 @@ class TourStopSerializer(serializers.ModelSerializer):
                 'direction_modes', 'stop_link', \
                 'position', 'page', 'images', 'next_stop', \
                 'previous_stop', 'intro', 'slug', 'phone_default', \
-                'tablet_default', 'desktop_default', 'placeholder')
+                'tablet_default', 'desktop_default', 'placeholder', \
+                'phone_poster', 'tablet_poster', 'desktop_poster')
 
 class TourInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = TourInfo
-        fields = ('id', 'name', 'description', 'position')
+        fields = ('id', 'name', 'description', 'position', 'icon')

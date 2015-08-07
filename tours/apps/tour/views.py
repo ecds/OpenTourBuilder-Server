@@ -12,7 +12,7 @@ from tours.apps.tour.models import Tour, TourInfo, TourStop, TourStopMedia, Dire
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from tours.apps.tour.serializers import ToursSerializer, TourStopSerializer, TourInfoSerializer
+from tours.apps.tour.serializers import ToursSerializer, TourStopSerializer, TourInfoSerializer, MediaSerializer
 
 '''
 Decerator that will only display a tour if:
@@ -204,9 +204,21 @@ class TourInfoDetail(APIView):
             raise Http404
         return Response(serializer.data)
 
+class ImageDetail(APIView):
+    """
+    Retrieve an image instance.
+    """
+
+    def get(self, request, id, format=None):
+        try:
+            image = TourStopMedia.objects.get(pk=id)
+            serializer = MediaSerializer(image)
+        except TourStopMedia.DoesNotExist:
+            raise Http404
+        return Response(serializer.data)
+
 def tour_geojson(request, slug):
 
-    print '!!!!!!!!!!!!\n%s\n!!!!!!!!!!!!!!!!!' % slug
 
     tour = get_object_or_404(Tour, slug=slug)
 

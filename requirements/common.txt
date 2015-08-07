@@ -16,5 +16,4 @@ django-filter
 # Add on to make the DRF structure what EmberJS wants.
 rest-framework-ember
 django-cors-headers
-sorl-thumbnail
 humanize
