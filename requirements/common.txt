@@ -17,3 +17,4 @@ django-filter
 rest-framework-ember
 django-cors-headers
 humanize
+coverage
