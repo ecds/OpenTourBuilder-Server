@@ -4,7 +4,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.core.files import File
 from django.db import models
-from django.db.utils import ProgrammingError
+from django.db.utils import ProgrammingError, OperationalError
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import strip_tags, escape
 from django.template.defaultfilters import slugify
@@ -49,9 +49,8 @@ def get_options():
         for mode in modes:
             #print(mode.mode)
             options.insert(0, (mode.mode, mode.mode))
-    except ProgrammingError:
+    except OperationalError:
         pass
-    #print(options)
     return options
 
 
@@ -121,38 +120,38 @@ class Tour(models.Model):
         else:
             return False
 
-    @property
-    def phone_default(self):
-        '''
-        Thumbnail for image on phone screens.
-        '''
-        if self.splashimage:
-            image = Resize(self.splashimage)
-            return Resize.gallery_phone(image)
-        else:
-            return False
+    # @property
+    # def phone_default(self):
+    #     '''
+    #     Thumbnail for image on phone screens.
+    #     '''
+    #     if self.splashimage:
+    #         image = Resize(self.splashimage)
+    #         return Resize.gallery_phone(image)
+    #     else:
+    #         return False
 
-    @property
-    def tablet_default(self):
-        '''
-        Thumbnail for image on phone screens.
-        '''
-        if self.splashimage:
-            image = Resize(self.splashimage)
-            return Resize.gallery_tablet(image)
-        else:
-            return False
+    # @property
+    # def tablet_default(self):
+    #     '''
+    #     Thumbnail for image on phone screens.
+    #     '''
+    #     if self.splashimage:
+    #         image = Resize(self.splashimage)
+    #         return Resize.gallery_tablet(image)
+    #     else:
+    #         return False
 
-    @property
-    def desktop_default(self):
-        '''
-        Thumbnail for image on phone screens.
-        '''
-        if self.splashimage:
-            image = Resize(self.splashimage)
-            return Resize.gallery_desktop(image)
-        else:
-            return False
+    # @property
+    # def desktop_default(self):
+    #     '''
+    #     Thumbnail for image on phone screens.
+    #     '''
+    #     if self.splashimage:
+    #         image = Resize(self.splashimage)
+    #         return Resize.gallery_desktop(image)
+    #     else:
+    #         return False
     
     
 def new_position(instance, tour_id):
@@ -276,7 +275,7 @@ class TourStop(models.Model):
 
     @property
     def stop_link(self):
-        return '/tour/%s/%s' % (self.tour_slug, self.pk)
+        return '/tour/%s/%s' % (self.tour.slug, self.pk)
 
     @property
     def direction_modes(self):
@@ -300,15 +299,15 @@ class TourStop(models.Model):
 
     @property
     def phone_default(self):
-        return self.tour.phone_default
+        return self.tour.phone_splash
 
     @property
     def tablet_default(self):
-        return self.tour.tablet_default
+        return self.tour.tablet_splash
 
     @property
     def desktop_default(self):
-        return self.tour.desktop_default
+        return self.tour.desktop_splash
 
     @property
     def phone_poster(self):
@@ -388,7 +387,7 @@ class TourStopMedia(models.Model):
     @property
     def size(self):
         '''
-        Returs the file size of origianl image so user can be
+        Returns the file size of origianl image so user can be
         warned before loading original.
         '''
         size = os.path.getsize('%s/%s' % (settings.MEDIA_ROOT, self.image))

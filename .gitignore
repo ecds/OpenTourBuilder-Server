@@ -8,3 +8,5 @@ mydatabase
 *.DS_Store
 data.json
 tours.komodoproject
+.coverage
+otb-test

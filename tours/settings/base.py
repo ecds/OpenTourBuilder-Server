@@ -43,6 +43,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 UPLOAD_TO = os.path.join(BASE_DIR, 'media/upload')
@@ -151,6 +152,11 @@ INSTALLED_APPS = (
 )
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=tours',
+]
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,

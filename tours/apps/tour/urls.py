@@ -1,7 +1,6 @@
 # file tours/apps/tour/urls.py
 
-#from django.conf.urls.defaults import *
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 from tours.apps.tour.views import TourList, TourDetail, TourStopDetail, TourInfoDetail, ImageDetail, tour_geojson
 
