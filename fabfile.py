@@ -163,8 +163,8 @@ def configure_site():
     'Copy configuration files into the remote source tree.'
     with cd(env.remote_path):
         if not files.exists('localsettings.py'):
-            abort('Configuration file is not in expected location: %(remote_path)s/localsettings.py' % env)
-        sudo('cp localsettings.py %(build_dir)s/%(project)s/localsettings.py' % env,
+            abort('Configuration file is not in expected location: %(remote_path)s/local.py' % env)
+        sudo('cp local.py %(build_dir)s/%(project)s/settings/local.py' % env,
              user=env.remote_acct)
 
     with prefix('source /opt/rh/python27/enable'):
