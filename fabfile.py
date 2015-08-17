@@ -8,7 +8,7 @@ from fabric.colors import green, yellow
 from fabric.context_managers import cd, hide, settings
 from fabric.contrib import files
 from fabric.contrib.console import confirm
-import danowski
+import tours
 
 ##
 # automated build/test tasks
@@ -51,18 +51,18 @@ def build():
 # deploy tasks
 ##
 
-env.project = 'danowski'
+env.project = 'OpenTourBuilder-Server'
 env.rev_tag = ''
 env.git_rev = ''
-env.remote_path = '/home/httpd/sites/danowski'
+env.remote_path = '/home/httpd/sites/tours'
 env.url_prefix = None
 env.remote_proxy = None
-env.remote_acct = 'danowski'
+env.remote_acct = 'tours'
 
 def configure(path=None, user=None, url_prefix=None, remote_proxy=None):
     'Configuration settings used internally for the build.'
 
-    env.version = danowski.__version__
+    env.version = tours.__version__
     config_from_git()
     # construct a unique build directory name based on software version and git revision
     env.build_dir = '%(project)s-%(version)s%(rev_tag)s' % env
@@ -84,7 +84,7 @@ def config_from_git():
     """Infer revision from local git checkout."""
     # if not a released version, use revision tag
     env.git_rev = local('git rev-parse --short HEAD', capture=True).strip()
-    if danowski.__version_info__[-1]:
+    if tours.__version_info__[-1]:
         env.rev_tag = '-r' + env.git_rev
 
 
@@ -213,17 +213,17 @@ def deploy(path=None, user=None, url_prefix='', remote_proxy=None):
 Parameters:
 path: base deploy directory on remote host; deploy expects a
 localsettings.py file in this directory
-Default: env.remote_path = /home/httpd/sites/danowski
+Default: env.remote_path = /home/httpd/sites/tours
 user: user on the remote host to run the deploy; ssh user (current or
 specified with -U option) must have sudo permission to run deploy
 tasks as the specified user
-Default: danowski
+Default: tours
 url_prefix: base url if site is not deployed at /
 remote_proxy: HTTP proxy that can be used for pip/virtualenv
 installation on the remote server (server:port)
 
 Example usage:
-fab deploy:/home/danowski/,dani -H servername
+fab deploy:/home/tours/,dani -H servername
 fab deploy:user=www-data,url_prefix=/fa -H servername
 fab deploy:remote_proxy=some.proxy.server:3128 -H servername
 
