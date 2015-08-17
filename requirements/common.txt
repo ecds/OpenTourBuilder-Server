@@ -1,5 +1,5 @@
 # requirements/common.txt
-Django==1.8
+Django
 South
 django-admin-bootstrapped
 django-autoslug
