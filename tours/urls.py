@@ -8,8 +8,6 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
-    url(r'^$', 'tours.apps.common.views.site_index', name='site_index'),
 
     url(r'^v1/', include('tours.apps.tour.urls', namespace="tour")),
 
