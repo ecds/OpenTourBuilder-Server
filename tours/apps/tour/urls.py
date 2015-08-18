@@ -2,7 +2,7 @@
 
 from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
-from tours.apps.tour.views import TourList, TourDetail, TourStopDetail, TourInfoDetail, ImageDetail, tour_geojson
+from tours.apps.tour.views import TourList, TourDetail, TourStopDetail, TourInfoDetail, ImageDetail, SearchTourStop, tour_geojson
 
 urlpatterns = [
     url(r'^tourLists/$', TourList.as_view()),
@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^tourStopDetails/(?P<id>\d+)$', TourStopDetail.as_view(), name="tour_stop_details"),
     url(r'^tourInfoDetails/(?P<id>\d+)$', TourInfoDetail.as_view(), name="tour_info_details"),
     url(r'^imageDetails/(?P<id>\d+)$', ImageDetail.as_view(), name="tour_image_details"),
+    url(r'^search/(?P<search>.+)/$', SearchTourStop.as_view(), name="search_tour_stop"),
     url(r'^tour_geojson/(?P<slug>.+)/$', tour_geojson, name='tour_geojson'),
 ]
 

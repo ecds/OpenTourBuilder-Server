@@ -8,10 +8,13 @@ from django.http import HttpResponse, HttpResponseForbidden, Http404, StreamingH
 from django.core.context_processors import csrf
 from django.conf import settings
 from tours.apps.tour.models import Tour, TourInfo, TourStop, TourStopMedia, DirectionsMode
+from django.db.models import Q
 
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework_word_filter import FullWordSearchFilter
 from tours.apps.tour.serializers import ToursSerializer, TourStopSerializer, TourInfoSerializer, MediaSerializer
 
 ######################
@@ -81,6 +84,19 @@ class ImageDetail(APIView):
         try:
             image = TourStopMedia.objects.get(pk=id)
             serializer = MediaSerializer(image)
+        except TourStopMedia.DoesNotExist:
+            raise Http404
+        return Response(serializer.data)
+
+class SearchTourStop(APIView):
+    """
+    Search Tour Stop names and descriptions.
+    """
+    def get(self, request, search, format=None):
+        print "*************\n\n\n\n%s\n\n\n\n\n*************" % search
+        try:
+            search_result = TourStop.objects.filter(Q(name__icontains=search) | Q(description__icontains=search))
+            serializer = TourStopSerializer(search_result, many=True)
         except TourStopMedia.DoesNotExist:
             raise Http404
         return Response(serializer.data)

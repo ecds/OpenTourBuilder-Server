@@ -138,6 +138,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
 
     'rest_framework',
+    'rest_framework_word_filter',
     'corsheaders',
 
     #'storages',

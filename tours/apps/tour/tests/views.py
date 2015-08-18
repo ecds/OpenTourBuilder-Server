@@ -18,6 +18,8 @@ import nose.tools as nt
 
 from tours.apps.tour.models import Tour, TourInfo, TourStop, TourStopMedia, DirectionsMode
 
+logger = logging.getLogger(__name__)
+
 def getJsonString(response):
     """
     Running the response though this will enusre it is valid json.
@@ -73,3 +75,14 @@ class TourViewsTestCase(DjangoTestCase):
         response = self.client.get(test_image)
         nt.eq_(response.status_code, 200, msg="Tour Image Detail view should respond with 200 for %s %s" % (test_image, response.status_code))
         nt.assert_true(getJsonString(response))
+
+    def test_search(self):
+        search = reverse('tour:search_tour_stop', kwargs={'search': 'Burritos'})
+        response = self.client.get(search)
+        nt.eq_(response.status_code, 200, msg="Search view should respond with 200 for %s %s" % (search, response.status_code))
+        nt.assert_true(getJsonString(response))
+        data = getJsonString(response.content)
+        nt.eq_((data['searchTourStop'][1]['name']), 'Bell Street Burritos')
+        nt.eq_((data['searchTourStop'][0]['name']), 'Elmyr')
+
+
