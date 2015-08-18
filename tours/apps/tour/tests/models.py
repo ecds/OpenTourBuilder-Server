@@ -30,19 +30,17 @@ class TourTestCase(DjangoTestCase):
         nt.eq_(self.tour.slug, "battle-of-atlanta")
         nt.eq_(self.tour.slug_class, ".battle-of-atlanta")
 
-        logger.info(self.tour.phone_splash)
-
-        nt.eq_(self.tour.phone_splash, 'example.com/media/tours/phone/465-465-sharknado.jpg')
+        nt.eq_(self.tour.phone_splash, 'example.com/media/tours/phone/465-465-epic_wizard_riding_shark_surfing_raptor.png')
         phone_splash = Image.open('%s/tours/phone/%s' % (settings.MEDIA_ROOT, self.tour.phone_splash.split('/')[-1]))
-        nt.eq_(phone_splash.size, (326, 465))
+        nt.eq_(phone_splash.size, (465, 361))
 
-        nt.eq_(self.tour.tablet_splash, 'example.com/media/tours/tablet/650-650-sharknado.jpg')
+        nt.eq_(self.tour.tablet_splash, 'example.com/media/tours/tablet/650-650-epic_wizard_riding_shark_surfing_raptor.png')
         tablet_splash = Image.open('%s/tours/tablet/%s' % (settings.MEDIA_ROOT, self.tour.tablet_splash.split('/')[-1]))
-        nt.eq_(tablet_splash.size, (456, 650))
+        nt.eq_(tablet_splash.size, (650, 505))
 
         nt.eq_(self.tour.desktop_splash, 'example.com/media/%s' % self.tour.splashimage)
         desktop_splash = Image.open('%s/tours/%s' % (settings.MEDIA_ROOT, self.tour.desktop_splash.split('/')[-1]))
-        nt.eq_(desktop_splash.size, (1000, 1426))
+        nt.eq_(desktop_splash.size, (1600, 1244))
 
         shutil.rmtree('%s/tours/phone' % settings.MEDIA_ROOT)
         shutil.rmtree('%s/tours/tablet' % settings.MEDIA_ROOT)

@@ -34,8 +34,7 @@ class ToursSerializer(serializers.ModelSerializer):
         model = Tour
         fields = ('id', 'name', 'slug', 'description', 'stop_ids', \
                 'info_ids', 'modes', 'published', 'geospatial', 'slug_class', \
-                'phone_splash', 'tablet_splash', 'desktop_splash', \
-                'phone_default', 'tablet_default', 'desktop_default')
+                'phone_splash', 'tablet_splash', 'desktop_splash')
 
 class TourStopSerializer(serializers.ModelSerializer):
     images = MediaSerializer(many=True)
