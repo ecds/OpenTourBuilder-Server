@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'tours.apps.common.views.site_index', name='site_index'),
 
-    url(r'^tour/', include('tours.apps.tour.urls', namespace="tour")),
+    url(r'^v1/', include('tours.apps.tour.urls', namespace="tour")),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
@@ -23,9 +23,9 @@ urlpatterns = patterns('',
     (r'^tinymce/', include('tinymce.urls')),
 )
 
-if settings.DEBUG:
-    urlpatterns += patterns('',
-        url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
-            'document_root': settings.MEDIA_ROOT,
-        }),
-   )
+# if settings.DEBUG:
+#     urlpatterns += patterns('',
+#         url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+#             'document_root': settings.MEDIA_ROOT,
+#         }),
+#    )

@@ -7,7 +7,9 @@
             "description": "A stop in atlanta for the tour",
             "tour": 1,
             "position": 0,
-            "video_embed": "https://youtube.com/embed/67yreTZGsxM"
+            "slug": "atlanta",
+            "lat": 33,
+            "lng": -84
         }
     },
     {
@@ -18,7 +20,7 @@
             "description": "A stop in Boston for the tour",
             "tour": 1,
             "position": 1,
-            "video_embed": "https://youtube.com/embed/67yreTZGsxM"
+            "slug": "boston"
         }
     },
     {
@@ -29,7 +31,7 @@
             "description": "A stop in Topeka for the tour",
             "tour": 1,
             "position": 2,
-            "video_embed": "https://youtube.com/embed/67yreTZGsxM"
+            "slug": "topeka"
         }
     }
 ]

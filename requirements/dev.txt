@@ -1,4 +1,2 @@
 # requirements/dev.txt
 -r common.txt
-MySQL-python
-django-debug-toolbar==0.9.4

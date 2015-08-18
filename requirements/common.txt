@@ -1,5 +1,5 @@
 # requirements/common.txt
-Django==1.6
+Django
 South
 django-admin-bootstrapped
 django-autoslug
@@ -10,3 +10,11 @@ python-magic
 MySQL-python
 django-debug-toolbar
 django-nose
+djangorestframework
+markdown
+django-filter
+# Add on to make the DRF structure what EmberJS wants.
+rest-framework-ember
+django-cors-headers
+humanize
+coverage
