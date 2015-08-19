@@ -1,0 +1,50 @@
+# This is a template file for an apache deployment. If you run the installer (https://github.com/emory-libraries-ecds/OpenTourBuilder-Installer), the values will be filled in for you and saved as `apache/otb.conf`.
+
+######################
+# Config for backend #
+######################
+
+WSGIDaemonProcess opentourbuilder-$proc python-path=$path/venv/lib/python2.7/site-packages:$path user=www-data threads=10 maximum-requests=1000 inactivity-timeout=300
+
+<VirtualHost *:80>
+    ServerName api.$domain
+
+    WSGIScriptAlias / $path/apache/tours.wsgi
+    <Location />
+        WSGIProcessGroup opentourbuilder-$proc
+        Allow from all
+    </Location>
+
+    Alias /static/ $path/tours/static/
+
+    <Directory $path/tours/static/>
+        Order allow,deny
+        Allow from all
+    </Directory>
+
+    Alias /media/ $path/tours/media/
+
+    <Directory $path/tours/media/>
+        Order allow,deny
+        Allow from all
+    </Directory>
+
+</VirtualHost>
+
+########################
+# Config for front end #
+########################
+
+<VirtualHost *:80>
+    ServerName $domain
+    DocumentRoot $client-end-path
+    <Directory /data/clients/otb/public>
+        Require all granted
+        Allow from all
+        Options -MultiViews
+        RewriteEngine On
+        RewriteBase /
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule ^(.*)$ /#$1 [L]
+    </Directory>
+</VirtualHost>
