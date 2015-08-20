@@ -54,10 +54,21 @@ class TourStopDetail(APIView):
     Retrieve a tour stop instance
     """
 
-    def get(self, request, id, format=None):
+    def get(self, request, format=None, *args, **kwargs):
         try:
-            tour_stop = TourStop.objects.get(pk=id)
-            serializer = TourStopSerializer(tour_stop)
+            if 'id' in kwargs:
+                tour_stop = TourStop.objects.get(pk=kwargs["id"])
+                serializer = TourStopSerializer(tour_stop)
+
+            elif 'search' in kwargs:
+                search_term = self.request.query_params.get('search', None)
+     
+                search_result = TourStop.objects.filter( \
+                    Q(name__icontains=search_term) | \
+                    Q(description__icontains=search_term))
+
+                serializer = TourStopSerializer(search_result, many=True)
+
         except TourStop.DoesNotExist:
             raise Http404
         return Response(serializer.data)
@@ -84,19 +95,6 @@ class ImageDetail(APIView):
         try:
             image = TourStopMedia.objects.get(pk=id)
             serializer = MediaSerializer(image)
-        except TourStopMedia.DoesNotExist:
-            raise Http404
-        return Response(serializer.data)
-
-class SearchTourStop(APIView):
-    """
-    Search Tour Stop names and descriptions.
-    """
-    def get(self, request, search, format=None):
-        print "*************\n\n\n\n%s\n\n\n\n\n*************" % search
-        try:
-            search_result = TourStop.objects.filter(Q(name__icontains=search) | Q(description__icontains=search))
-            serializer = TourStopSerializer(search_result, many=True)
         except TourStopMedia.DoesNotExist:
             raise Http404
         return Response(serializer.data)

@@ -77,12 +77,12 @@ class TourViewsTestCase(DjangoTestCase):
         nt.assert_true(getJsonString(response))
 
     def test_search(self):
-        search = reverse('tour:search_tour_stop', kwargs={'search': 'Burritos'})
-        response = self.client.get(search)
+        search = reverse('tour:tour_stop_details', kwargs={'search': ''})
+        response = self.client.get(search, {'search': 'Burritos'})
         nt.eq_(response.status_code, 200, msg="Search view should respond with 200 for %s %s" % (search, response.status_code))
         nt.assert_true(getJsonString(response))
         data = getJsonString(response.content)
-        nt.eq_((data['searchTourStop'][1]['name']), 'Bell Street Burritos')
-        nt.eq_((data['searchTourStop'][0]['name']), 'Elmyr')
+        nt.eq_((data['tourStopDetail'][1]['name']), 'Bell Street Burritos')
+        nt.eq_((data['tourStopDetail'][0]['name']), 'Elmyr')
 
 
