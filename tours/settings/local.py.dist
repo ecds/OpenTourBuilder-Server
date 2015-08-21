@@ -1,10 +1,26 @@
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': '$db_database',
-        'USER': '$db_user',
-        'PASSWORD': '$db_password',
-        'HOST': '$db_host',
-        'PORT': '$db_port',
+from sys import argv
+from os.path import join, abspath, dirname
+
+BASE_DIR = abspath(dirname(__file__) + "/../")
+
+if 'test' in argv:
+    DATABASES = {
+    	'default': {
+    		'ENGINE': 'django.db.backends.sqlite3',
+    		'NAME': 'otb-test'
+    	}
     }
-}
+
+    MEDIA_ROOT = join(BASE_DIR, 'apps/tour/fixtures/media')
+
+else:
+	DATABASES = {
+	    'default': {
+	        'ENGINE': 'django.db.backends.mysql',
+	        'NAME': '$db_database',
+	        'USER': '$db_user',
+	        'PASSWORD': '$db_password',
+	        'HOST': '$db_host',
+	        'PORT': '$db_port',
+	    }
+	}
