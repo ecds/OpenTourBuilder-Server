@@ -43,13 +43,14 @@ class DirectionsMode(models.Model):
 def get_options():
 
     # This is sort of a hack to make the syncdb work.
+    # This really needs to get fixed ond day.
     options = []
     try:
         modes = DirectionsMode.objects.all()
         for mode in modes:
             #print(mode.mode)
             options.insert(0, (mode.mode, mode.mode))
-    except OperationalError:
+    except (OperationalError, ProgrammingError):
         pass
     return options
 
@@ -278,6 +279,10 @@ class TourStop(models.Model):
         return '/tour/%s/%s' % (self.tour.slug, self.pk)
 
     @property
+    def tour_slug(self):
+        return self.tour.slug
+
+    @property
     def direction_modes(self):
         tour_modes = self.tour.modes.all()
         modes = []
@@ -338,8 +343,7 @@ class TourStop(models.Model):
     def placeholder(self):
         return Site.objects.get_current().domain + \
                 settings.MEDIA_URL + \
-                'placeholder.png'
-    
+                'placeholder.png'   
 
     def save(self, force_insert=False, force_update=False):
         if self.position == None:# and self.tour:
