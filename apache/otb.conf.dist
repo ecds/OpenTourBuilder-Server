@@ -4,27 +4,27 @@
 # Config for backend #
 ######################
 
-WSGIDaemonProcess opentourbuilder-$proc python-path=$path/venv/lib/python2.7/site-packages:$path user=www-data threads=10 maximum-requests=1000 inactivity-timeout=300
+WSGIDaemonProcess opentourbuilder-$proc python-path=$pathvenv/lib/python2.7/site-packages:$path user=www-data threads=10 maximum-requests=1000 inactivity-timeout=300
 
 <VirtualHost *:80>
     ServerName api.$domain
 
-    WSGIScriptAlias / $path/apache/tours.wsgi
+    WSGIScriptAlias / $pathapache/tours.wsgi
     <Location />
         WSGIProcessGroup opentourbuilder-$proc
         Allow from all
     </Location>
 
-    Alias /static/ $path/tours/static/
+    Alias /static/ $pathtours/static/
 
-    <Directory $path/tours/static/>
+    <Directory $pathtours/static/>
         Order allow,deny
         Allow from all
     </Directory>
 
-    Alias /media/ $path/tours/media/
+    Alias /media/ $pathtours/media/
 
-    <Directory $path/tours/media/>
+    <Directory $pathtours/media/>
         Order allow,deny
         Allow from all
     </Directory>
@@ -37,7 +37,7 @@ WSGIDaemonProcess opentourbuilder-$proc python-path=$path/venv/lib/python2.7/sit
 
 <VirtualHost *:80>
     ServerName $domain
-    DocumentRoot $client-end-path
+    DocumentRoot $client-path
     <Directory /data/clients/otb/public>
         Require all granted
         Allow from all
