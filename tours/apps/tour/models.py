@@ -244,7 +244,11 @@ class TourStop(models.Model):
     @property
     def geospatial(self):
         return self.tour.geospatial
-    
+
+    @property
+    def published(self):
+        return self.tour.published
+
     @property
     def intro(self):
         return self.position == 0

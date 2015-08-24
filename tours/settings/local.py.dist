@@ -24,3 +24,5 @@ else:
 	        'PORT': '$db_port',
 	    }
 	}
+
+CORS_ORIGIN_ALLOW_ALL = True
