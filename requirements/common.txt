@@ -19,3 +19,4 @@ django-cors-headers
 humanize
 coverage
 djangorestframework-word-filter
+MySQL-python
