@@ -1,38 +1,25 @@
 # file tours/apps/tour/models.py
 
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
-from django.core.files import File
 from django.db import models
 from django.db.utils import ProgrammingError, OperationalError
 from django.utils.translation import ugettext_lazy as _
-from django.utils.html import strip_tags, escape
 from django.template.defaultfilters import slugify
 from django.conf import settings
-from django.db.models import Max
-from django import forms
-from django.core.validators import ValidationError, RegexValidator, MaxLengthValidator, URLValidator
+from django.core.validators import ValidationError, MaxLengthValidator
 from django.contrib.sites.models import Site
 
 # third party imports
 from autoslug import AutoSlugField
 from tinymce.models import HTMLField
-from PIL import Image
-import tempfile
+
 
 from tours.apps.common.Resizers import Resize
 
 from humanize import naturalsize
 
-import re
 import os
 
-
-from cStringIO import StringIO
-
-def validate_twitter(value):
-    if '@' in value:
-        raise ValidationError('Do not include the @ in your Twitter Account')
 
 class DirectionsMode(models.Model):
     mode = models.CharField(max_length=50)
@@ -67,9 +54,6 @@ class Tour(models.Model):
     slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
     modes = models.ManyToManyField(DirectionsMode, related_name='modes')
     default_mode = models.CharField(max_length = 50, choices = options(), blank=True, default='')
-    fb_app_id = models.CharField(max_length=50, blank=True)
-    fb_page_id = models.CharField(max_length=50, blank=True)
-    twitter_acct = models.CharField(max_length=50, blank=True, validators=[validate_twitter])
     google_analytics = models.TextField(blank=True, default='')
     splashimage = models.ImageField(upload_to='tours/', blank=True, default='')
 
@@ -119,41 +103,7 @@ class Tour(models.Model):
             image = Resize(self.splashimage)
             return Resize.splash_desktop(image)
         else:
-            return False
-
-    # @property
-    # def phone_default(self):
-    #     '''
-    #     Thumbnail for image on phone screens.
-    #     '''
-    #     if self.splashimage:
-    #         image = Resize(self.splashimage)
-    #         return Resize.gallery_phone(image)
-    #     else:
-    #         return False
-
-    # @property
-    # def tablet_default(self):
-    #     '''
-    #     Thumbnail for image on phone screens.
-    #     '''
-    #     if self.splashimage:
-    #         image = Resize(self.splashimage)
-    #         return Resize.gallery_tablet(image)
-    #     else:
-    #         return False
-
-    # @property
-    # def desktop_default(self):
-    #     '''
-    #     Thumbnail for image on phone screens.
-    #     '''
-    #     if self.splashimage:
-    #         image = Resize(self.splashimage)
-    #         return Resize.gallery_desktop(image)
-    #     else:
-    #         return False
-    
+            return False    
     
 def new_position(instance, tour_id):
     return TourStop.objects.filter(tour_id=tour_id).count()
@@ -195,9 +145,6 @@ class TourInfo(models.Model):
 
     def __unicode__(self):
         return "%s - %s" % (self.name, self.tour.name)
-
-    def get_absolute_url(self):
-        return reverse('tour:info-detail', kwargs={"slug":  self.tour.slug, "info": self.info_slug})
     
     def save(self, force_insert=False, force_update=False):
         if self.position == None:# and self.tour:

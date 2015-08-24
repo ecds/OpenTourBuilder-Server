@@ -29,6 +29,9 @@ class TourTestCase(DjangoTestCase):
         nt.eq_(self.tour.description, "A tour of the Battle of Atlanta")
         nt.eq_(self.tour.slug, "battle-of-atlanta")
         nt.eq_(self.tour.slug_class, ".battle-of-atlanta")
+        nt.eq_(self.tour.geospatial, True)
+        nt.eq_(self.tour.default_mode, 'bicycling')
+        nt.eq_(self.tour.google_analytics, 'some code')
 
         nt.eq_(self.tour.phone_splash, 'example.com/media/tours/phone/465-465-epic_wizard_riding_shark_surfing_raptor.png')
         phone_splash = Image.open('%s/tours/phone/%s' % (settings.MEDIA_ROOT, self.tour.phone_splash.split('/')[-1]))
@@ -68,6 +71,21 @@ class TourStopTestCase(DjangoTestCase):
         nt.eq_(tourstop.direction_modes, ['DRIVING', 'BICYCLING'])
         nt.eq_(tourstop.geospatial, True)
         nt.eq_(tourstop.intro, True)
+        nt.eq_(tourstop.description, 'A stop in atlanta for the tour')
+        nt.eq_(tourstop.tour.name, 'Battle of Atlanta')
+        nt.eq_(tourstop.position, 0)
+        nt.eq_(tourstop.slug, 'atlanta')
+        nt.eq_(tourstop.lat, 33)
+        nt.eq_(tourstop.lng, -84)
+        nt.eq_(tourstop.park_lat, 33)
+        nt.eq_(tourstop.park_lng, -84)
+        nt.eq_(tourstop.directions_intro, 'some intro for directions')
+        nt.eq_(tourstop.direction_notes, 'some notes for directions')
+        nt.eq_(tourstop.video_embed, '1a2b3c4d')
+
+        nt.eq_(tourstop.phone_poster, 'example.com/media/stops/phone/250-250-puft_vs_godzilla.png')
+        poster = Image.open('%s/stops/%s' % (settings.MEDIA_ROOT, tourstop.phone_poster.split('/')[-1]))
+        nt.eq_(poster.size, (1600, 1244))
 
 class TourInfoTestCase(DjangoTestCase):
     fixtures = ["tours", "tour_info"]
@@ -76,6 +94,10 @@ class TourInfoTestCase(DjangoTestCase):
         tourinfo = TourInfo.objects.get(pk=1)
         nt.assert_true(isinstance(tourinfo, TourInfo))
         nt.eq_(tourinfo.icon, 'fa-info-circle')
+        nt.eq_(tourinfo.name, 'About')
+        nt.eq_(tourinfo.tour.name, 'Battle of Atlanta')
+        nt.eq_(tourinfo.position, 0)
+        nt.eq_(tourinfo.info_slug, 'about')
 
 class TourStopMediaCase(DjangoTestCase):
     fixtures = ["tours", "tour_stops", "tour_stop_media"]
