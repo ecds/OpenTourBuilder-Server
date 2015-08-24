@@ -49,7 +49,8 @@ class TourStopSerializer(serializers.ModelSerializer):
                 'position', 'page', 'images', 'next_stop', \
                 'previous_stop', 'intro', 'slug', 'phone_default', \
                 'tablet_default', 'desktop_default', 'placeholder', \
-                'phone_poster', 'tablet_poster', 'desktop_poster', 'tour_slug')
+                'phone_poster', 'tablet_poster', 'desktop_poster', 'tour_slug', \
+                'published')
 
 class TourInfoSerializer(serializers.ModelSerializer):
     class Meta:
