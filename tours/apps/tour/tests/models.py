@@ -32,6 +32,7 @@ class TourTestCase(DjangoTestCase):
         nt.eq_(self.tour.geospatial, True)
         nt.eq_(self.tour.default_mode, 'bicycling')
         nt.eq_(self.tour.google_analytics, 'some code')
+        nt.eq_(self.tour.published, True)
 
         nt.eq_(self.tour.phone_splash, 'example.com/media/tours/phone/465-465-epic_wizard_riding_shark_surfing_raptor.png')
         phone_splash = Image.open('%s/tours/phone/%s' % (settings.MEDIA_ROOT, self.tour.phone_splash.split('/')[-1]))
@@ -82,10 +83,19 @@ class TourStopTestCase(DjangoTestCase):
         nt.eq_(tourstop.directions_intro, 'some intro for directions')
         nt.eq_(tourstop.direction_notes, 'some notes for directions')
         nt.eq_(tourstop.video_embed, '1a2b3c4d')
+        nt.eq_(tourstop.published, True)
 
         nt.eq_(tourstop.phone_poster, 'example.com/media/stops/phone/250-250-puft_vs_godzilla.png')
-        poster = Image.open('%s/stops/%s' % (settings.MEDIA_ROOT, tourstop.phone_poster.split('/')[-1]))
-        nt.eq_(poster.size, (1600, 1244))
+        phone_poster = Image.open('%s/stops/phone/%s' % (settings.MEDIA_ROOT, tourstop.phone_poster.split('/')[-1]))
+        nt.eq_(phone_poster.size, (250, 192))
+
+        nt.eq_(tourstop.tablet_poster, 'example.com/media/stops/tablet/400-400-puft_vs_godzilla.png')
+        tablet_poster = Image.open('%s/stops/tablet/%s' % (settings.MEDIA_ROOT, tourstop.tablet_poster.split('/')[-1]))
+        nt.eq_(tablet_poster.size, (400, 307))
+
+        nt.eq_(tourstop.desktop_poster, 'example.com/media/stops/desktop/600-600-puft_vs_godzilla.png')
+        desktop_poster = Image.open('%s/stops/desktop/%s' % (settings.MEDIA_ROOT, tourstop.desktop_poster.split('/')[-1]))
+        nt.eq_(desktop_poster.size, (600, 460))
 
 class TourInfoTestCase(DjangoTestCase):
     fixtures = ["tours", "tour_info"]
