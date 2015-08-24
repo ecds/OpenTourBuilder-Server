@@ -64,7 +64,6 @@ class TourStopDetail(APIView):
                 search_term = self.request.query_params.get('search', None)
      
                 search_result = TourStop.objects.filter( \
-                    Q(published=True),
                     Q(name__icontains=search_term) | \
                     Q(description__icontains=search_term))
 
