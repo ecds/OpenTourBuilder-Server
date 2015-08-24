@@ -1,296 +1,319 @@
-"""
-Script to install and configre OpenTourBuilder
-"""
-from __future__ import with_statement
-from sys import version_info, stdout
-import platform
-import subprocess
-import getpass
 import os
-from random import choice
-from string import lowercase
-from shutil import rmtree
+import re
+import shutil
 
+from fabric.api import abort, env, lcd, local, prefix, put, puts, \
+    require, run, sudo, task
+from fabric.colors import green, yellow
+from fabric.context_managers import cd, hide, settings
+from fabric.contrib import files
+from fabric.contrib.console import confirm
+import tours
 
-from fabric.api import task, puts, local
-from fabric.colors import green, red, cyan
-from fabric.operations import prompt
-# from fabric.context_managers import cd, hide, settings
-
-# List of system packages
-UBUNTU_PACKAGES = [
-    'build-essential',
-    'python-dev',
-    'python-setuptools',
-    'libjpeg8-dev',
-    'zlib1g-dev',
-    'libmysqlclient-dev'
-]
-REDHAT_PACKAGES = [
-    'python-devel',
-    'python-setuptools',
-    'libjpeg-devel',
-    'libzip'
-]
-
-# Git Hub repo for the server
-REPO = 'https://github.com/emory-libraries-ecds/OpenTourBuilder-Server.git'
-
-OTB_DIR = os.getcwd() + '/OpenTourBuilder-Server/'
-CLIENT_DIR = os.getcwd() + '/OpentTourBuilder-Client/'
-
-
-# auto install a package if a user wants to do so
-def install_package(package, platform):
-    install = prompt("\n\nDo you want to install " + package + "? (yes/no)")
-    if install[0].lower() == "y" and platform == "ubuntu":
-        puts(green('\nTrying to install ' + package))
-        local('sudo apt-get install -y ' + package)
-        puts(green('\nDone installing ' + package))
-    
-    elif install[0].lower() == "y" and (platform == "centos" or platform == "redhat"):
-        puts(green('\nTrying to install ' + package))
-        local('sudo yum install -y ' + package)
-        puts(green('\nDone installing ' + package))
-
-    elif install[0].lower() == "n" and platform == "ubuntu":
-        puts(red('Please, manually install these package before running this script again: sudo apt-get install ' + package))
-        exit()
-    elif install[0].lower() == "n" and (platform == "centos" or platform == "redhat"):
-        puts(red('Please, manually install this package before running this script again: sudo yum install ' + package))
-        exit()
-    else:
-        puts(red('Please, manually install required package before running this script again ' + package))
-        exit()
-
-
-def check_platform():
-    """
-    Check to see what platfom we are running
-    """
-    puts(green("Checking your platform..."))
-    return platform.dist()[0]
-
-def check_python_version():
-    """
-    Need to write a docstring
-    """
-    python_version = float('%s.%s' % (version_info[0], version_info[1]))
-    if python_version < 2.7 or python_version >= 3:
-        puts(red("Python 2.7 is required. Please check with your system administrator."))
-        exit()
-
-    else:
-        puts(green("Good, Python version is 2.7."))
-
-
-
-
-def check_packages(current_platform):
-    """
-    We need to see if the system has:
-        build-essential, mysql-client, python-dev, libmysqlclient-dev, \
-        libjpeg, zlib, pip, virtualevn and git
-    """
-    # We're going to handle pip a little differently as it is likely
-    # pip was not installed via the system's package manager.
-    puts(green('Checking if all necessary packages are installed...'))
-    pip = subprocess.check_output(["pip", "-V"])
-    length = len(UBUNTU_PACKAGES)
-    length2 = len(REDHAT_PACKAGES)
-    if current_platform.lower() == 'ubuntu':
-        for i, val in enumerate(UBUNTU_PACKAGES):
-            stdout.write("\r Currently checking" + val + ". Progress: %d/%d packages" %(i,length))
-            stdout.flush()
-            try:
-                subprocess.check_output(
-                    ["dpkg", "-s", val], stderr=subprocess.PIPE)
-            except subprocess.CalledProcessError:
-                install_package(val, current_platform)
-            
-
-
-    elif current_platform.lower() == 'redhat' \
-        or current_platform.lower() == 'centos':
-
-        for i, val in enumerate(REDHAT_PACKAGES):
-            stdout.write("\r Currently checking" + val + ". Progress: %d/%d packages" %(i,length2))
-            stdout.flush()
-            try:
-                subprocess.check_output(
-                    "rpm -qa | grep " + val, shell=True, stderr=subprocess.PIPE)
-            except subprocess.CalledProcessError:
-                install_package(val, current_platform)
-            
-
-    else:
-        puts(red("Cannot determine that the server's operating \
-            system is supported"))
-
-    # See above note about why the pip check is different and if it is not different then install virtualenv
-    if 'not installed' in pip:
-        install_package('python-pip', current_platform)
-        local("pip install virtualenv")
-    else:
-        local("pip install virtualenv")
-
-def check_mysql_connection(user, password, host, database, port):
-    """
-    Check that the MySQL connection works.
-    """
-    puts(green("Checking MySQL connection and packages"))
-    try:
-        import MySQLdb
-
-    except ImportError:
-        local("pip install MySQL-python")
-
-    try:
-        # If the port is the default we're going to leave it out of the config
-        # as most databases don't 
-        if port != '3306':
-            dbase = MySQLdb.connect(
-                host=host, port=port, user=user, passwd=password, db=database)
-        else:
-            dbase = MySQLdb.connect(
-                host=host, user=user, passwd=password, db=database)
-        cursor = dbase.cursor()
-        cursor.execute("SELECT VERSION()")
-        results = cursor.fetchone()
-        # Check if anything at all is returned
-        if results:
-            puts(green("MySQL connection successful."))
-            return True
-        else:
-            return False
-    except:
-        puts(red("ERROR IN CONNECTION"))
-        puts(red("Install cannot continue without valid database connection."))
-        puts(red("Please verify your database credentials and try again."))
-        exit()
-    puts(green("You are connected to MySQL Server"))
-    return False
-
-def clone():
-    """
-    Clone the server from Git Hub.
-    """
-    if os.path.exists(OTB_DIR):
-        rmtree(OTB_DIR)
-    puts(green("Downloading OpenTourBuilder-Server from GitHub."))
-    local('git clone %s -b develop' % REPO)
-
-def activate_venv(cmd):
-    """
-    Activate the virtualenv
-    """
-    local('source %svenv/bin/activate; %s' % (OTB_DIR, cmd))
-
-def setup_virtual_env():
-    """
-    Create the virtualenv.
-    """
-    puts(green("Setting up Virtual Environment"))
-    local('cd %s; virtualenv venv --no-site-packages' % OTB_DIR)
+##
+# automated build/test tasks
+##
 
 
 def all_deps():
     '''Locally install all dependencies.'''
-    puts(green("Installing all dependencies"))
-    activate_venv('pip install -r %srequirements.txt' % (OTB_DIR))
+    local('pip install -r requirements/dev.txt')
 
+    if os.path.exists('requirments/local.txt'):
+        local('pip install -r requirements /local.txt')
 
-def create_local_settings(user, password, host, database, port):
-    """
-    Take the user supplied database info and create the
-    local settings.
-    """
-    puts(green("Creating local settings..."))
-    local_settings = open('%stours/settings/local.py' % OTB_DIR, 'w+')
-
-    for line in open('%stours/settings/local.py.dist' % OTB_DIR, 'r'):
-        line = line.replace('$db_user', user)
-        line = line.replace('$db_password', password)
-        line = line.replace('$db_host', host)
-        line = line.replace('$db_database', database)
-        line = line.replace('$db_port', port)
-        local_settings.write(line)
-
-def setup_application():
-    """
-    Run the magage commads to get the application running
-    """
-    puts(green("Running the magage commads to get the application setup"))
-    activate_venv('python %smanage.py syncdb' % OTB_DIR)
-    activate_venv('python %smanage.py loaddata tours' % OTB_DIR)
-    if not os.path.exists('%stours/sitemedia' % OTB_DIR):
-        os.makedirs('%stours/sitemedia' % OTB_DIR)
-    activate_venv('python %smanage.py collectstatic --noinput' % OTB_DIR)
-
-def apache_config(domain):
-    """
-    Create a sample Apache config for the user.
-    $path = OTB_DIR
-    $domain # will need to add `api.` for django
-    $proc = maybe 4 random chars
-    $client-path = CLIENT_DIR
-    """
-
-    # Just incase the user put in the domain like `http://awesometour.com`
-    domain = domain.replace("http://", "").strip("/")
-
-    # A short set of random characters to append to the name of the
-    # wsgi process name
-    proc = ''.join(choice(lowercase) for i in range(4))
-
-    puts(green("Creating sample Apache config..."))
-    config_file = open('%sapache/otb.conf' % OTB_DIR, 'w+')
-
-    for line in open('%sapache/otb.conf.dist' % OTB_DIR, 'r'):
-        line = line.replace('$path', OTB_DIR)
-        line = line.replace('$domain', domain)
-        line = line.replace('$proc', proc)
-        line = line.replace('$client-path', CLIENT_DIR)
-        config_file.write(line)
 
 @task
-def install():
-    """
-    Task to run all the install tasks.
-    """
+def test():
+    '''Locally run all tests.'''
+    if os.path.exists('test-results'):
+        shutil.rmtree('test-results')
 
-    current_platform = check_platform()
-    check_python_version()
-    check_packages(current_platform)
+    local('python manage.py test --with-coverage --cover-package=%(project)s --cover-xml --with-xunit' \
+        % env)
 
-    clone()
 
-    setup_virtual_env()
+def doc():
+    '''Locally build documentation.'''
+    with lcd('doc'):
+        local('make clean html')
+
+
+@task
+def build():
+    '''Run a full local build/test cycle.'''
     all_deps()
+    test()
+    #doc()
 
-    puts(green('\nOK, looking good. Now let\'s configure our settings.'))
 
-    db_host = prompt("Enter the address of your database server. ", default="localhost")
-    db_user = prompt("Enter your database user name. ")
-    db_password = getpass.getpass("Enter your database user's password. ")
-    db_database = prompt("Enter the name of your database. ")
-    db_port = prompt("Enter the port for the database. ", default="3306")
+##
+# deploy tasks
+##
 
-    check_mysql_connection(db_user, db_password, db_host, db_database, db_port)
-    create_local_settings(db_user, db_password, db_host, db_database, db_port)
+env.project = 'OpenTourBuilder-Server'
+env.rev_tag = ''
+env.git_rev = ''
+env.remote_path = '/home/httpd/sites/tours'
+env.url_prefix = None
+env.remote_proxy = None
+env.remote_acct = 'tours'
 
-    setup_application()
+def configure(path=None, user=None, url_prefix=None, remote_proxy=None):
+    'Configuration settings used internally for the build.'
 
-    domain = prompt("Enter the domain for your site. [example: myawesometour.com] ")
+    env.version = tours.__version__
+    config_from_git()
+    # construct a unique build directory name based on software version and git revision
+    env.build_dir = '%(project)s-%(version)s%(rev_tag)s' % env
+    env.tarball = '%(project)s-%(version)s%(git_rev)s.tar.bz2' % env
 
-    apache_config(domain)
+    if path:
+        env.remote_path = path.rstrip('/')
+    if user:
+        env.remote_acct = user
+    if url_prefix:
+        env.url_prefix = url_prefix.rstrip('/')
+
+    if remote_proxy:
+        env.remote_proxy = remote_proxy
+        puts('Setting remote proxy to %(remote_proxy)s' % env)
+
+
+def config_from_git():
+    """Infer revision from local git checkout."""
+    # if not a released version, use revision tag
+    env.git_rev = local('git rev-parse --short HEAD', capture=True).strip()
+    if tours.__version_info__[-1]:
+        env.rev_tag = '-r' + env.git_rev
+
+
+def prep_source():
+    'Checkout the code from git and do local prep.'
+
+    require('git_rev', 'build_dir',
+            used_for='Exporting code from git into build area')
+
+    local('mkdir -p build')
+    local('rm -rf build/%(build_dir)s' % env)
+    # create a tar archive of the specified version and extract inside the bulid directory
+    local('git archive --format=tar --prefix=%(build_dir)s/ %(git_rev)s | (cd build && tar xf -)' % env)
+
+    # local settings handled remotely
+
+    if env.url_prefix:
+        env.apache_conf = 'build/%(build_dir)s/apache/%(project)s.conf' % env
+        # back up the unmodified apache conf
+        orig_conf = env.apache_conf + '.orig'
+        local('cp %s %s' % (env.apache_conf, orig_conf))
+        with open(orig_conf) as original:
+            text = original.read()
+        text = text.replace('WSGIScriptAlias / ', 'WSGIScriptAlias %(url_prefix)s ' % env)
+        text = text.replace('Alias /static/ ', 'Alias %(url_prefix)s/static ' % env)
+        text = text.replace('<Location />', '<Location %(url_prefix)s/>' % env)
+        with open(env.apache_conf, 'w') as conf:
+            conf.write(text)
+
+
+def package_source():
+    'Create a tarball of the source tree.'
+    local('mkdir -p dist')
+    local('tar cjf dist/%(tarball)s -C build %(build_dir)s' % env)
+
+
+def upload_source():
+    'Copy the source tarball to the target server.'
+    put('dist/%(tarball)s' % env,
+        '/tmp/%(tarball)s' % env)
+
+
+def extract_source():
+    'Extract the remote source tarball under the configured remote directory.'
+    with cd(env.remote_path):
+        sudo('tar xjf /tmp/%(tarball)s' % env, user=env.remote_acct)
+        # if the untar succeeded, remove the tarball
+        run('rm /tmp/%(tarball)s' % env)
+        # update apache.conf if necessary
+
+
+def setup_virtualenv():
+    'Create a virtualenv and install required packages on the remote server.'
+    # with prefix('source /opt/rh/python27/enable'):
+    #     sudo('python --version', user=env.remote_acct)
+
+    with prefix('source /opt/rh/python27/enable'):
+        with cd('%(remote_path)s/%(build_dir)s' % env):
+            # create the virtualenv under the build dir
+            sudo('virtualenv --no-site-packages --prompt=\'[%(build_dir)s]\' env' \
+            % env, user=env.remote_acct)
+            # activate the environment and install required packages
+            with prefix('source env/bin/activate'):
+                pip_cmd = 'pip install -r requirements.txt'
+                if env.remote_proxy:
+                    pip_cmd += ' --proxy=%(remote_proxy)s' % env
+                sudo(pip_cmd, user=env.remote_acct)
+                if files.exists('requirments/local.txt'):
+                    pip_cmd = 'pip install -r requirments/local.txt'
+                    if env.remote_proxy:
+                        pip_cmd += ' --proxy=%(remote_proxy)s' % env
+                    sudo(pip_cmd, user=env.remote_acct)
+
+
+def configure_site():
+    'Copy configuration files into the remote source tree.'
+    with cd(env.remote_path):
+        if not files.exists('localsettings.py'):
+            abort('Configuration file is not in expected location: %(remote_path)s/local.py' % env)
+        sudo('cp local.py %(build_dir)s/%(project)s/settings/local.py' % env,
+             user=env.remote_acct)
+
+    with prefix('source /opt/rh/python27/enable'):
+        with cd('%(remote_path)s/%(build_dir)s' % env):
+            with prefix('source env/bin/activate'):
+                sudo('python manage.py collectstatic --noinput' % env,
+                     user=env.remote_acct)
+                # make static files world-readable
+                sudo('chmod -R a+r `env DJANGO_SETTINGS_MODULE=\'%(project)s.settings\' python -c \'from django.conf import settings; print settings.STATIC_ROOT\'`' % env,
+                     user=env.remote_acct)
+
+
+def update_links():
+    'Update current/previous symlinks on the remote server.'
+    with cd(env.remote_path):
+        if files.exists('current' % env):
+            sudo('rm -f previous; mv current previous', user=env.remote_acct)
+        sudo('ln -sf %(build_dir)s current' % env, user=env.remote_acct)
+
 
 @task
-def check_for_dependencies():
-    current_platform = check_platform()
-    check_python_version()
-    check_packages(current_platform)
+def syncdb():
+    '''Remotely run syncdb and migrate after deploy and configuration.'''
+    with cd('%(remote_path)s/%(build_dir)s' % env):
+        with prefix('source env/bin/activate'):
+            sudo('python manage.py syncdb --noinput' % env,
+                 user=env.remote_acct)
+            sudo('python manage.py migrate --noinput' % env,
+                 user=env.remote_acct)
 
-    puts(green("\nOK you're all set. now run the following:"))
-    puts(cyan("fab install"))
 
+@task
+def build_source_package(path=None, user=None, url_prefix='',
+                         remote_proxy=None):
+    '''Produce a tarball of the source tree.'''
+    configure(path=path, user=user, url_prefix=url_prefix,
+              remote_proxy=remote_proxy)
+    prep_source()
+    package_source()
+
+
+@task
+def deploy(path=None, user=None, url_prefix='', remote_proxy=None):
+    '''Deploy the web app to a remote server.
+
+Parameters:
+path: base deploy directory on remote host; deploy expects a
+localsettings.py file in this directory
+Default: env.remote_path = /home/httpd/sites/tours
+user: user on the remote host to run the deploy; ssh user (current or
+specified with -U option) must have sudo permission to run deploy
+tasks as the specified user
+Default: tours
+url_prefix: base url if site is not deployed at /
+remote_proxy: HTTP proxy that can be used for pip/virtualenv
+installation on the remote server (server:port)
+
+Example usage:
+fab deploy:/home/tours/,dani -H servername
+fab deploy:user=www-data,url_prefix=/fa -H servername
+fab deploy:remote_proxy=some.proxy.server:3128 -H servername
+
+'''
+
+    configure(path=path, user=user, url_prefix=url_prefix,
+        remote_proxy=remote_proxy)
+    prep_source()
+    package_source()
+    upload_source()
+    extract_source()
+    setup_virtualenv()
+    configure_site()
+    update_links()
+    compare_localsettings()
+
+
+@task
+def revert(path=None, user=None):
+    """Update remote symlinks to retore the previous version as current"""
+    configure(path=path, user=user)
+    # if there is a previous link, shift current to previous
+    with cd(env.remote_path):
+        if files.exists('previous'):
+            # remove the current link (but not actually removing code)
+            sudo('rm current', user=env.remote_acct)
+            # make previous link current
+            sudo('mv previous current', user=env.remote_acct)
+            sudo('readlink current', user=env.remote_acct)
+
+
+@task
+def clean():
+    '''Remove build/dist artifacts generated by deploy task'''
+    local('rm -rf build dist')
+    # should we do any remote cleaning?
+
+
+@task
+def rm_old_builds(path=None, user=None, noinput=False):
+    '''Remove old build directories on the deploy server.
+
+Takes the same path and user options as **deploy**. By default,
+will ask user to confirm delition. Use the noinput parameter to
+delete without requesting confirmation.
+'''
+    configure(path=path, user=user)
+    with cd(env.remote_path):
+        with hide('stdout'): # suppress ls/readlink output
+            # get directory listing sorted by modification time (single-column for splitting)
+            dir_listing = sudo('ls -t1', user=env.remote_acct)
+            # get current and previous links so we don't remove either of them
+            current = sudo('readlink current', user=env.remote_acct) if files.exists('current') else None
+            previous = sudo('readlink previous', user=env.remote_acct) if files.exists('previous') else None
+
+        # split dir listing on newlines and strip whitespace
+        dir_items = [n.strip() for n in dir_listing.split('\n')]
+        # regex based on how we generate the build directory:
+        # project name, numeric version, optional pre/dev suffix, optional revision #
+        build_dir_regex = r'^%(project)s-[0-9.]+(-[A-Za-z0-9_-]+)?(-r[0-9]+)?$' % env
+        build_dirs = [item for item in dir_items if re.match(build_dir_regex, item)]
+        # by default, preserve the 3 most recent build dirs from deletion
+        rm_dirs = build_dirs[3:]
+        # if current or previous for some reason is not in the 3 most recent,
+        # make sure we don't delete it
+        for link in [current, previous]:
+            if link in rm_dirs:
+                rm_dirs.remove(link)
+
+        if rm_dirs:
+            for dir in rm_dirs:
+                if noinput or confirm('Remove %s/%s ?' % (env.remote_path, dir)):
+                    sudo('rm -rf %s' % dir, user=env.remote_acct)
+        else:
+            puts('No old build directories to remove')
+
+
+@task
+def compare_localsettings(path=None, user=None):
+    'Compare current/previous (if any) localsettings on the remote server.'
+    configure(path=path, user=user)
+    with cd(env.remote_path):
+        # sanity-check current localsettings against previous
+        if files.exists('previous'):
+            with settings(hide('warnings', 'running', 'stdout', 'stderr'),
+                          warn_only=True): # suppress output, don't abort on diff error exit code
+                output = sudo('diff current/%(project)s/localsettings.py previous/%(project)s/localsettings.py' % env,
+                              user=env.remote_acct)
+                if output:
+                    puts(yellow('WARNING: found differences between current and previous localsettings.py'))
+                    puts(output)
+                else:
+                    puts(green('No differences between current and previous localsettings.py'))
