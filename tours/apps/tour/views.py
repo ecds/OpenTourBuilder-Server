@@ -100,23 +100,32 @@ class ImageDetail(APIView):
         return Response(serializer.data)
 
 def tour_geojson(request, slug):
-
-
+    """
+    Represent a tour in GeoJSON.
+    """
     tour = get_object_or_404(Tour, slug=slug)
 
     stops = []
 
-    for stop in tour.stop_ids.all():
-        stop_geojson = '{"type": "Feature", "properties":{'
-        stop_geojson += '"name": "%s",' % stop.name
-        safe_description = stop.description.replace("\n", "")
-        safe_description = safe_description.replace("\r", "")
-        stop_geojson += '"description": "%s"' % safe_description
-        stop_geojson += '},'
-        stop_geojson += '"geometry":{"type": "Point", "coordinates":['
-        stop_geojson += '%s,%s,0]}}' % (stop.lat, stop.lng)
+    for stop in tour.tourstop_set.all():
+        if stop.position != 0:
+            stop_geojson = '{"type": "Feature",'
+            stop_geojson += '"geometry":{"type": "Point", "coordinates":['
+            stop_geojson += '%s,%s,0]},' % (stop.lng, stop.lat)
+            stop_geojson += '"properties": {'
+            stop_geojson += '"name": "%s",' % stop.name
 
-        stops.append(stop_geojson)
+            if stop.article_link:
+               stop.description += '<p><a href="%s" target="_blank">Read Full Article</a></p>' % stop.article_link
+            # Clean up a few things from the wysiwyg.
+            safe_description = stop.description.replace("\n", "")
+            safe_description = safe_description.replace("\r", "")
+            safe_description = safe_description.replace("\"", "\\\"")
+            stop_geojson += '"description": "%s",' % safe_description
+            stop_geojson += '"gx_media_links": "www.youtube.com/embed/%s"' % stop.video_embed
+            stop_geojson += '}}'
+
+            stops.append(stop_geojson)
 
     geojson = '{"type": "FeatureCollection","features": ['
     geojson += ','.join(map(str, stops))
