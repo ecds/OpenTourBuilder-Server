@@ -103,11 +103,11 @@ def tour_geojson(request, slug):
     """
     Represent a tour in GeoJSON.
     """
-    tour = get_object_or_404(Tour, slug=slug)
+    tour = Tour.objects.get(slug=slug)
 
     stops = []
 
-    for stop in tour.tourstop_set.all():
+    for stop in tour.stop_ids.all():
         if stop.position != 0:
             stop_geojson = '{"type": "Feature",'
             stop_geojson += '"geometry":{"type": "Point", "coordinates":['

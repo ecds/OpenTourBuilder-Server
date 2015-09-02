@@ -46,6 +46,12 @@ class TourViewsTestCase(DjangoTestCase):
         nt.eq_(response.status_code, 200, msg="Tour Detail view should respond with 200 for %s %s" % (test_tour, response.status_code))
         nt.assert_true(getJsonString(response))
 
+    def test_tour_geojson_view(self):
+        test_tour_geojosn = reverse('tour:tour_geojson', kwargs={'slug': self.tour.slug})
+        response = self.client.get(test_tour_geojosn)
+        nt.eq_(response.status_code, 200, msg="Tour Detail view should respond with 200 for %s %s" % (test_tour_geojosn, response.status_code))
+        nt.assert_true(getJsonString(response))
+
         shutil.rmtree('%s/tours/phone' % settings.MEDIA_ROOT)
         shutil.rmtree('%s/tours/tablet' % settings.MEDIA_ROOT)
 
