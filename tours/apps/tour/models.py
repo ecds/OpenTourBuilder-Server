@@ -8,6 +8,7 @@ from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.core.validators import ValidationError, MaxLengthValidator
 from django.contrib.sites.models import Site
+from django.contrib.auth.models import User
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -23,6 +24,14 @@ from tours.apps.common.Resizers import Resize
 from humanize import naturalsize
 
 import os
+
+@receiver(post_save, sender=User)
+def init_new_user(sender, instance, signal, created, **kwargs):
+    """
+    Create an authentication token for newly created users.
+    """
+    if created:
+        Token.objects.create(user=instance)
 
 class DirectionsMode(models.Model):
     mode = models.CharField(max_length=50)
