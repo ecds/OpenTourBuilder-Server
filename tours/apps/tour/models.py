@@ -9,6 +9,10 @@ from django.conf import settings
 from django.core.validators import ValidationError, MaxLengthValidator
 from django.contrib.sites.models import Site
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+
 # third party imports
 from autoslug import AutoSlugField
 from tinymce.models import HTMLField
@@ -20,13 +24,12 @@ from humanize import naturalsize
 
 import os
 
-
 class DirectionsMode(models.Model):
     mode = models.CharField(max_length=50)
 
     def __unicode__(self):
         return "%s" % (self.mode)
-    
+
 def get_options():
 
     # This is sort of a hack to make the syncdb work.
@@ -43,9 +46,9 @@ def get_options():
 
 
 class Tour(models.Model):
-    
+
     options = get_options
-    
+
     name = models.CharField(max_length=50)
     published = models.BooleanField(default=False)
     geospatial = models.BooleanField(default=True)
@@ -59,7 +62,7 @@ class Tour(models.Model):
 
     class Meta:
         verbose_name = _('Tour')
-        verbose_name_plural = _('Tours')    
+        verbose_name_plural = _('Tours')
 
     def __unicode__(self):
         return "%s" % (self.name)
@@ -70,7 +73,7 @@ class Tour(models.Model):
     @property
     def slug_class(self):
         return ".%s" % self.slug
-    
+
 
     @property
     def phone_splash(self):
@@ -103,8 +106,8 @@ class Tour(models.Model):
             image = Resize(self.splashimage)
             return Resize.splash_desktop(image)
         else:
-            return False    
-    
+            return False
+
 def new_position(instance, tour_id):
     return TourStop.objects.filter(tour_id=tour_id).count()
 
@@ -134,7 +137,7 @@ class TourInfo(models.Model):
     position = models.PositiveSmallIntegerField("Position", blank=True, null=True)
     info_slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
     icon = models.CharField(max_length=20, choices=ICON_CHOICES, default='fa-info-circle')
-    
+
 
     class Meta:
         verbose_name = _('Tour Info')
@@ -145,7 +148,7 @@ class TourInfo(models.Model):
 
     def __unicode__(self):
         return "%s - %s" % (self.name, self.tour.name)
-    
+
     def save(self, force_insert=False, force_update=False):
         if self.position == None:# and self.tour:
             self.position = new_position(self, self.tour_id)
@@ -240,7 +243,7 @@ class TourStop(models.Model):
             modes.append(str(mode))
 
         return modes
-    
+
     @property
     def geospatial(self):
         return self.tour.geospatial
@@ -288,13 +291,13 @@ class TourStop(models.Model):
             return Resize.gallery_desktop(image)
         else:
             return self.desktop_default
-    
+
 
     @property
     def placeholder(self):
         return Site.objects.get_current().domain + \
                 settings.MEDIA_URL + \
-                'placeholder.png'   
+                'placeholder.png'
 
     def save(self, force_insert=False, force_update=False):
         if self.position == None:# and self.tour:
@@ -308,14 +311,14 @@ class TourStopMedia(models.Model):
     image = models.ImageField(upload_to='stops/', verbose_name='Image')
     source_link = models.CharField(max_length=525, blank=True, default='')
     metadata = HTMLField(blank=True, default='')
-    
+
     # used in drag and drop reodering as well as tour stop order
     position = models.PositiveSmallIntegerField("Position", blank=True, null=True)
 
     class Meta:
         verbose_name = _('Tour Stop Media')
         verbose_name_plural = _('Tour Stop Media')
-        
+
         #set default ordering for the manager
         ordering = ['position']
 
@@ -337,7 +340,7 @@ class TourStopMedia(models.Model):
     @property
     def placeholder(self):
         return self.tour_stop.placeholder
-    
+
 
     @property
     def size(self):
@@ -439,7 +442,7 @@ class TourStopMedia(models.Model):
             orig = TourStopMedia.objects.get(pk=self.pk)
             if self.image != orig.image:
                 image_update = True
-                
+
         if self.position == None:
             self.position = new_media_position(self, self.tour_stop_id)
 

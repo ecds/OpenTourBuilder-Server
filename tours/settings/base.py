@@ -139,6 +139,7 @@ INSTALLED_APPS = (
 
     'rest_framework',
     'rest_framework_word_filter',
+    'rest_framework.authtoken',
     'corsheaders',
 
     #'storages',
@@ -172,6 +173,10 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework_ember.renderers.JSONRenderer',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',  # optional
     ),
 }
 

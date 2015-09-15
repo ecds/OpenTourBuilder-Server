@@ -25,8 +25,13 @@ class TourList(APIView):
     """
     List all tours.
     """
-    def get(self, request, format=None):
-        tours = Tour.objects.all()
+    def get(self, request, format=None, *args, **kwargs):
+        print kwargs
+        
+        if "published" in kwargs:
+            tours = Tour.objects.get(published=kwarges["published"])
+        else:
+            tours = Tour.objects.all()
         serializer = ToursSerializer(tours, many=True)
         return Response(serializer.data)
 
@@ -62,7 +67,7 @@ class TourStopDetail(APIView):
 
             elif 'search' in kwargs:
                 search_term = self.request.query_params.get('search', None)
-     
+
                 search_result = TourStop.objects.filter( \
                     Q(name__icontains=search_term) | \
                     Q(description__icontains=search_term))
