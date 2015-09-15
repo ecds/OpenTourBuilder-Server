@@ -21,17 +21,17 @@ from tours.apps.tour.serializers import ToursSerializer, TourStopSerializer, Tou
 # START API STUFF HERE
 ######################
 
-class TourList(APIView):
+class TourList(ListAPIView):
     """
     List all tours.
     """
     def get(self, request, format=None, *args, **kwargs):
-        print kwargs
-        
-        if "published" in kwargs:
-            tours = Tour.objects.get(published=kwarges["published"])
+        published = request.query_params.get('published', False)
+        if published:
+            tours = Tour.objects.filter(published=True)
         else:
             tours = Tour.objects.all()
+        
         serializer = ToursSerializer(tours, many=True)
         return Response(serializer.data)
 
