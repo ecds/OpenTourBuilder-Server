@@ -1,18 +1,19 @@
 # file tours/apps/tour/urls.py
 
-#from django.conf.urls.defaults import *
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url
+from rest_framework.urlpatterns import format_suffix_patterns
+from tours.apps.tour.views import TourList, TourDetail, TourStopDetail, TourInfoDetail, ImageDetail, tour_geojson
 
-#handler403 = curry(permission_denied, template_name='403.html')
-urlpatterns = patterns('tours.apps.tour.views',
-    url(r'^update_directionsmode/(?P<mode>[-\w]+)/$', 'update_directionsmode', name='mode'),
-    url(r'^tour_geojson/(?P<slug>[-\w]+)/$', 'tour_geojson', name='tour_geojson'),
-    url(r'^(?P<slug>[-\w]+)/$', 'tour_detail', name='detail'),
-    url(r'^(?P<slug>[-\w]+)/map/$', 'tour_map', name='tour-map'),
-    url(r'^(?P<slug>[-\w]+)/(?P<page>\d+)/$', 'tour_stop_detail', name='stop-detail'),
-    url(r'^(?P<slug>[-\w]+)/(?P<info>[-\w]+)/$', 'tour_info_detail', name='info-detail'),
-    url(r'^(?P<slug>[-\w]+)/media/(?P<id>\d+)/$', 'tour_stop_media_detail', name='stop-media-detail'),
-    url(r'^(?P<slug>[-\w]+)/video/(?P<id>\d+)/$', 'tour_stop_video_detail', name='stop-video-detail'),
-    url(r'^(?P<slug>[-\w]+)/map/(?P<page>\d+)/$', 'tour_stop_map', name='stop-map'),
-#    url(r'^update_directionsmode/(?P<mode>[-\w]+)/$', 'update_directionsmode', name='switch'),
-)
+urlpatterns = [
+    url(r'^tourLists/$', TourList.as_view()),
+    url(r'^tourDetails/(?P<id>\d+)$', TourDetail.as_view()),
+    url(r'^tourDetails/(?P<slug>[-\w]+)$', TourDetail.as_view(), name="tour_details_slug"),
+    url(r'^tourStopDetails/(?P<id>\d+)$', TourStopDetail.as_view(), name="tour_stop_details"),
+    url(r'^tourStopDetails/(?P<search>.*)$', TourStopDetail.as_view(), name="tour_stop_details"),
+    url(r'^tourInfoDetails/(?P<id>\d+)$', TourInfoDetail.as_view(), name="tour_info_details"),
+    url(r'^imageDetails/(?P<id>\d+)$', ImageDetail.as_view(), name="tour_image_details"),
+    url(r'^tour_geojson/(?P<slug>.+)/$', tour_geojson, name='tour_geojson'),
+    url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token')
+]
+
+urlpatterns = format_suffix_patterns(urlpatterns)

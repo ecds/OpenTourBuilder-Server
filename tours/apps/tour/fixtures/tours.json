@@ -5,8 +5,12 @@
         "fields": {
             "name" : "Battle of Atlanta",
             "description": "A tour of the Battle of Atlanta",
-            "slug": "battle-of-atlanta-test",
-            "splashimage": "/data/django/tours/sitemedia/markers/marker1.png"
+            "slug": "battle-of-atlanta",
+            "geospatial": "True",
+            "splashimage": "tours/epic_wizard_riding_shark_surfing_raptor.png",
+            "default_mode": "bicycling",
+            "google_analytics": "some code",
+            "published": "True"
         }
     }
 ]

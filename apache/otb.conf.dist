@@ -1,0 +1,60 @@
+# This is a template file for an apache deployment. If you run the installer (https://github.com/emory-libraries-ecds/OpenTourBuilder-Installer), the values will be filled in for you and saved as `apache/otb.conf`.
+
+######################
+# Config for backend #
+######################
+
+#######################
+# WE HIGHLY RECOMMEND #
+# YOU USE HTTPS FOR   #
+# THE BACKEND!!!!!!!  #
+#######################
+
+WSGIDaemonProcess opentourbuilder-$proc python-path=$pathvenv/lib/python2.7/site-packages:$path user=www-data threads=10 maximum-requests=1000 inactivity-timeout=300
+
+<VirtualHost *:80>
+    ServerName api.$domain
+
+    WSGIScriptAlias / $pathapache/tours.wsgi
+    <Location />
+        WSGIProcessGroup opentourbuilder-$proc
+        Allow from all
+        Require all granted
+    </Location>
+
+    Alias /static/ $pathtours/static/
+
+    <Directory $pathtours/static/>
+        Order allow,deny
+        Allow from all
+        Require all granted
+    </Directory>
+
+    Alias /media/ $pathtours/media/
+
+    <Directory $pathtours/media/>
+        Order allow,deny
+        Allow from all
+        Require all granted
+    </Directory>
+
+</VirtualHost>
+
+########################
+# Config for front end #
+########################
+
+<VirtualHost *:80>
+    ServerName $domain
+    DocumentRoot $client-path
+    <Directory $client-path>
+        Require all granted
+        Allow from all
+        Options -MultiViews
+        RewriteEngine On
+        RewriteRule ^index\.html$ - [L]
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule (.*) index.html [L]
+    </Directory>
+</VirtualHost>

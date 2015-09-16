@@ -1,61 +1,71 @@
 # file tours/apps/tour/models.py
 
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
-from django.core.files import File
 from django.db import models
+from django.db.utils import ProgrammingError, OperationalError
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 from django.conf import settings
-from django.db.models import Max
-from django import forms
-from django.core.validators import ValidationError, RegexValidator, MaxLengthValidator, URLValidator
+from django.core.validators import ValidationError, MaxLengthValidator
 from django.contrib.sites.models import Site
+from django.contrib.auth.models import User
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
 
 # third party imports
 from autoslug import AutoSlugField
 from tinymce.models import HTMLField
-from PIL import Image
-import tempfile
 
-import re
+
+from tours.apps.common.Resizers import Resize
+
+from humanize import naturalsize
+
 import os
 
-from cStringIO import StringIO
-
-def validate_twitter(value):
-    if '@' in value:
-        raise ValidationError('Do not include the @ in your Twitter Account')
+@receiver(post_save, sender=User)
+def init_new_user(sender, instance, signal, created, **kwargs):
+    """
+    Create an authentication token for newly created users.
+    """
+    if created:
+        Token.objects.create(user=instance)
 
 class DirectionsMode(models.Model):
     mode = models.CharField(max_length=50)
 
     def __unicode__(self):
         return "%s" % (self.mode)
-    
+
 def get_options():
-    modes = DirectionsMode.objects.all()
+
+    # This is sort of a hack to make the syncdb work.
+    # This really needs to get fixed ond day.
     options = []
-    for mode in modes:
-        options.insert(0, (mode.mode, mode.mode))
+    try:
+        modes = DirectionsMode.objects.all()
+        for mode in modes:
+            #print(mode.mode)
+            options.insert(0, (mode.mode, mode.mode))
+    except (OperationalError, ProgrammingError):
+        pass
     return options
 
+
 class Tour(models.Model):
-    
+
     options = get_options
-    
+
     name = models.CharField(max_length=50)
     published = models.BooleanField(default=False)
+    geospatial = models.BooleanField(default=True)
     description = HTMLField()
     metadescription = models.TextField(blank=True, default='', validators=[MaxLengthValidator(350)])
     slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
-    #mode = models.ForeignKey(DirectionsMode, default=1)
-    modes = models.ManyToManyField(DirectionsMode)
+    modes = models.ManyToManyField(DirectionsMode, related_name='modes')
     default_mode = models.CharField(max_length = 50, choices = options(), blank=True, default='')
-    #default_mode = models.ForeignKey(DirectionsMode, related_name='modes', default=1)
-    fb_app_id = models.CharField(max_length=50, blank=True)
-    fb_page_id = models.CharField(max_length=50, blank=True)
-    twitter_acct = models.CharField(max_length=50, blank=True, validators=[validate_twitter])
     google_analytics = models.TextField(blank=True, default='')
     splashimage = models.ImageField(upload_to='tours/', blank=True, default='')
 
@@ -70,15 +80,43 @@ class Tour(models.Model):
         return reverse('detail', kwargs={'slug': self.slug})
 
     @property
-    def fully_qualified_url(self):
-        '''
-        Full url for the stop.
-        '''
-        return "http://%s/tour/%s/%s" % (Site.objects.get_current().domain, self.tour.slug, (self.position + 1))
+    def slug_class(self):
+        return ".%s" % self.slug
 
-    def __unicode__(self):
-        return "%s" % (self.name)
-    
+
+    @property
+    def phone_splash(self):
+        '''
+        Thumbnail for image on phone screens.
+        '''
+        if self.splashimage:
+            image = Resize(self.splashimage)
+            return Resize.splash_phone(image)
+        else:
+            return False
+
+    @property
+    def tablet_splash(self):
+        '''
+        Thumbnail for image on phone screens.
+        '''
+        if self.splashimage:
+            image = Resize(self.splashimage)
+            return Resize.splash_tablet(image)
+        else:
+            return False
+
+    @property
+    def desktop_splash(self):
+        '''
+        Thumbnail for image on phone screens.
+        '''
+        if self.splashimage:
+            image = Resize(self.splashimage)
+            return Resize.splash_desktop(image)
+        else:
+            return False
+
 def new_position(instance, tour_id):
     return TourStop.objects.filter(tour_id=tour_id).count()
 
@@ -93,11 +131,22 @@ def validate_https(value):
         raise ValidationError('Make sure your embed link uses HTTPS.')
 
 class TourInfo(models.Model):
-    tour = models.ForeignKey(Tour)
+
+    ICON_CHOICES = (
+        ('fa-info-circle', 'Info'),
+        ('fa-certificate', 'Certificate'),
+        ('fa-circle-o-notch', 'Circle'),
+        ('fa-sticky-note', 'Sticky Note'),
+        ('fa-bookmark', 'Bookmark'),
+    )
+
+    tour = models.ForeignKey(Tour, related_name='info_ids')
     name = models.CharField(max_length=50)
     description = HTMLField(blank=True, default='')
     position = models.PositiveSmallIntegerField("Position", blank=True, null=True)
     info_slug = AutoSlugField(populate_from='name', unique=True, always_update=True)
+    icon = models.CharField(max_length=20, choices=ICON_CHOICES, default='fa-info-circle')
+
 
     class Meta:
         verbose_name = _('Tour Info')
@@ -109,17 +158,15 @@ class TourInfo(models.Model):
     def __unicode__(self):
         return "%s - %s" % (self.name, self.tour.name)
 
-    def get_absolute_url(self):
-        return reverse('tour:info-detail', kwargs={"slug":  self.tour.slug, "info": self.info_slug})
-    
     def save(self, force_insert=False, force_update=False):
         if self.position == None:# and self.tour:
             self.position = new_position(self, self.tour_id)
         super(TourInfo, self).save(force_insert, force_update)
 
 class TourStop(models.Model):
-    tour = models.ForeignKey(Tour)
+    tour = models.ForeignKey(Tour, related_name='stop_ids')
     name = models.CharField(max_length=50)
+    slug = AutoSlugField(populate_from='name', always_update=True)
     description = HTMLField(blank=True, default='')
     metadescription = models.TextField(blank=True, default='', validators=[MaxLengthValidator(350)])
     article_link = models.CharField(max_length=525, blank=True, default='')
@@ -146,12 +193,120 @@ class TourStop(models.Model):
     def __unicode__(self):
         return "%s - %s" % (self.name, self.tour.name)
 
-    def get_absolute_url(self):
-        return reverse('tour:stop-detail', kwargs={"slug":  self.tour.slug, "page": self.position + 1})
+    @property
+    def page(self):
+        return self.position + 1
 
     @property
-    def slug(self):
-        return slugify(self.name)
+    def map_image(self):
+        """
+        This concatenates a link to make an api call to the Google static
+        map images.
+        """
+        map_image = 'http://maps.googleapis.com/maps/api/staticmap?zoom=16&'
+        map_image += 'size=150x150&maptype=roadmap&markers=color:red%7C'
+        map_image += '%s,%s' % (self.lat, self.lng)
+        map_image += '&sensor=false&key=AIzaSyBx6Zz6NMBoTBzIU0sbZQezxXgFMZdKZeI'
+        return map_image
+
+    @property
+    def next_stop(self):
+        stop_count = self.tour.stop_ids.all().count()
+        if self.page >= stop_count:
+            return ''
+        else:
+            stop = self.tour.stop_ids.get(position=self.page)
+            # For nested links on the Ember side, return this:
+            #previous_link = '/tour/%s/%s' % (self.tour_slug, stop.pk)
+            next = '%s/%s' % (stop.slug, stop.pk)
+            return stop.pk
+
+    @property
+    def previous_stop(self):
+        if self.page == 1:
+            return ''
+        else:
+            previous = self.position - 1
+            stop = self.tour.stop_ids.get(position=previous)
+            # For nested links on the Ember side, return this:
+            #next_link = '/tour/%s/%s' % (self.tour_slug, stop.pk)
+            previous = '%s/%s' % (stop.slug, stop.pk)
+            return stop.pk
+
+    @property
+    def stop_link(self):
+        return '/tour/%s/%s' % (self.tour.slug, self.pk)
+
+    @property
+    def tour_slug(self):
+        return self.tour.slug
+
+    @property
+    def direction_modes(self):
+        tour_modes = self.tour.modes.all()
+        modes = []
+        # print(tour_modes)
+        # # modes = 'foo'
+        for mode in tour_modes:
+            #print(mode)
+            modes.append(str(mode))
+
+        return modes
+
+    @property
+    def geospatial(self):
+        return self.tour.geospatial
+
+    @property
+    def published(self):
+        return self.tour.published
+
+    @property
+    def intro(self):
+        return self.position == 0
+
+    @property
+    def phone_default(self):
+        return self.tour.phone_splash
+
+    @property
+    def tablet_default(self):
+        return self.tour.tablet_splash
+
+    @property
+    def desktop_default(self):
+        return self.tour.desktop_splash
+
+    @property
+    def phone_poster(self):
+        if self.video_poster:
+            image = Resize(self.video_poster)
+            return Resize.gallery_phone(image)
+        else:
+            return self.phone_default
+
+    @property
+    def tablet_poster(self):
+        if self.video_poster:
+            image = Resize(self.video_poster)
+            return Resize.gallery_tablet(image)
+        else:
+            return self.tablet_default
+
+    @property
+    def desktop_poster(self):
+        if self.video_poster:
+            image = Resize(self.video_poster)
+            return Resize.gallery_desktop(image)
+        else:
+            return self.desktop_default
+
+
+    @property
+    def placeholder(self):
+        return Site.objects.get_current().domain + \
+                settings.MEDIA_URL + \
+                'placeholder.png'
 
     def save(self, force_insert=False, force_update=False):
         if self.position == None:# and self.tour:
@@ -159,20 +314,20 @@ class TourStop(models.Model):
         super(TourStop, self).save(force_insert, force_update)
 
 class TourStopMedia(models.Model):
-    tour_stop = models.ForeignKey(TourStop)
+    tour_stop = models.ForeignKey(TourStop, related_name='images')
     title = models.CharField(max_length=50, blank=True, default='')
     caption = models.CharField(max_length=255, blank=True, default='')
     image = models.ImageField(upload_to='stops/', verbose_name='Image')
     source_link = models.CharField(max_length=525, blank=True, default='')
     metadata = HTMLField(blank=True, default='')
-    
+
     # used in drag and drop reodering as well as tour stop order
     position = models.PositiveSmallIntegerField("Position", blank=True, null=True)
 
     class Meta:
         verbose_name = _('Tour Stop Media')
         verbose_name_plural = _('Tour Stop Media')
-        
+
         #set default ordering for the manager
         ordering = ['position']
 
@@ -181,11 +336,110 @@ class TourStopMedia(models.Model):
 
     def get_absolute_url(self):
         return reverse('tour:stop-media-detail', kwargs={"slug":  self.tour_stop.tour.slug, "id": self.id})
-    
+        #return ""
+
+    @property
+    def label(self):
+        return "%s-%s" % (slugify(self.title), self.id)
+
+    @property
+    def href(self):
+        return "#%s-%s" % (slugify(self.title), self.id)
+
+    @property
+    def placeholder(self):
+        return self.tour_stop.placeholder
+
+
     @property
     def size(self):
-        return os.path.getsize('%s/%s' % ( settings.MEDIA_ROOT, self.image))
-        #return humanfriendly.format_size(size)
+        '''
+        Returns the file size of origianl image so user can be
+        warned before loading original.
+        '''
+        size = os.path.getsize('%s/%s' % (settings.MEDIA_ROOT, self.image))
+        return naturalsize(size)
+
+    @property
+    def original_image(self):
+        '''
+        Full url for original image.
+        '''
+        return Site.objects.get_current().domain + \
+                settings.MEDIA_URL + \
+                str(self.image)
+
+    @property
+    def image_preview(self):
+        '''
+        property to generate image prewiew. This is used on the
+        list view when geospatial is turnedoff
+        '''
+        # preview = get_thumbnail('%s/%s' \
+        #     % (settings.MEDIA_ROOT, self.image), \
+        #     '80x80', crop='center', quality=70)
+        # return Site.objects.get_current().domain + preview.url
+        return 'foo'
+
+    def resize_image(self, dimensions):
+        """
+        Send the image through the sorl thumbnail library
+        and return the url to the file.
+        """
+        # new_image = get_thumbnail('%s/%s' \
+        #     % (settings.MEDIA_ROOT, self.image), \
+        #     'x%s' % dimensions, quality=70)
+        # return Site.objects.get_current().domain + new_image.url
+        return 'foo'
+
+    @property
+    def phone_thumb(self):
+        '''
+        Thumbnail for image on phone screens.
+        '''
+        image = Resize(self.image)
+        return Resize.gallery_phone(image)
+
+
+    @property
+    def phone_full(self):
+        '''
+        Detail image for gallery on phone.
+        '''
+        image = Resize(self.image)
+        return Resize.phone_full(image)
+
+    @property
+    def tablet_thumb(self):
+        '''
+        Thumbnail for image on tablet screens.
+        '''
+        image = Resize(self.image)
+        return Resize.gallery_tablet(image)
+
+    @property
+    def tablet_full(self):
+        '''
+        Detail image for gallery on phone.
+        '''
+        image = Resize(self.image)
+        return Resize.tablet_full(image)
+
+    @property
+    def desktop_thumb(self):
+        '''
+        Thumbnail for image on tablet screens.
+        '''
+        image = Resize(self.image)
+        return Resize.gallery_desktop(image)
+
+    @property
+    def desktop_full(self):
+        '''
+        Thumbnail for image on tablet screens.
+        '''
+        image = Resize(self.image)
+        return Resize.desktop_full(image)
 
     def save(self, *args, **kwargs):
         # override save method to resize image and generate thumbnail
@@ -197,28 +451,8 @@ class TourStopMedia(models.Model):
             orig = TourStopMedia.objects.get(pk=self.pk)
             if self.image != orig.image:
                 image_update = True
-                
+
         if self.position == None:
             self.position = new_media_position(self, self.tour_stop_id)
 
-        #if self.image and not self.inline or image_update:
-        #    self.generate_thumbnail()
-
         super(TourStopMedia, self).save(*args, **kwargs)
-
-    #def generate_thumbnail(self):
-    #    thumbnail_size = (290, 290)
-    #
-    #    return self._resize_imagefield(thumbnail_size, self.inline)
-    #
-    #def _resize_imagefield(self, size, field):
-    #    image = Image.open(self.image)
-    #    # NOTE: using thumbnail for both resize/thumb
-    #    # because it resizes the current image rather than resize,
-    #    # which returns a new Image object
-    #    image.thumbnail(size, Image.ANTIALIAS)
-    #    tmp = tempfile.NamedTemporaryFile(suffix='.png')
-    #    image.save(tmp.name, 'png')
-    #    content = File(tmp)
-    #    field.save('%s' % self.image, content, save=False)
-

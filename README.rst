@@ -2,11 +2,11 @@ OpenTourBuilder
 ===============
 Overview
 --------
-OpenTourBuilder is a content management platform for building geospatial tours to be presented as mobile optimized website.
+OpenTourBuilder-Server is a content management platform for building tours to be presented as mobile optimized websites.
 
 OpenTourBuilder was built by the software engineering team at Emory's Library & Information Technology Services (LITS) with Emory's Center for Digital Scholarship (ECDS).
 
-OpenTourBuilder was built using Python-Django and jQuery Mobile.
+OpenTourBuilder was built using Python-Django that provides a REST API to `OpenTourBuilder-Client <https://github.com/emory-libraries-ecds/OpenTourBuilder-Clientr>`_
 
 License
 -------

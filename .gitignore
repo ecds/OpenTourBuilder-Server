@@ -1,4 +1,5 @@
 *.pyc
+*.xml
 venv
 tours/settings/local.py
 tours/static
@@ -8,3 +9,6 @@ mydatabase
 *.DS_Store
 data.json
 tours.komodoproject
+.coverage
+otb-test
+apache/otb.conf

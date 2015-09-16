@@ -1,12 +1,28 @@
-# file battleofatlanta/settings/local.py.dist
+from sys import argv
+from os.path import join, abspath, dirname
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+BASE_DIR = abspath(dirname(__file__) + "/../")
+
+if 'test' in argv:
+    DATABASES = {
+    	'default': {
+    		'ENGINE': 'django.db.backends.sqlite3',
+    		'NAME': 'otb-test'
+    	}
     }
-}
+
+    MEDIA_ROOT = join(BASE_DIR, 'apps/tour/fixtures/media')
+
+else:
+	DATABASES = {
+	    'default': {
+	        'ENGINE': 'django.db.backends.mysql',
+	        'NAME': '$db_database',
+	        'USER': '$db_user',
+	        'PASSWORD': '$db_password',
+	        'HOST': '$db_host',
+	        'PORT': '$db_port',
+	    }
+	}
+
+CORS_ORIGIN_ALLOW_ALL = True
