@@ -10,7 +10,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        api_domain = 'http://api.%s' % options['domain'][1]
+        api_domain = options['domain'][0]
 
         api_domain = api_domain.replace("http://", "")
         api_domain = api_domain.replace("https://", "")
