@@ -1,6 +1,5 @@
 # requirements/common.txt
 Django
-South
 django-admin-bootstrapped
 django-autoslug
 django-tinymce
