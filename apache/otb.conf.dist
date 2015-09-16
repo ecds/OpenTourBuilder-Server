@@ -4,6 +4,12 @@
 # Config for backend #
 ######################
 
+#######################
+# WE HIGHLY RECOMMEND #
+# YOU USE HTTPS FOR   #
+# THE BACKEND!!!!!!!  #
+#######################
+
 WSGIDaemonProcess opentourbuilder-$proc python-path=$pathvenv/lib/python2.7/site-packages:$path user=www-data threads=10 maximum-requests=1000 inactivity-timeout=300
 
 <VirtualHost *:80>
@@ -13,6 +19,7 @@ WSGIDaemonProcess opentourbuilder-$proc python-path=$pathvenv/lib/python2.7/site
     <Location />
         WSGIProcessGroup opentourbuilder-$proc
         Allow from all
+        Require all granted
     </Location>
 
     Alias /static/ $pathtours/static/
@@ -20,6 +27,7 @@ WSGIDaemonProcess opentourbuilder-$proc python-path=$pathvenv/lib/python2.7/site
     <Directory $pathtours/static/>
         Order allow,deny
         Allow from all
+        Require all granted
     </Directory>
 
     Alias /media/ $pathtours/media/
@@ -27,6 +35,7 @@ WSGIDaemonProcess opentourbuilder-$proc python-path=$pathvenv/lib/python2.7/site
     <Directory $pathtours/media/>
         Order allow,deny
         Allow from all
+        Require all granted
     </Directory>
 
 </VirtualHost>
@@ -38,13 +47,14 @@ WSGIDaemonProcess opentourbuilder-$proc python-path=$pathvenv/lib/python2.7/site
 <VirtualHost *:80>
     ServerName $domain
     DocumentRoot $client-path
-    <Directory /data/clients/otb/public>
+    <Directory $client-path>
         Require all granted
         Allow from all
         Options -MultiViews
         RewriteEngine On
-        RewriteBase /
+        RewriteRule ^index\.html$ - [L]
+        RewriteCond %{REQUEST_FILENAME} !-f
         RewriteCond %{REQUEST_FILENAME} !-d
-        RewriteRule ^(.*)$ /#$1 [L]
+        RewriteRule (.*) index.html [L]
     </Directory>
 </VirtualHost>
