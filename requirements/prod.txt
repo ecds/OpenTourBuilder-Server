@@ -1,3 +1,2 @@
 # requirements/prod.txt
-django-cors-headers
 -r common.txt
