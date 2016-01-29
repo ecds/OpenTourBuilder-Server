@@ -1,5 +1,5 @@
 # requirements/common.txt
-Django
+Django==1.8
 django-admin-bootstrapped
 django-autoslug
 django-tinymce
