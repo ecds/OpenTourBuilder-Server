@@ -9,7 +9,7 @@ python-magic
 MySQL-python
 django-debug-toolbar
 django-nose
-djangorestframework
+djangorestframework==3.2.3
 markdown
 django-filter
 # Add on to make the DRF structure what EmberJS wants.
