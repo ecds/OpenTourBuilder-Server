@@ -1,3 +1,0 @@
-# requirements/test.txt
--r common.txt
-django-nose

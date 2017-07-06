@@ -1,1 +1,0 @@
-# file battleofatlanta/apps/common/__init__.py

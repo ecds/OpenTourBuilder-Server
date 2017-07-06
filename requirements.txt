@@ -1,3 +1,0 @@
-# requirements.txt
-# Install only prod dependencies
--r requirements/prod.txt
