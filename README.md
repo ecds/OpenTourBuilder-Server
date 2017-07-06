@@ -1,3 +1,4 @@
+![Build Status]https://travis-ci.org/ecds/OpenTourBuilder-Server.svg?branch=develop
 # README
 
 This is the branch for OpenTourBuilder-Server 3.0.

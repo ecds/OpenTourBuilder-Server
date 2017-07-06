@@ -1,5 +1,5 @@
-dist: trusty
 sudo: false
+dist: trusty
 language: ruby
 rvm:
   - 2.4.1
@@ -12,5 +12,5 @@ before_install:
   - cp config/secrets.yml.dist config/secrets.yml
 script:
   - bundle install
-  - bundle exec rake db:schema:load
+  - bundle exec rake db:migrate
   - bundle exec rspec
