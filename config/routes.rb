@@ -7,6 +7,8 @@ class SubdomainConstraint
 end
 
 Rails.application.routes.draw do
+    resources :stop_tags
+    resources :tour_tags
     constraints SubdomainConstraint do
         resources :modes
         resources :tour_sets

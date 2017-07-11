@@ -8,6 +8,8 @@ class Tour < ApplicationRecord
     belongs_to :theme
     validates :title, presence: true
 
+    acts_as_taggable_on :tour_tags
+
     before_save :default_values
 
     def default_values

@@ -49,6 +49,6 @@ class ToursController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def tour_params
-        params.require(:tour).permit(:title, :description, :splash_image, :is_geo, :modes, :published, :theme_id)
+        params.require(:tour).permit(:title, :description, :splash_image, :is_geo, :modes, :published, :theme_id, :tag_list)
     end
 end

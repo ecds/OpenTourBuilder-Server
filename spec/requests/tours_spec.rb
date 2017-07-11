@@ -26,11 +26,19 @@ RSpec.describe 'Tours', type: :request do
         context 'when the record exists' do
             it 'returns the tour' do
                 expect(json).not_to be_empty
-                expect(json['id']).to eq(tour_id)
+                expect(json['id']).to eq(tour_id.to_s)
             end
 
             it 'returns status code 200' do
                 expect(response).to have_http_status(200)
+            end
+
+            it 'has five stops' do
+                expect(json_relationship('stops').size).to eq(5)
+            end
+
+            it 'has four tags' do
+                expect(json_relationship('tour_tags').size).to eq(4)
             end
         end
 
@@ -52,11 +60,11 @@ RSpec.describe 'Tours', type: :request do
         # valid payload
         let(:valid_attributes) { { tour: { title: 'Learn Elm', theme_id: Theme.first.id } } }
 
-        before { post "/tours", params: valid_attributes }
+        before { post '/tours', params: valid_attributes }
 
         context 'when the request is valid' do
             it 'creates a tour' do
-                expect(json['title']).to eq('Learn Elm')
+                expect(json_attributes['title']).to eq('Learn Elm')
             end
 
             it 'returns status code 201' do

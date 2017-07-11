@@ -47,7 +47,11 @@ RSpec.describe 'Stops API' do
             end
 
             it 'returns the stop' do
-                expect(json['id']).to eq(id)
+                expect(json['id']).to eq(id.to_s)
+            end
+
+            it 'has six tags' do
+                expect(json_relationship('stop_tags').size).to eq(6)
             end
         end
 

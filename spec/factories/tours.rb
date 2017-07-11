@@ -12,6 +12,8 @@ FactoryGirl.define do
 
             after(:create) do |tour, evaluator|
                 create_list(:stop, evaluator.stops_count, tours: [tour])
+                tour.tour_tag_list.add(Faker::Lorem.words(4))
+                tour.save
             end
         end
     end
