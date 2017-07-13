@@ -7,6 +7,8 @@ class SubdomainConstraint
 end
 
 Rails.application.routes.draw do
+    resources :users
+    get 'users/me', to: 'users#me'
     constraints SubdomainConstraint do
         resources :modes
         resources :tour_sets

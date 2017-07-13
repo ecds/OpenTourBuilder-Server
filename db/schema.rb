@@ -10,10 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170627164157) do
+ActiveRecord::Schema.define(version: 20170712200049) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "logins", id: :serial, force: :cascade do |t|
+    t.string "identification", null: false
+    t.string "password_digest"
+    t.string "oauth2_token", null: false
+    t.string "uid"
+    t.string "single_use_oauth2_token"
+    t.integer "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "provider"
+  end
 
   create_table "media", force: :cascade do |t|
     t.string "title"
@@ -38,6 +50,12 @@ ActiveRecord::Schema.define(version: 20170627164157) do
     t.index ["stop_id"], name: "index_stop_media_on_stop_id"
   end
 
+  create_table "stop_tags", force: :cascade do |t|
+    t.string "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "stops", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -53,6 +71,31 @@ ActiveRecord::Schema.define(version: 20170627164157) do
     t.text "direction_notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "taggings", id: :serial, force: :cascade do |t|
+    t.integer "tag_id"
+    t.string "taggable_type"
+    t.integer "taggable_id"
+    t.string "tagger_type"
+    t.integer "tagger_id"
+    t.string "context", limit: 128
+    t.datetime "created_at"
+    t.index ["context"], name: "index_taggings_on_context"
+    t.index ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
+    t.index ["tag_id"], name: "index_taggings_on_tag_id"
+    t.index ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context"
+    t.index ["taggable_id", "taggable_type", "tagger_id", "context"], name: "taggings_idy"
+    t.index ["taggable_id"], name: "index_taggings_on_taggable_id"
+    t.index ["taggable_type"], name: "index_taggings_on_taggable_type"
+    t.index ["tagger_id", "tagger_type"], name: "index_taggings_on_tagger_id_and_tagger_type"
+    t.index ["tagger_id"], name: "index_taggings_on_tagger_id"
+  end
+
+  create_table "tags", id: :serial, force: :cascade do |t|
+    t.string "name"
+    t.integer "taggings_count", default: 0
+    t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
   create_table "themes", force: :cascade do |t|
@@ -86,6 +129,14 @@ ActiveRecord::Schema.define(version: 20170627164157) do
     t.index ["tour_id"], name: "index_tour_stops_on_tour_id"
   end
 
+  create_table "tour_tags", force: :cascade do |t|
+    t.string "title"
+    t.decimal "lat", precision: 100, scale: 8
+    t.decimal "lng", precision: 100, scale: 8
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "tours", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -96,6 +147,12 @@ ActiveRecord::Schema.define(version: 20170627164157) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["theme_id"], name: "index_tours_on_theme_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "displayname"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

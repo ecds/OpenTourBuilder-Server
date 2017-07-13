@@ -4,3 +4,4 @@ config/database.yml
 log
 secrets.yml
 tmp
+config/initializers/rails_api_auth.rb

@@ -52,7 +52,7 @@ RSpec.describe 'Tours', type: :request do
         # valid payload
         let(:valid_attributes) { { tour: { title: 'Learn Elm', theme_id: Theme.first.id } } }
 
-        before { post "/tours", params: valid_attributes }
+        before { post '/tours', params: valid_attributes }
 
         context 'when the request is valid' do
             it 'creates a tour' do

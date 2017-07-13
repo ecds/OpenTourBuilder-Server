@@ -1,0 +1,4 @@
+# app/models/stop_tag.rb
+class StopTag < ApplicationRecord
+    validates :title, presence: true
+end
