@@ -52,7 +52,11 @@ RSpec.configure do |config|
         DatabaseCleaner.clean_with(:truncation)
         DatabaseCleaner.strategy = :transaction
         # Truncating doesn't drop schemas, ensure we're clean here, app *may not* exist
-        Apartment::Tenant.drop('atlanta') rescue nil
+        begin
+            Apartment::Tenant.drop('atlanta')
+        rescue
+            nil
+        end
         # Create the default tenant for our tests
         TourSet.create!(name: 'Atlanta')
     end
