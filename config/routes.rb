@@ -1,4 +1,5 @@
 # config/routes.rb
+# The subdomain constraint determins the tenant.
 class SubdomainConstraint
     def self.matches?(request)
         subdomains = %w(www admin public)
@@ -7,17 +8,27 @@ class SubdomainConstraint
 end
 
 Rails.application.routes.draw do
-    resources :users
-    get 'users/me', to: 'users#me'
     constraints SubdomainConstraint do
-        resources :modes
-        resources :tour_sets
-        resources :themes
-        resources :tours do
-            resources :stops do
-                resources :media
+        # namespace the controllers without affecting the URI
+        # Additional version for testing
+        scope module: :v1, constraints: ApiVersion.new('v1') do
+            resources :tours, only: :index
+        end
+        scope module: :v3, constraints: ApiVersion.new('v3', true) do
+            resources :users
+            get 'users/me', to: 'users#me'
+            resources :modes
+            resources :tour_sets
+            resources :themes
+            resources :tours do
+                resources :stops do
+                    resources :media
+                end
             end
         end
-        # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
     end
+
+    post '/v3/token', to: 'oauth2#create'
+    post '/v3/revoke', to: 'oauth2#destroy'
+
 end

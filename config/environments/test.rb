@@ -42,4 +42,5 @@ Rails.application.configure do
 
     # This is needed for the tests to request tests to pass when subdomain is set.
     config.action_dispatch.tld_length = 0
+    
 end

@@ -7,11 +7,11 @@ class User < ApplicationRecord
     attr_accessor :uid
     attr_accessor :provider
 
-    after_create :create_login
+    # before_create :create_login
 
     private
 
     def create_login
-        Login.create(identification: identification, uid: uid, provider: provider, user_id: id)
+        login << Login.create(identification: identification, uid: uid, provider: provider, user: self)
     end
 end

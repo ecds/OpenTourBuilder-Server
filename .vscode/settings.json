@@ -1,0 +1,11 @@
+{
+  "files.exclude": {
+    "*.DS_Store": "explorerExcludedFiles",
+    ".coverage": "explorerExcludedFiles",
+    "config/database.yml": "explorerExcludedFiles",
+    "log": "explorerExcludedFiles",
+    "secrets.yml": "explorerExcludedFiles",
+    "tmp": "explorerExcludedFiles",
+    "config/initializers/rails_api_auth.rb": "explorerExcludedFiles"
+  }
+}

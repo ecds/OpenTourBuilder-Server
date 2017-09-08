@@ -49,7 +49,8 @@ RSpec.configure do |config|
 
     # start by truncating all the tables but then use the faster transaction strategy the rest of the time.
     config.before(:suite) do
-        DatabaseCleaner.clean_with(:truncation)
+        load Rails.root + 'db/seeds.rb'
+        DatabaseCleaner.clean_with(:truncation, except: :modes)
         DatabaseCleaner.strategy = :transaction
         # Truncating doesn't drop schemas, ensure we're clean here, app *may not* exist
         begin
@@ -74,6 +75,7 @@ RSpec.configure do |config|
         # Switch into the default tenant
         Apartment::Tenant.switch! 'atlanta'
         # host! 'atlanta.lvh.me'
+        load Rails.root + 'db/seeds.rb'
     end
 
     config.after(:each) do
