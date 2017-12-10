@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Trasportation modes depend on Google's avaliable options. Note, we are skipping flight directions.
 Mode.destroy_all
 

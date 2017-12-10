@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
-  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
+  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
   "https://github.com/#{repo_name}.git"
 end
 
@@ -14,6 +16,7 @@ gem 'pg'
 gem 'apartment'
 # For JSONAPI responses
 gem 'active_model_serializers', '~> 0.10.0.rc3'
+gem 'acts-as-taggable-on', '~> 5.0'
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
 # Use Redis adapter to run Action Cable in production
@@ -22,7 +25,11 @@ gem 'redis', '~> 3.0'
 # gem 'bcrypt', '~> 3.1.7'
 
 # Social Auth
-gem 'rails_api_auth'
+gem 'rails_api_auth', git: 'git://github.com/jayvarner/rails_api_auth.git', branch: 'master'
+
+# Active Storage will land in 5.2
+gem 'carrierwave', '~> 1.0'
+gem 'mini_magick'
 
 # Use Capistrano for deployment
 gem 'capistrano-rails', group: :development
@@ -46,10 +53,10 @@ group :development do
 end
 
 group :test do
-    gem 'factory_girl_rails', '~> 4.0'
-    gem 'shoulda-matchers', git: 'https://github.com/thoughtbot/shoulda-matchers.git', branch: 'rails-5'
-    gem 'faker', git: 'https://github.com/stympy/faker.git', branch: 'master'
-    gem 'database_cleaner'
+  gem 'factory_girl_rails', '~> 4.0'
+  gem 'shoulda-matchers', git: 'https://github.com/thoughtbot/shoulda-matchers.git', branch: 'rails-5'
+  gem 'faker', git: 'https://github.com/stympy/faker.git', branch: 'master'
+  gem 'database_cleaner'
 end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

@@ -1,75 +1,77 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'V3::Users', type: :request do
-    # initialize test data
-    let!(:name) { Faker::HitchhikersGuideToTheGalaxy.character }
-    let!(:pw) { Faker::Internet.password(8) }
-    let!(:email) { Faker::Internet.free_email }
-    let!(:user) { create(:user, displayname: name) }
-    let!(:login) { create(:login, password: pw, password_confirmation: pw, identification: email, user: user) }
+  # initialize test data
+  let!(:name) { Faker::HitchhikersGuideToTheGalaxy.character }
+  let!(:pw) { Faker::Internet.password(8) }
+  let!(:email) { Faker::Internet.free_email }
+  let!(:user) { create(:user, displayname: name) }
+  let!(:login) { create(:login, password: pw, password_confirmation: pw, identification: email, user: user) }
 
-    describe 'GET /users' do
-        before { get '/users' }
+  describe 'GET /users' do
+    before { get '/users' }
 
-        it 'returns users' do
-            expect(json).not_to be_empty
-            expect(json.size).to eq(1)
-            expect(json[0]['login'])
-        end
-
-        it 'returns status code 200' do
-            expect(response).to have_http_status(200)
-        end
+    it 'returns users' do
+      expect(json).not_to be_empty
+      expect(json.size).to eq(1)
+      expect(json[0]['login'])
     end
 
-    describe 'POST /users with provider' do
-        # valid payload
-        # let(:valid_attributes) do
-        #     factory_to_json_api(create(:user, displayname: 'Learn Elm'))
-        # end
-        let(:valid_attributes) { hash_to_json_api('users', { displayname: 'Learn Elm', uid: Faker::Number.number(10).to_s, identification: Faker::Internet.free_email, provider: 'Google' } ) }
-
-        before { post '/users', params: valid_attributes }
-
-        context 'when the request is valid' do
-            it 'creates a user and login' do
-                expect(attributes['displayname']).to eq('Learn Elm')
-            end
-
-            it 'returns status code 201' do
-                expect(response).to have_http_status(201)
-            end
-        end
+    it 'returns status code 200' do
+      expect(response).to have_http_status(200)
     end
+  end
 
-    describe 'POST /users with password' do
-        let!(:name2) { Faker::HitchhikersGuideToTheGalaxy.character }
-        let!(:pw2) { Faker::Internet.password(8) }
-        let!(:email2) { Faker::Internet.free_email }
-        # valid payload
-        let(:valid_attributes) { hash_to_json_api('user', { displayname: name2, password: pw2, identification: email2 } ) }
+  describe 'POST /users with provider' do
+    # valid payload
+    # let(:valid_attributes) do
+    #     factory_to_json_api(create(:user, displayname: 'Learn Elm'))
+    # end
+    let(:valid_attributes) { hash_to_json_api('users', displayname: 'Learn Elm', uid: Faker::Number.number(10).to_s, identification: Faker::Internet.free_email, provider: 'Google') }
 
-        before { post '/users', params: valid_attributes }
+    before { post '/users', params: valid_attributes }
 
-        context 'when the request is valid' do
-            it 'creates a user and login with password' do
-                expect(attributes['displayname']).to eq(name2)
-            end
+    context 'when the request is valid' do
+      it 'creates a user and login' do
+        expect(attributes['displayname']).to eq('Learn Elm')
+      end
 
-            it 'returns status code 201' do
-                expect(response).to have_http_status(201)
-            end
-        end
+      it 'returns status code 201' do
+        expect(response).to have_http_status(201)
+      end
     end
+  end
 
-    describe 'POST /token with password' do
-        # puts email
-        before { post '/token', params: { username: email, password: pw, grant_type: 'password' } }
+  describe 'POST /users with password' do
+    let!(:name2) { Faker::HitchhikersGuideToTheGalaxy.character }
+    let!(:pw2) { Faker::Internet.password(8) }
+    let!(:email2) { Faker::Internet.free_email }
+    # valid payload
+    let(:valid_attributes) { hash_to_json_api('user', displayname: name2, password: pw2, identification: email2) }
 
-        context 'authentication successufl' do
-            it 'authenticates' do
-                expect(response).to have_http_status(200)
-            end
-        end
+    before { post '/users', params: valid_attributes }
+
+    context 'when the request is valid' do
+      it 'creates a user and login with password' do
+        expect(attributes['displayname']).to eq(name2)
+      end
+
+      it 'returns status code 201' do
+        expect(response).to have_http_status(201)
+      end
     end
+  end
+
+  describe 'POST /token with password' do
+    # puts email
+    before { post '/token', params: { username: email, password: pw, grant_type: 'password' } }
+
+    context 'authentication successufl' do
+      it 'authenticates' do
+        expect(response).to have_http_status(200)
+      end
+    end
+  end
 end

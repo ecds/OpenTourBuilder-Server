@@ -1,80 +1,83 @@
+# frozen_string_literal: true
+
 # app/controllers/v3/users_controller.rb
 module V3
-class UsersController < ApplicationController
+  class UsersController < ApplicationController
     before_action :set_user, only: [:show, :update, :destroy]
     before_action :authenticate!, only: :me
 
     # GET /users
     def index
-        @users = User.all
+      @users = User.all
 
-        render json: @users
+      render json: @users
     end
 
     # GET /users/1
     def show
-        render json: @user
+      render json: @user
     end
 
     # POST /users
     def create
-        @user = User.new(user_params)
+      @user = User.new(user_params)
 
-        if @user.save && @user.create_login!(login_params)
-            render json: @user, status: :created, location: @user
-        else
-            render json: @user.errors, status: :unprocessable_entity
-        end
+      if @user.save
+        render json: @user, status: :created, location: @user
+      else
+        render json: @user.errors, status: :unprocessable_entity
+      end
     end
 
     # PATCH/PUT /users/1
     def update
-        if @user.update(user_params)
-            render json: @user
-        else
-            render json: @user.errors, status: :unprocessable_entity
-        end
+      if @user.update(user_params)
+        render json: @user
+      else
+        render json: @user.errors, status: :unprocessable_entity
+      end
     end
 
     # DELETE /users/1
     def destroy
-        @user.destroy
+      @user.destroy
     end
 
     def me
-        user = @current_login.user
-        if user.nil?
-            render json: 'Invalid api token', status: :foo
-        else
-            render json: user
+      user = @current_login.user
+      if user.nil?
+        render json: 'Invalid api token', status: :foo
+      else
+        render json: user
+      end
+    end
+
+      private
+
+        # Use callbacks to share common setup or constraints between actions.
+        def set_user
+          @user = User.find(params[:id])
         end
-    end
 
-    private
-
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
-        @user = User.find(params[:id])
-    end
-
-    # Only allow a trusted parameter "white list" through.
-    def user_params
-        ActiveModelSerializers::Deserialization
-            .jsonapi_parse(
+        # Only allow a trusted parameter "white list" through.
+        def user_params
+          ActiveModelSerializers::Deserialization
+              .jsonapi_parse(
                 params, only: [
-                    :displayname
-                ]
-            )
-    end
+                      :displayname, :identification, :password,
+                      :password_confirmation, :uid
+                  ]
+              )
+        end
 
-    def login_params
-        ActiveModelSerializers::Deserialization
-            .jsonapi_parse(
+        def login_params
+          ActiveModelSerializers::Deserialization
+              .jsonapi_parse(
                 params, only: [
-                    :identification, :password,
-                    :password_confirmation, :uid
-                ]
-            )
-    end
-end
+                      :identification, :password,
+                      :password_confirmation, :uid
+                  ]
+              )
+        end
+  end
 end
