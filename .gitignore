@@ -8,3 +8,5 @@ tmp
 config/initializers/rails_api_auth.rb
 public/public
 public/uploads
+.vscode
+

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-set :branch, 'develop'
+set :branch, 'develop3.0'
 
 # server-based syntax
 # ======================
