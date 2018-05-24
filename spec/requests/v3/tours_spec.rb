@@ -3,17 +3,21 @@
 require 'rails_helper'
 
 RSpec.describe 'V3::Tours', type: :request do
-  # initialize test data
+  Apartment::Tenant.switch! 'atlanta'
+  let!(:user) { create(:user) }
+  let!(:login) { create(:login, user: user) }
   let!(:theme) { create(:theme) }
   let!(:tours) { create_list(:tour_with_stops, 10, theme: theme) }
-  let(:tour_id) { tours.first.id }
+  let!(:tour_id) { tours.select { |t| t.published == true }.first.id }
+  let!(:published_tours_count) { tours.select { |t| t.published == true }.length }
+  Apartment::Tenant.reset
 
-  describe 'GET /tours' do
-    before { get '/tours' }
+  describe 'GET /atlanta/tours unauthenticated' do
+    before { get "/#{Apartment::Tenant.current}/tours" }
 
-    it 'returns tours' do
+    it 'returns only published tours' do
       expect(json).not_to be_empty
-      expect(json.size).to eq(10)
+      expect(json.size).to eq(Tour.published.count)
     end
 
     it 'returns status code 200' do
@@ -21,14 +25,27 @@ RSpec.describe 'V3::Tours', type: :request do
     end
   end
 
-  # Test suite for GET /tours/:id
-  describe 'GET /tours/:id' do
-    before { get "/tours/#{tour_id}" }
+  describe 'GET /atlanta/tours authenticated' do
+    before { get "/#{Apartment::Tenant.current}/tours", headers: { Authorization: "Bearer #{login.oauth2_token}" } }
+
+    it 'returns all tours' do
+      expect(json.size).to eq(10)
+    end
+  end
+
+  # Test suite for GET /atlanta/tours/:id
+  describe 'GET /atlanta/tours/:id' do
+    before { get "/#{Apartment::Tenant.current}/tours/#{tour_id}" }
 
     context 'when the record exists' do
       it 'returns the tour' do
         expect(json).not_to be_empty
         expect(json['id']).to eq(tour_id.to_s)
+      end
+
+      it 'has five stops' do
+        expect(relationships['tour_stops']['data'].size).to eq(5)
+        expect(relationships['stops']['data'].size).to eq(5)
       end
 
       it 'returns status code 200' do
@@ -42,7 +59,7 @@ RSpec.describe 'V3::Tours', type: :request do
     end
 
     context 'when the record does not exist' do
-      let(:tour_id) { 100 }
+      let(:tour_id) { 10000000 }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
@@ -54,16 +71,15 @@ RSpec.describe 'V3::Tours', type: :request do
     end
   end
 
-  # Test suite for POST /tours
-  describe 'POST /tours' do
+  # Test suite for POST /atlanta/tours
+  describe 'POST /atlanta/tours' do
     # valid payload
     let(:valid_attributes) do
-      factory_to_json_api(FactoryGirl.build(:tour, title: 'Learn Elm'))
+      factory_to_json_api(FactoryBot.build(:tour, title: 'Learn Elm', published: true))
     end
+    before { post "/#{Apartment::Tenant.current}/tours", params: valid_attributes, headers: { Authorization: "Bearer #{login.oauth2_token}" } }
 
-    before { post '/tours', params: valid_attributes }
-
-    context 'when the request is valid' do
+    context 'when the post is valid and authenticated' do
       it 'creates a tour' do
         expect(attributes['title']).to eq('Learn Elm')
       end
@@ -77,7 +93,7 @@ RSpec.describe 'V3::Tours', type: :request do
       let(:invalid_attributes) do
         hash_to_json_api('tours', invalid: 'Foobar')
       end
-      before { post '/tours', params: invalid_attributes }
+      before { post "/#{Apartment::Tenant.current}/tours", params: invalid_attributes, headers: { Authorization: "Bearer #{login.oauth2_token}" } }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -90,26 +106,29 @@ RSpec.describe 'V3::Tours', type: :request do
     end
   end
 
-  # Test suite for PUT /tours/:id
-  describe 'PUT /tours/:id' do
-    let(:valid_attributes) { { tour: { title: 'Shopping' } } }
+  # Test suite for PUT /atlanta/tours/:id
+  describe 'PUT /atlanta/tours/:id' do
+    let(:valid_attributes) do
+      factory_to_json_api(FactoryBot.build(:tour, title: 'Shopping'))
+    end
 
     context 'when the record exists' do
-      before { put "/tours/#{tour_id}", params: valid_attributes }
+      before { put "/#{Apartment::Tenant.current}/tours/#{tour_id}", params: valid_attributes, headers: { Authorization: "Bearer #{login.oauth2_token}" } }
 
       it 'updates the record' do
-        expect(response.body).to be_empty
+        expect(json).not_to be_empty
+        expect(attributes['title']).to eq('Shopping')
       end
 
-      it 'returns status code 204' do
-        expect(response).to have_http_status(204)
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
       end
     end
   end
 
-  # Test suite for DELETE /tours/:id
-  describe 'DELETE /tours/:id' do
-    before { delete "/tours/#{tour_id}" }
+  # Test suite for DELETE /atlanta/tours/:id
+  describe 'DELETE /atlanta/tours/:id' do
+    before { delete "/#{Apartment::Tenant.current}/tours/#{tour_id}", headers: { Authorization: "Bearer #{login.oauth2_token}" } }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)

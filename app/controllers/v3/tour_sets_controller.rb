@@ -3,12 +3,19 @@
 # Controller class for Tour Sets
 # app/controllers/v3/tour_sets.rb
 module V3
-  class TourSetsController < ApplicationController
+  class TourSetsController < V3Controller
     before_action :set_tour_set, only: [:show, :update, :destroy]
+    authorize_resource
 
     # GET /tour_sets
     def index
-      @tour_sets = TourSet.all
+      @tour_sets = []
+
+      if current_user.super
+        @tour_sets = TourSet.all
+      elsif current_user
+        @tour_sets = current_user.tour_sets
+      end
 
       render json: @tour_sets
     end
@@ -55,5 +62,5 @@ module V3
     def tour_set_params
       params.require(:tour).permit(:title)
     end
-end
+  end
 end

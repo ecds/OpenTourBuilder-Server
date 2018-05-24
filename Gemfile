@@ -9,8 +9,8 @@ end
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.1.1'
-# Use PostgreSQL
+gem 'rails', '~> 5.2.0'
+gem 'mysql2'
 gem 'pg'
 # Multitenancy for Rails and ActiveRecord
 gem 'apartment'
@@ -25,16 +25,17 @@ gem 'redis', '~> 3.0'
 # gem 'bcrypt', '~> 3.1.7'
 
 # Social Auth
-gem 'rails_api_auth', git: 'git://github.com/jayvarner/rails_api_auth.git', branch: 'master'
+gem 'ecds_auth_engine', path: '../ecds_auth_engine'
+gem 'cancancan', '~> 2.0'
 
 # Active Storage will land in 5.2
 gem 'carrierwave', '~> 1.0'
 gem 'mini_magick'
 
-# Use Capistrano for deployment
-gem 'capistrano-rails', group: :development
-gem 'capistrano-rbenv', '~> 2.0', group: :development
-gem 'capistrano-passenger', group: :development
+# Vidoe provider APIs
+gem 'vimeo'
+gem 'yt'
+gem 'youtube_rails', git: 'git@github.com:jayvarner/youtube_rails.git', branch: 'master'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
@@ -50,13 +51,18 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'rspec-rails', '~> 3.5'
+  # Use Capistrano for deployment
+  gem 'capistrano-rails'
+  gem 'capistrano-rbenv', '~> 2.0'
+  gem 'capistrano-passenger'
 end
 
 group :test do
-  gem 'factory_girl_rails', '~> 4.0'
+  gem "factory_bot"
   gem 'shoulda-matchers', git: 'https://github.com/thoughtbot/shoulda-matchers.git', branch: 'rails-5'
   gem 'faker', git: 'https://github.com/stympy/faker.git', branch: 'master'
   gem 'database_cleaner'
 end
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

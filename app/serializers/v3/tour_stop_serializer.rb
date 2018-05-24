@@ -4,5 +4,5 @@
 class V3::TourStopSerializer < ActiveModel::Serializer
   belongs_to :tour
   belongs_to :stop
-  attributes :id, :position
+  attributes :id, :position, :previous, :next, :next_slug
 end

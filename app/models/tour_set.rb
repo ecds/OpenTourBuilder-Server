@@ -2,6 +2,8 @@
 
 # Model class for tour sets. This is the main model for "instances" of Open Tour Builder.
 class TourSet < ApplicationRecord
+  has_many :tour_set_users
+  has_many :users, through: :tour_set_users
   before_save :set_subdomain
   after_create :create_tenant
 

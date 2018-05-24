@@ -1,7 +1,10 @@
 *.DS_Store
 .coverage
 config/database.yml
+config/secrets.yml
 log
 secrets.yml
 tmp
 config/initializers/rails_api_auth.rb
+public/public
+public/uploads

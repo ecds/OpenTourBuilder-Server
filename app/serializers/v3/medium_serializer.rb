@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 class V3::MediumSerializer < ActiveModel::Serializer
-  attributes :id, :title, :caption, :original_image
+  attributes :id, :title, :caption, :desktop, :tablet, :mobile, :video, :provider, :original_image, :embed
 end

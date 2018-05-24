@@ -2,8 +2,9 @@
 
 # app/controllers/v3/modes_controller.rb
 module V3
-  class ModesController < ApplicationController
+  class ModesController < V3Controller
     before_action :set_mode, only: [:show, :update, :destroy]
+    authorize_resource
 
     # GET /modes
     def index

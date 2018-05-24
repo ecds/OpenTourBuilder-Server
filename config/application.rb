@@ -23,6 +23,14 @@ Bundler.require(*Rails.groups)
 module OpenTourApi
   # Base class for the app.
   class Application < Rails::Application
+    class DirectoryElevator < Apartment::Elevators::Generic
+      def parse_tenant_name(request)
+        # request is an instance of Rack::Request
+        tenant_name = request.fullpath.split('/')[1]
+
+        tenant_name
+      end
+    end
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
 
@@ -34,6 +42,8 @@ module OpenTourApi
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
-    config.middleware.use Apartment::Elevators::Subdomain
+    # config.middleware.use Apartment::Elevators::Subdomain
+    config.middleware.use DirectoryElevator
+    # config.relative_url_root = '/*'
   end
 end

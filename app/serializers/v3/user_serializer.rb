@@ -2,7 +2,7 @@
 
 # app/serializer/user_serializer.rb
 class V3::UserSerializer < ActiveModel::Serializer
-  attributes :id, :displayname
+  attributes :id, :display_name
 
   # has_one :login
 end

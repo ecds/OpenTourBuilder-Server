@@ -2,8 +2,9 @@
 
 # app/controllers/v3/themes_controller.rb
 module V3
-  class ThemesController < ApplicationController
+  class ThemesController < V3Controller
     before_action :set_theme, only: [:show, :update, :destroy]
+    authorize_resource
 
     # GET /themes
     def index

@@ -45,20 +45,18 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
 
-  # add `FactoryGirl` methods
-  config.include FactoryGirl::Syntax::Methods
   config.include RequestSpecHelper, type: :request
-
+  config.include FactoryBot::Syntax::Methods
   # start by truncating all the tables but then use the faster transaction strategy the rest of the time.
   config.before(:suite) do
     load Rails.root + 'db/seeds.rb'
-    DatabaseCleaner.clean_with(:truncation, except: :modes)
+    DatabaseCleaner.clean_with(:truncation, except: [:modes, :roles])
     DatabaseCleaner.strategy = :transaction
     # Truncating doesn't drop schemas, ensure we're clean here, app *may not* exist
     begin
       Apartment::Tenant.drop('atlanta')
-  rescue
-    nil
+    rescue
+      nil
     end
     # Create the default tenant for our tests
     TourSet.create!(name: 'Atlanta')
@@ -106,4 +104,13 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  # Clean up uploaded images
+  config.after(:all) do
+    # Get rid of the linked images
+    if Rails.env.test?
+      FileUtils.rm_rf(Dir["#{Rails.root}/public/uploads/test/[^.]*"])
+      FileUtils.rm_rf(Dir["#{Rails.root}/public/uploads/tmp/test/[^.]*"])
+    end
+  end
 end

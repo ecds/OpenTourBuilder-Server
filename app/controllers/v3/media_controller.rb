@@ -2,12 +2,20 @@
 
 # app/controllers/v3/media_controller.rb
 module V3
-  class MediaController < ApplicationController
+  class MediaController < V3Controller
     before_action :set_medium, only: [:show, :update, :destroy]
-
+    authorize_resource
     # GET /media
     def index
-      @media = Medium.all
+      # TODO: This ins not ideal, we use these `not_in_*` scopes to make the list of media avaliable to add
+      # to a stop or tour. But the paramerter does not make sense when just looking at it. Needs clearer language.
+      @media = if params[:stop_id]
+        Medium.not_in_stop(params[:stop_id]).or(Medium.no_stops)
+      elsif params[:tour_id]
+        Medium.not_in_tour(params[:tour_id]).or(Medium.no_tours)
+      else
+        Medium.all
+      end
 
       render json: @media
     end
@@ -22,7 +30,7 @@ module V3
       @medium = Medium.new(medium_params)
 
       if @medium.save
-        render json: @medium, status: :created, location: @medium
+        render json: @medium, status: :created, location: "/#{Apartment::Tenant.current}/media/#{@medium.id}"
       else
         render json: @medium.errors, status: :unprocessable_entity
       end
@@ -53,7 +61,7 @@ module V3
         ActiveModelSerializers::Deserialization
         .jsonapi_parse(
           params, only: [
-                :title, :caption, :original_image
+                :title, :caption, :original_image, :stops, :tours, :video, :stop_id, :tour_id
             ]
         )
       end

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 # /app/controllers/v3/tour_stops_controller.rb
-class V3::TourStopsController < ApplicationController
+class V3::TourStopsController < V3Controller
   before_action :set_tour_stop, only: [:show, :update, :destroy]
+  authorize_resource
 
   # GET /stops
   def index
@@ -44,7 +45,12 @@ class V3::TourStopsController < ApplicationController
 
       # Only allow a trusted parameter "white list" through.
       def tour_stop_params
-        params.require(:tour_stop).permit(:title, :description, :lat, :lng, :metadescription, :article_link, :video_embed, :video_poster, :lat, :lng, :parking_lat, :parking_lng, :direction_intro, :direction_notes)
+        ActiveModelSerializers::Deserialization
+            .jsonapi_parse(
+              params, only: [
+                    :stop, :tour, :position
+                ]
+            )
       end
 
       def set_tour_stop

@@ -2,27 +2,35 @@
 
 # /app/controllers/v3/stops_controller.rb
 # module V3
-class V3::StopsController < ApplicationController
+class V3::StopsController < V3Controller
   # before_action :set_tour
   before_action :set_stop, only: [:show, :update, :destroy]
-  # before_action :set_tour_stop, only: [:show, :update, :destroy]
+  authorize_resource
 
   # GET /stops
   def index
-    @stops = Stop.all
-    render json: @stops
+    if params[:tour_id]
+      Stop.not_in_tour(params[:tour_id]).or(Stop.no_tours)
+    else
+      @stops = Stop.all
+      render json: @stops
+    end
   end
 
   # GET /stops/1
   def show
-    render json: @stop, include: ['media']
+    render json: @stop,
+           include: [
+               'media',
+               'stop_media'
+           ]
   end
 
   # POST /stops
   def create
     @stop = Stop.new(stop_params)
     if @stop.save
-      render json: @stop, status: :created, location: @stop
+      render json: @stop, status: :created, location: "/#{Apartment::Tenant.current}/#{@stop.id}"
     else
       render json: @stop.errors, status: :unprocessable_entity
     end
@@ -45,22 +53,29 @@ class V3::StopsController < ApplicationController
 
     private
 
-      # Only allow a trusted parameter "white list" through.
-      def stop_params
-        params.require(:stop).permit(:title, :description, :lat, :lng, :metadescription, :article_link, :video_embed, :video_poster, :lat, :lng, :parking_lat, :parking_lng, :direction_intro, :direction_notes)
-      end
+    # Only allow a trusted parameter "white list" through.
+    def stop_params
+      ActiveModelSerializers::Deserialization
+          .jsonapi_parse(
+            params, only: [
+                  :title, :description, :lat, :lng,
+                  :parking_lat, :parking_lng, :media,
+                  :address
+              ]
+          )
+    end
 
-      # Use callbacks to share common setup or constraints between actions.
+    # Use callbacks to share common setup or constraints between actions.
 
-      def set_tour
-        @tour = Tour.find(params[:tour_id])
-      end
+    def set_tour
+      @tour = Tour.find(params[:tour_id])
+    end
 
-      def set_stop
-        @stop = Stop.find(params[:id])
-      end
+    def set_stop
+      @stop = Stop.find(params[:id])
+    end
 
-      def set_tour_stop
-        @stop = @tour.stops.find_by!(id: params[:id]) if @tour
-      end
+    def set_tour_stop
+      @stop = @tour.stops.find_by!(id: params[:id]) if @tour
+    end
 end

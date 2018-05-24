@@ -2,34 +2,38 @@
 
 # config/routes.rb
 # The subdomain constraint determins the tenant.
-class SubdomainConstraint
-  def self.matches?(request)
-    subdomains = %w(www admin public)
-    request.subdomain.present? && !subdomains.include?(request.subdomain)
-  end
-end
+# class SubdomainConstraint
+#   def self.matches?(request)
+#     subdomains = %w(www admin public)
+#     request.subdomain.present? && !subdomains.include?(request.subdomain)
+#   end
+# end
 
 Rails.application.routes.draw do
-  constraints SubdomainConstraint do
-    # namespace the controllers without affecting the URI
-    # Additional version for testing
+
+  resources :tour_set_users
+  scope ':tenent' do
     scope module: :v1, constraints: ApiVersion.new('v1') do
       resources :tours, only: :index
     end
     scope module: :v3, constraints: ApiVersion.new('v3', true) do
       resources :users
-      get 'users/me', to: 'users#me'
       resources :modes
-      resources :tour_sets
+      resources :tour_sets, path: 'tour-sets'
+      resources :tour_set_users, path: 'tour-set-users'
+      resources :tour_collections, path: 'tour-collections'
+      resources :tour_media, path: 'tour-media'
       resources :themes
       resources :tours
       resources :media
       resources :stops
+      resources :stop_media, path: 'stop-media'
+      resources :tour_media, path: 'tour-media'
       resources :tour_stops, path: 'tour-stops'
+      resources :flat_pages, path: 'flat-pages'
+      resources :geojson_tours
     end
+    post '/token', to: 'oauth2#create'
+    post '/revoke', to: 'oauth2#destroy'
   end
-
-  post '/v3/token', to: 'oauth2#create'
-  post '/v3/revoke', to: 'oauth2#destroy'
-
 end

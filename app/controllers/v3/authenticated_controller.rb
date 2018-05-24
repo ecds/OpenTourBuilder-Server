@@ -2,7 +2,7 @@
 
 # app/controllers/v3/authenticated_controller.rb
 module V3
-  class AuthenticatedController < ApplicationController
+  class AuthenticatedController < V3Controller
     # include RailsApiAuth::Authentication
 
     before_action :authenticate!

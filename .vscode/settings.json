@@ -3,9 +3,12 @@
     "*.DS_Store": "explorerExcludedFiles",
     ".coverage": "explorerExcludedFiles",
     "config/database.yml": "explorerExcludedFiles",
+    "config/secrets.yml": "explorerExcludedFiles",
     "log": "explorerExcludedFiles",
     "secrets.yml": "explorerExcludedFiles",
     "tmp": "explorerExcludedFiles",
-    "config/initializers/rails_api_auth.rb": "explorerExcludedFiles"
+    "config/initializers/rails_api_auth.rb": "explorerExcludedFiles",
+    "public/public": "explorerExcludedFiles",
+    "public/uploads": "explorerExcludedFiles"
   }
 }

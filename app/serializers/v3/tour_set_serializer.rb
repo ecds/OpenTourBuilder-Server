@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class V3::TourSetSerializer < ActiveModel::Serializer
-  belongs_to :stop
-  belongs_to :tour
+  # has_many :tours
   attributes :id, :name
 end

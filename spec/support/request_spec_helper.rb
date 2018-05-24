@@ -15,6 +15,10 @@ module RequestSpecHelper
     json['attributes']
   end
 
+  def relationships
+    json['relationships']
+  end
+
   def hash_to_json_api(model, attributes)
     {
         data: {

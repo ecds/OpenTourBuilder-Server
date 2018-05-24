@@ -2,14 +2,32 @@
 
 # app/controllers/v3/tours_controller.rb
 # module V3
-class V3::ToursController < ApplicationController
+class V3::ToursController < V3Controller
   before_action :set_tour, only: [:show, :update, :destroy]
+  authorize_resource
 
   # GET /tours
   def index
-    @tours = Tour.all
+    @tours = []
+    if current_user.present? && current_user.current_role.title != 'Guest'
+      @tours = Tour.all
+    else
+      @tours = Tour.published
+    end
 
-    render json: @tours
+    if @tours.length == 0
+      return head :no_content
+    end
+
+    render json: @tours,
+            include: [
+                'tour_stops',
+                'stops',
+                'mode',
+                'modes',
+                'theme',
+                'media'
+            ]
   end
 
   # GET /tours/1
@@ -20,7 +38,10 @@ class V3::ToursController < ApplicationController
                'stops',
                'mode',
                'modes',
-               'theme'
+               'theme',
+               'media',
+               'tour_media',
+               'flat_pages'
            ]
   end
 
@@ -28,7 +49,8 @@ class V3::ToursController < ApplicationController
   def create
     @tour = Tour.new(tour_params)
     if @tour.save
-      render json: @tour, status: :created, location: @tour
+      response = render json: @tour, status: :created, location: "/#{Apartment::Tenant.current}/tours/#{@tour.id}"
+      return response
     else
       render json: @tour.errors, status: :unprocessable_entity
     end
@@ -37,8 +59,7 @@ class V3::ToursController < ApplicationController
   # PATCH/PUT /tours/1
   def update
     if @tour.update(tour_params)
-      # render json: @tour
-      head :no_content
+      render json: @tour, location: "/#{Apartment::Tenant.current}/tours/#{@tour.id}"
     else
       render json: @tour.errors, status: :unprocessable_entity
     end
@@ -53,7 +74,6 @@ class V3::ToursController < ApplicationController
 
       # Use callbacks to share common setup or constraints between actions.
       def set_tour
-        # roject = Project.includes(vector_layer_project: [{ vector_layer: :vector_feature }]).find(params[:id])
         @tour = Tour.includes(:tour_stops).find(params[:id])
       end
 
@@ -62,11 +82,10 @@ class V3::ToursController < ApplicationController
         ActiveModelSerializers::Deserialization
             .jsonapi_parse(
               params, only: [
-                    :title, :description, :splash_image,
+                    :title, :description,
                     :is_geo, :modes, :published, :theme_id,
-                    :mode_id
+                    :mode_id, :media, :meta_description
                 ]
             )
       end
 end
-# end
