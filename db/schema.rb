@@ -10,10 +10,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170627164157) do
+ActiveRecord::Schema.define(version: 2018_05_08_020558) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "flat_pages", force: :cascade do |t|
+    t.string "title"
+    t.string "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "logins", force: :cascade do |t|
+    t.string "identification", null: false
+    t.string "password_digest"
+    t.string "oauth2_token", null: false
+    t.string "uid"
+    t.string "single_use_oauth2_token"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "provider"
+    t.index ["user_id"], name: "index_logins_on_user_id"
+  end
 
   create_table "media", force: :cascade do |t|
     t.string "title"
@@ -21,12 +41,20 @@ ActiveRecord::Schema.define(version: 20170627164157) do
     t.string "original_image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "video"
+    t.string "provider"
+    t.string "embed"
   end
 
   create_table "modes", force: :cascade do |t|
     t.string "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "icon"
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.string "title"
   end
 
   create_table "stop_media", force: :cascade do |t|
@@ -34,8 +62,15 @@ ActiveRecord::Schema.define(version: 20170627164157) do
     t.bigint "medium_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "position"
     t.index ["medium_id"], name: "index_stop_media_on_medium_id"
     t.index ["stop_id"], name: "index_stop_media_on_stop_id"
+  end
+
+  create_table "stop_tags", force: :cascade do |t|
+    t.string "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "stops", force: :cascade do |t|
@@ -45,20 +80,74 @@ ActiveRecord::Schema.define(version: 20170627164157) do
     t.string "article_link"
     t.string "video_embed"
     t.string "video_poster"
-    t.decimal "lat", precision: 100, scale: 8
-    t.decimal "lng", precision: 100, scale: 8
-    t.decimal "parking_lat", precision: 100, scale: 8
-    t.decimal "parking_lng", precision: 100, scale: 8
+    t.decimal "lat", precision: 65, scale: 8
+    t.decimal "lng", precision: 65, scale: 8
+    t.decimal "parking_lat", precision: 65, scale: 8
+    t.decimal "parking_lng", precision: 65, scale: 8
     t.text "direction_intro"
     t.text "direction_notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "address"
+    t.bigint "medium_id"
+    t.index ["medium_id"], name: "index_stops_on_medium_id"
+  end
+
+  create_table "taggings", id: :serial, force: :cascade do |t|
+    t.integer "tag_id"
+    t.string "taggable_type"
+    t.integer "taggable_id"
+    t.string "tagger_type"
+    t.integer "tagger_id"
+    t.string "context", limit: 128
+    t.datetime "created_at"
+    t.index ["context"], name: "index_taggings_on_context"
+    t.index ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
+    t.index ["tag_id"], name: "index_taggings_on_tag_id"
+    t.index ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context"
+    t.index ["taggable_id", "taggable_type", "tagger_id", "context"], name: "taggings_idy"
+    t.index ["taggable_id"], name: "index_taggings_on_taggable_id"
+    t.index ["taggable_type"], name: "index_taggings_on_taggable_type"
+    t.index ["tagger_id", "tagger_type"], name: "index_taggings_on_tagger_id_and_tagger_type"
+    t.index ["tagger_id"], name: "index_taggings_on_tagger_id"
+  end
+
+  create_table "tags", id: :serial, force: :cascade do |t|
+    t.string "name"
+    t.integer "taggings_count", default: 0
+    t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
   create_table "themes", force: :cascade do |t|
     t.string "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "tour_collections", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "tour_flat_pages", force: :cascade do |t|
+    t.bigint "tour_id"
+    t.bigint "flat_page_id"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["flat_page_id"], name: "index_tour_flat_pages_on_flat_page_id"
+    t.index ["tour_id"], name: "index_tour_flat_pages_on_tour_id"
+  end
+
+  create_table "tour_media", force: :cascade do |t|
+    t.bigint "tour_id"
+    t.bigint "medium_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "position"
+    t.index ["medium_id"], name: "index_tour_media_on_medium_id"
+    t.index ["tour_id"], name: "index_tour_media_on_tour_id"
   end
 
   create_table "tour_modes", force: :cascade do |t|
@@ -70,10 +159,20 @@ ActiveRecord::Schema.define(version: 20170627164157) do
     t.index ["tour_id"], name: "index_tour_modes_on_tour_id"
   end
 
+  create_table "tour_set_users", force: :cascade do |t|
+    t.bigint "tour_set_id"
+    t.bigint "user_id"
+    t.bigint "role_id"
+    t.index ["role_id"], name: "index_tour_set_users_on_role_id"
+    t.index ["tour_set_id"], name: "index_tour_set_users_on_tour_set_id"
+    t.index ["user_id"], name: "index_tour_set_users_on_user_id"
+  end
+
   create_table "tour_sets", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "subdomain"
   end
 
   create_table "tour_stops", force: :cascade do |t|
@@ -86,16 +185,47 @@ ActiveRecord::Schema.define(version: 20170627164157) do
     t.index ["tour_id"], name: "index_tour_stops_on_tour_id"
   end
 
+  create_table "tour_tags", force: :cascade do |t|
+    t.string "title"
+    t.decimal "lat", precision: 65, scale: 8
+    t.decimal "lng", precision: 65, scale: 8
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "tours", force: :cascade do |t|
     t.string "title"
     t.text "description"
-    t.string "splash_image"
+    t.text "article_link"
+    t.text "google_analytics"
     t.boolean "is_geo"
     t.boolean "published"
     t.bigint "theme_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "mode_id"
+    t.integer "position"
+    t.bigint "splash_image_medium_id"
+    t.string "meta_description"
+    t.bigint "medium_id"
+    t.index ["medium_id"], name: "index_tours_on_medium_id"
+    t.index ["mode_id"], name: "index_tours_on_mode_id"
     t.index ["theme_id"], name: "index_tours_on_theme_id"
   end
 
+  create_table "users", force: :cascade do |t|
+    t.string "display_name"
+    t.bigint "login_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "super", default: false
+    t.index ["login_id"], name: "index_users_on_login_id", unique: true
+  end
+
+  add_foreign_key "stops", "media"
+  add_foreign_key "tour_set_users", "roles"
+  add_foreign_key "tours", "media"
+  add_foreign_key "tours", "media", column: "splash_image_medium_id"
+  add_foreign_key "tours", "modes"
+  add_foreign_key "users", "logins"
 end

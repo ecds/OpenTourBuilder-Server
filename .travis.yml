@@ -7,7 +7,6 @@ services:
 before_install:
   - cp config/database.yml.travis config/database.yml
   - psql -c 'create database travis_ci_test' -U postgres
-  - cp config/initializers/rails_api_auth.rb.dist config/initializers/rails_api_auth.rb
   - cp config/secrets.yml.dist config/secrets.yml
 script:
   - bundle install

@@ -1,0 +1,33 @@
+require 'rails_helper'
+
+RSpec.describe V3::TourSetUsersController, type: :routing do
+  describe 'routing' do
+
+    it 'routes to #index' do
+      expect(get: "#{Apartment::Tenant.current}/tour_set_users").to route_to('tour_set_users#index')
+    end
+
+
+    it 'routes to #show' do
+      expect(get: "#{Apartment::Tenant.current}/tour_set_users/1").to route_to('tour_set_users#show', :id => '1')
+    end
+
+
+    it 'routes to #create' do
+      expect(post: "#{Apartment::Tenant.current}/tour_set_users").to route_to('tour_set_users#create')
+    end
+
+    it 'routes to #update via PUT' do
+      expect(put: "#{Apartment::Tenant.current}/tour_set_users/1").to route_to('tour_set_users#update', :id => '1')
+    end
+
+    it 'routes to #update via PATCH' do
+      expect(patch: "#{Apartment::Tenant.current}/tour_set_users/1").to route_to('tour_set_users#update', :id => '1')
+    end
+
+    it 'routes to #destroy' do
+      expect(delete: "#{Apartment::Tenant.current}/tour_set_users/1").to route_to('tour_set_users#destroy', :id => '1')
+    end
+
+  end
+end
