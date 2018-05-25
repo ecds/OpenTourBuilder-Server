@@ -6,6 +6,16 @@ GIT
     youtube_rails (1.2.2)
 
 GIT
+  remote: https://github.com/ecds/ecds_rails_auth_engine.git
+  revision: 487b8adebc33505c5875620cea629ef338c6fdda
+  tag: v0.1.3
+  specs:
+    ecds_rails_auth_engine (0.1.3)
+      cancancan (~> 2.0)
+      rails (~> 5.2.0)
+      rails_api_auth
+
+GIT
   remote: https://github.com/stympy/faker.git
   revision: f8e1b81f8da82ea9eb88c4939a3a6801f97e5ac1
   branch: master
@@ -20,14 +30,6 @@ GIT
   specs:
     shoulda-matchers (3.1.2)
       activesupport (>= 4.2.0)
-
-PATH
-  remote: ../ecds_auth_engine
-  specs:
-    ecds_auth_engine (0.1.0)
-      cancancan (~> 2.0)
-      rails (~> 5.2.0)
-      rails_api_auth
 
 GEM
   remote: https://rubygems.org/
@@ -88,7 +90,7 @@ GEM
       public_suffix (>= 2)
       rack (>= 1.3.6)
     arel (9.0.0)
-    bcrypt (3.1.11)
+    bcrypt (3.1.12)
     builder (3.2.3)
     byebug (10.0.2)
     cancancan (2.2.0)
@@ -268,7 +270,7 @@ DEPENDENCIES
   capistrano-rbenv (~> 2.0)
   carrierwave (~> 1.0)
   database_cleaner
-  ecds_auth_engine!
+  ecds_rails_auth_engine!
   factory_bot
   faker!
   listen (>= 3.0.5, < 3.2)

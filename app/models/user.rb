@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class User < ActiveRecord::Base
-  include EcdsAuthEngine::EcdsUser
+  include EcdsRailsAuthEngine::EcdsUser
   has_many :tour_set_users
   has_many :tour_sets, through: :tour_set_users
 
