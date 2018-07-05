@@ -34,6 +34,10 @@ class Medium < ApplicationRecord
     original_image.tablet.url
   end
 
+  def tablet_height
+    original_image.tablet.height
+  end
+
   def mobile
     original_image.mobile_list_thumb.url
   end

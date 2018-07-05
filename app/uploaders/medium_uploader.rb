@@ -3,7 +3,7 @@
 # app/uploarder/medium_uploader.rb
 
 class MediumUploader < CarrierWave::Uploader::Base
-  # Include RMagick or MiniMagick support:
+  include MiniMagick
   # include CarrierWave::RMagick
   include CarrierWave::MiniMagick
 
@@ -11,11 +11,12 @@ class MediumUploader < CarrierWave::Uploader::Base
   storage :file
 
   # Override the directory where uploaded files will be stored.
-  def cache_dir
-    "#{Rails.root}/public/uploads/tmp/#{Rails.env}"
-  end
+  # def cache_dir
+  #   "#{Rails.root}/public/uploads/tmp/#{Rails.env}"
+  # end
 
   def store_dir
+    # "/data/OpenTourBuilder-Server/public/uploads/#{Apartment::Tenant.current}/"
     "#{Rails.root}/public/uploads/#{Rails.env}/"
   end
 

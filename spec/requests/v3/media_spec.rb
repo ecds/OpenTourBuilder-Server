@@ -101,7 +101,7 @@ RSpec.describe 'V3::Media', type: :request do
 
     it 'creates image from Vimeo url' do
       expect(attributes['original_image']['url']).to eq('/uploads/test/197022305.jpg')
-      expect(Digest::MD5.hexdigest(File.read("#{Rails.root}/public#{attributes['original_image']['url']}"))).to eq('0e610bf0b400790e89ac466b60a3c87c')
+      expect(Digest::MD5.hexdigest(File.read("#{Rails.root}/public#{attributes['original_image']['url']}"))).to eq('c1d74a506d83a46144f7fd089bedacbb')
     end
   end
 
@@ -114,7 +114,7 @@ RSpec.describe 'V3::Media', type: :request do
 
     it 'creates image from Vimeo id' do
       expect(attributes['original_image']['url']).to eq('/uploads/test/98660979.jpg')
-      expect(Digest::MD5.hexdigest(File.read("#{Rails.root}/public#{attributes['original_image']['url']}"))).to eq('687e4708c3d6d1e2c97b21ac2f621e69')
+      expect(Digest::MD5.hexdigest(File.read("#{Rails.root}/public#{attributes['original_image']['url']}"))).to eq('22297cf0bd54d077c7d0c9e3e65c7e16')
     end
   end
 
@@ -127,7 +127,7 @@ RSpec.describe 'V3::Media', type: :request do
 
     it 'creates image from Vimeo embed iframe' do
       expect(attributes['original_image']['url']).to eq('/uploads/test/207218603.jpg')
-      expect(Digest::MD5.hexdigest(File.read("#{Rails.root}/public#{attributes['original_image']['url']}"))).to eq('2064d5ed147f29db806bd12bc9333ce3')
+      expect(Digest::MD5.hexdigest(File.read("#{Rails.root}/public#{attributes['original_image']['url']}"))).to eq('8b0e9ee26c8ca72b9b6f243a6995341a')
     end
   end
 

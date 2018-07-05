@@ -13,7 +13,11 @@ class V3::StopsController < V3Controller
       Stop.not_in_tour(params[:tour_id]).or(Stop.no_tours)
     else
       @stops = Stop.all
-      render json: @stops
+      render json: @stops,
+      include: [
+          'media',
+          'stop_media'
+      ]
     end
   end
 

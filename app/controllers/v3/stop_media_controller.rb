@@ -15,7 +15,10 @@ class V3::StopMediaController < V3Controller
 
   # GET /v3/stop_media/1
   def show
-    render json: @stop_medium
+    render json: @stop_medium,
+     include: [
+        #  'media'
+     ]
   end
 
   # POST /v3/stop_media

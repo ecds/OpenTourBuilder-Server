@@ -198,6 +198,7 @@ namespace :ImportOTB1 do
     # Set Stop Medium Position
     p 'Setting stop medium position'
     d.select { |d1| d1['model'] === 'tour.tourstopmedia' }.each do |m|
+      p m['fields']['title']
       medium = Medium.where(title: m['fields']['title']).first
       stop = medium.stops.first
       stop_medium = StopMedium.where(medium_id: medium.id).where(stop_id: stop.id).first

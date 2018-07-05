@@ -21,12 +21,16 @@ class V3::ToursController < V3Controller
 
     render json: @tours,
             include: [
-                'tour_stops',
-                'stops',
-                'mode',
-                'modes',
-                'theme',
-                'media'
+              'tour_stops',
+              'stops',
+              'stops.media',
+              'stops.stop_media',
+              'mode',
+              'modes',
+              'theme',
+              'media',
+              'tour_media',
+              'flat_pages'
             ]
   end
 
@@ -36,6 +40,8 @@ class V3::ToursController < V3Controller
            include: [
                'tour_stops',
                'stops',
+               'stops.media',
+               'stops.stop_media',
                'mode',
                'modes',
                'theme',
