@@ -15,10 +15,10 @@ RSpec.describe 'V3::Media', type: :request do
     it 'media has all versions' do
       get "/#{Apartment::Tenant.current}/media/#{medium_id}"
       expect(response).to have_http_status(200)
-      expect(attributes['original_image']['url']).to eq('/uploads/test/300x300.png')
-      expect(attributes['desktop']).to eq('/uploads/test/desktop_300x300.png')
-      expect(attributes['tablet']).to eq('/uploads/test/tablet_300x300.png')
-      expect(attributes['mobile']).to eq('/uploads/test/mobile_list_thumb_300x300.png')
+      expect(attributes['original_image']['url']).to eq("/uploads/#{Apartment::Tenant.current}/300x300.png")
+      expect(attributes['desktop']).to eq("/uploads/#{Apartment::Tenant.current}/desktop_300x300.png")
+      expect(attributes['tablet']).to eq("/uploads/#{Apartment::Tenant.current}/tablet_300x300.png")
+      expect(attributes['mobile']).to eq("/uploads/#{Apartment::Tenant.current}/mobile_list_thumb_300x300.png")
       expect(Digest::MD5.hexdigest(File.read("#{Rails.root}/public#{attributes['original_image']['url']}"))).to eq('8e967346c02db45f82d0d1601d590967')
     end
   end
@@ -33,7 +33,7 @@ RSpec.describe 'V3::Media', type: :request do
 
   #   it 'uploads from local file handel' do
   #     p valid_attributes
-  #     expect(attributes['original_image']['url']).to eq('/uploads/test/otblogo.png')
+  #     expect(attributes['original_image']['url']).to eq("/uploads/#{Apartment::Tenant.current}/otblogo.png")
   #     expect(Digest::MD5.hexdigest(File.read("#{Rails.root}/public#{attributes['original_image']['url']}"))).to eq('4cb687e488c9ade8effc63817bb92c48')
   #   end
   # end
@@ -47,7 +47,7 @@ RSpec.describe 'V3::Media', type: :request do
     before { post "/#{Apartment::Tenant.current}/media", params: valid_attributes, headers: { Authorization: "Bearer #{login.oauth2_token}" } }
 
     it 'creates image from YouTube' do
-      expect(attributes['original_image']['url']).to eq('/uploads/test/lVehcuJXe6I.jpg')
+      expect(attributes['original_image']['url']).to eq("/uploads/#{Apartment::Tenant.current}/lVehcuJXe6I.jpg")
       expect(response).to have_http_status(201)
       expect(Digest::MD5.hexdigest(File.read("#{Rails.root}/public#{attributes['original_image']['url']}"))).to eq('d611e4f4ae5afd08029feeed4cd1a207')
     end
@@ -61,7 +61,7 @@ RSpec.describe 'V3::Media', type: :request do
     before { post "/#{Apartment::Tenant.current}/media", params: valid_attributes, headers: headers }
 
     it 'creates image from YouTube url' do
-      expect(attributes['original_image']['url']).to eq('/uploads/test/0yPagRrAgIU.jpg')
+      expect(attributes['original_image']['url']).to eq("/uploads/#{Apartment::Tenant.current}/0yPagRrAgIU.jpg")
       expect(Digest::MD5.hexdigest(File.read("#{Rails.root}/public#{attributes['original_image']['url']}"))).to eq('e46304e85b7be7fd9183b4384b2e447f')
     end
   end
@@ -74,7 +74,7 @@ RSpec.describe 'V3::Media', type: :request do
     before { post "/#{Apartment::Tenant.current}/media", params: valid_attributes, headers: headers }
 
     it 'creates image from YouTube id' do
-      expect(attributes['original_image']['url']).to eq('/uploads/test/KiuEFG0ZBd8.jpg')
+      expect(attributes['original_image']['url']).to eq("/uploads/#{Apartment::Tenant.current}/KiuEFG0ZBd8.jpg")
       expect(Digest::MD5.hexdigest(File.read("#{Rails.root}/public#{attributes['original_image']['url']}"))).to eq('9c19a34f02114d5919eb10b61c562b4b')
     end
   end
@@ -87,7 +87,7 @@ RSpec.describe 'V3::Media', type: :request do
     before { post "/#{Apartment::Tenant.current}/media", params: valid_attributes, headers: headers }
 
     it 'creates image from YouTube embed code' do
-      expect(attributes['original_image']['url']).to eq('/uploads/test/F9ULbmCvmxY.jpg')
+      expect(attributes['original_image']['url']).to eq("/uploads/#{Apartment::Tenant.current}/F9ULbmCvmxY.jpg")
       expect(Digest::MD5.hexdigest(File.read("#{Rails.root}/public#{attributes['original_image']['url']}"))).to eq('32401aa1b7023f370a380130a096dfcf')
     end
   end
@@ -100,7 +100,7 @@ RSpec.describe 'V3::Media', type: :request do
     before { post "/#{Apartment::Tenant.current}/media", params: valid_attributes, headers: headers }
 
     it 'creates image from Vimeo url' do
-      expect(attributes['original_image']['url']).to eq('/uploads/test/197022305.jpg')
+      expect(attributes['original_image']['url']).to eq("/uploads/#{Apartment::Tenant.current}/197022305.jpg")
       expect(Digest::MD5.hexdigest(File.read("#{Rails.root}/public#{attributes['original_image']['url']}"))).to eq('c1d74a506d83a46144f7fd089bedacbb')
     end
   end
@@ -113,7 +113,7 @@ RSpec.describe 'V3::Media', type: :request do
     before { post "/#{Apartment::Tenant.current}/media", params: valid_attributes, headers: headers }
 
     it 'creates image from Vimeo id' do
-      expect(attributes['original_image']['url']).to eq('/uploads/test/98660979.jpg')
+      expect(attributes['original_image']['url']).to eq("/uploads/#{Apartment::Tenant.current}/98660979.jpg")
       expect(Digest::MD5.hexdigest(File.read("#{Rails.root}/public#{attributes['original_image']['url']}"))).to eq('22297cf0bd54d077c7d0c9e3e65c7e16')
     end
   end
@@ -126,7 +126,7 @@ RSpec.describe 'V3::Media', type: :request do
     before { post "/#{Apartment::Tenant.current}/media", params: valid_attributes, headers: headers }
 
     it 'creates image from Vimeo embed iframe' do
-      expect(attributes['original_image']['url']).to eq('/uploads/test/207218603.jpg')
+      expect(attributes['original_image']['url']).to eq("/uploads/#{Apartment::Tenant.current}/207218603.jpg")
       expect(Digest::MD5.hexdigest(File.read("#{Rails.root}/public#{attributes['original_image']['url']}"))).to eq('8b0e9ee26c8ca72b9b6f243a6995341a')
     end
   end

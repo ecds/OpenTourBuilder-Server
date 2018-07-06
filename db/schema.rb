@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_08_020558) do
+ActiveRecord::Schema.define(version: 2018_07_06_153324) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,12 @@ ActiveRecord::Schema.define(version: 2018_05_08_020558) do
     t.string "video"
     t.string "provider"
     t.string "embed"
+    t.integer "desktop_width"
+    t.integer "desktop_height"
+    t.integer "tablet_width"
+    t.integer "tablet_height"
+    t.integer "mobile_width"
+    t.integer "mobile_height"
   end
 
   create_table "modes", force: :cascade do |t|
@@ -80,10 +86,10 @@ ActiveRecord::Schema.define(version: 2018_05_08_020558) do
     t.string "article_link"
     t.string "video_embed"
     t.string "video_poster"
-    t.decimal "lat", precision: 65, scale: 8
-    t.decimal "lng", precision: 65, scale: 8
-    t.decimal "parking_lat", precision: 65, scale: 8
-    t.decimal "parking_lng", precision: 65, scale: 8
+    t.decimal "lat", precision: 100, scale: 8
+    t.decimal "lng", precision: 100, scale: 8
+    t.decimal "parking_lat", precision: 100, scale: 8
+    t.decimal "parking_lng", precision: 100, scale: 8
     t.text "direction_intro"
     t.text "direction_notes"
     t.datetime "created_at", null: false
@@ -187,8 +193,8 @@ ActiveRecord::Schema.define(version: 2018_05_08_020558) do
 
   create_table "tour_tags", force: :cascade do |t|
     t.string "title"
-    t.decimal "lat", precision: 65, scale: 8
-    t.decimal "lng", precision: 65, scale: 8
+    t.decimal "lat", precision: 100, scale: 8
+    t.decimal "lng", precision: 100, scale: 8
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -203,9 +209,9 @@ ActiveRecord::Schema.define(version: 2018_05_08_020558) do
     t.bigint "theme_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "mode_id"
+    t.integer "mode_id"
     t.integer "position"
-    t.bigint "splash_image_medium_id"
+    t.integer "splash_image_medium_id"
     t.string "meta_description"
     t.bigint "medium_id"
     t.index ["medium_id"], name: "index_tours_on_medium_id"

@@ -3,6 +3,7 @@
 # Model for media associated with stops.
 class Medium < ApplicationRecord
   include VideoProps
+  include Rails.application.routes.url_helpers
   before_save :props, if: :video?
 
   mount_uploader :original_image, MediumUploader
@@ -34,10 +35,6 @@ class Medium < ApplicationRecord
     original_image.tablet.url
   end
 
-  def tablet_height
-    original_image.tablet.height
-  end
-
   def mobile
     original_image.mobile_list_thumb.url
   end
@@ -45,4 +42,22 @@ class Medium < ApplicationRecord
   def published
     tours.published.present? || stops { |s| s.tours.published }.present?
   end
+
+  def srcset
+    "#{ENV['BASE_URL']}#{self.mobile} #{mobile_width}w, \
+    #{ENV['BASE_URL']}#{self.tablet} #{tablet_width}w, \
+    #{ENV['BASE_URL']}#{self.desktop} #{desktop_width}w"
+  end
+
+  def srcset_sizes
+    "(max-width: 680px) #{mobile_width}px, (max-width: 880px) #{tablet_width}px, #{desktop_width}px"
+  end
 end
+
+# <img data-src="https://images.unsplash.com/photo-1522201949034-507737bce479?fit=crop&w=650&h=433&q=80"
+#      data-srcset="https://images.unsplash.com/photo-1522201949034-507737bce479?fit=crop&w=650&h=433&q=80 650w,
+#                   https://images.unsplash.com/photo-1522201949034-507737bce479?fit=crop&w=1300&h=866&q=80 1300w"
+#      sizes="(min-width: 650px) 650px, 100vw" width="650" height="433" alt="" uk-img><img data-src="https://images.unsplash.com/photo-1522201949034-507737bce479?fit=crop&w=650&h=433&q=80"
+#      data-srcset="https://images.unsplash.com/photo-1522201949034-507737bce479?fit=crop&w=650&h=433&q=80 650w,
+#                   https://images.unsplash.com/photo-1522201949034-507737bce479?fit=crop&w=1300&h=866&q=80 1300w"
+#      sizes="(min-width: 650px) 650px, 100vw" width="650" height="433" alt="" uk-img>
