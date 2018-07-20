@@ -8,7 +8,6 @@ class TourSet < ApplicationRecord
   after_create :create_tenant
 
   validates :name, presence: true, uniqueness: true
-  attribute subdir: name.parameterize
 
     private
 

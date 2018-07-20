@@ -18,13 +18,13 @@ RSpec.describe 'V3::FlatPages', type: :request do
       end
     end
 
-    context 'flat page included in tours payload' do
+    # context 'flat page included in tours payload' do
 
-      before { get "/#{Apartment::Tenant.current}/tours/#{tour_id}" }
+    #   before { get "/#{Apartment::Tenant.current}/tours/#{tour_id}" }
 
-      it 'creates tour with existing flat page' do
-        expect(relationships['flat_pages']['data'].size).to eq(3)
-      end
-    end
+    #   it 'creates tour with existing flat page' do
+    #     expect(relationships['flat_pages']['data'].size).to eq(3)
+    #   end
+    # end
   end
 end

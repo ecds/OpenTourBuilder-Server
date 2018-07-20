@@ -1,11 +1,4 @@
 GIT
-  remote: git@github.com:jayvarner/youtube_rails.git
-  revision: 18d102bafaf9f837455b8f7c7726f1b4aad80d79
-  branch: master
-  specs:
-    youtube_rails (1.2.2)
-
-GIT
   remote: https://github.com/ecds/ecds_rails_auth_engine.git
   revision: 487b8adebc33505c5875620cea629ef338c6fdda
   tag: v0.1.3
@@ -251,6 +244,7 @@ GEM
     websocket-driver (0.7.0)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.3)
+    youtube_rails (1.2.2)
     yt (0.32.1)
       activesupport
       yt-support (>= 0.1)
@@ -287,7 +281,7 @@ DEPENDENCIES
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data
   vimeo
-  youtube_rails!
+  youtube_rails
   yt
 
 BUNDLED WITH

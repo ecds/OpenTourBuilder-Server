@@ -36,7 +36,7 @@ gem 'mini_magick'
 # Vidoe provider APIs
 gem 'vimeo'
 gem 'yt'
-gem 'youtube_rails', git: 'git@github.com:jayvarner/youtube_rails.git', branch: 'master'
+gem 'youtube_rails'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
