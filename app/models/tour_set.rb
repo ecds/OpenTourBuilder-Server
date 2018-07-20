@@ -4,19 +4,19 @@
 class TourSet < ApplicationRecord
   has_many :tour_set_users
   has_many :users, through: :tour_set_users
-  before_save :set_subdomain
+  before_save :set_subdir
   after_create :create_tenant
 
-  validates :name, presence: true
-  attribute subdomain: name.parameterize
+  validates :name, presence: true, uniqueness: true
+  attribute subdir: name.parameterize
 
     private
 
-      def set_subdomain
-        self.subdomain = name.parameterize
+      def set_subdir
+        self.subdir = name.parameterize
       end
 
       def create_tenant
-        Apartment::Tenant.create(subdomain)
+        Apartment::Tenant.create(subdir)
       end
 end

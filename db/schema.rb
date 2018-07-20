@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_06_153324) do
+ActiveRecord::Schema.define(version: 2018_07_10_152432) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -178,7 +178,7 @@ ActiveRecord::Schema.define(version: 2018_07_06_153324) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "subdomain"
+    t.string "subdir"
   end
 
   create_table "tour_stops", force: :cascade do |t|

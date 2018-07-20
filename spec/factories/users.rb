@@ -4,6 +4,6 @@
 FactoryBot.define do
   factory :user do
     display_name { Faker::Name.name }
-    tour_sets { TourSet.where(subdomain: 'atlanta') }
+    tour_sets { TourSet.where(subdir: 'atlanta') }
   end
 end

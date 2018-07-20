@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
   #
   def current_role
     if role_in_current
-      tour_set_users.where(tour_set: TourSet.where(subdomain: Apartment::Tenant.current).first).where(user: self).first.role
+      tour_set_users.where(tour_set: TourSet.where(subdir: Apartment::Tenant.current).first).where(user: self).first.role
     else
       Role.new(title: 'Guest')
     end
@@ -26,6 +26,6 @@ class User < ActiveRecord::Base
     # @return [<boolean>] Check to see if user has role in current tenant
     #
     def role_in_current
-      tour_sets.pluck(:subdomain).include? Apartment::Tenant.current
+      tour_sets.pluck(:subdir).include? Apartment::Tenant.current
     end
 end

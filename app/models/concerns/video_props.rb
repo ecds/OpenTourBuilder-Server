@@ -13,7 +13,7 @@ module VideoProps
       medium.caption = metadata['description']
       image = metadata['thumbnail_url']
       medium.remote_original_image_url = vimeo_image(medium).gsub(/\d\d\dx\d\d\d/, '640x480')
-      medium.embed = "<iframe src='https://player.vimeo.com/video/#{medium.video}' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>"
+      medium.embed = "<iframe title='#{metadata['title']} src='https://player.vimeo.com/video/#{medium.video}' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>"
 
     elsif self.is_youtube(medium)
       medium.provider = 'youtube'
@@ -23,7 +23,7 @@ module VideoProps
       medium.remote_original_image_url = "https://img.youtube.com/vi/#{medium.video}/0.jpg"
       medium.title = metadata.title
       medium.caption = metadata.description
-      medium.embed = "<iframe src='https://www.youtube.com/embed/#{medium.video}' frameborder='0' allowfullscreen>"
+      medium.embed = "<iframe title='#{metadata.title} src='https://www.youtube.com/embed/#{medium.video}' frameborder='0' allowfullscreen>"
     end
   end
 

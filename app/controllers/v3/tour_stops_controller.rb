@@ -7,7 +7,11 @@ class V3::TourStopsController < V3Controller
 
   # GET /stops
   def index
-    @tour_stops = TourStop.all
+    @tour_stops = if params[:tour_id] && params[:stop_id]
+      TourStop.where(tour: Tour.find(params[:tour_id])).where(stop: Stop.find(params[:stop_id])).first || {}
+    else
+      TourStop.all
+    end
     render json: @tour_stops
   end
 
