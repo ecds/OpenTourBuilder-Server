@@ -12,7 +12,7 @@ RSpec.describe 'V3::TourSets', type: :request do
 
   context 'get tour sets as super user' do
     before { create_list(:tour_set, 5) }
-    before { create(:tour_set_user, tour_set: tour_set, user: user1, role: Role.first) }
+    before { create(:tour_set_admin, tour_set: tour_set, user: user1, role: Role.first) }
     before { get "/#{Apartment::Tenant.current}/tour-sets", headers: { Authorization: "Bearer #{login1.oauth2_token}" } }
 
     it 'returns a list of tour sets based on roles' do
@@ -22,7 +22,7 @@ RSpec.describe 'V3::TourSets', type: :request do
 
   context 'get tour sets as an author' do
     before { create_list(:tour_set, 5) }
-    before { create(:tour_set_user, tour_set: TourSet.first, user: user2, role: role) }
+    before { create(:tour_set_admin, tour_set: TourSet.first, user: user2, role: role) }
     before { get "/#{Apartment::Tenant.current}/tour-sets", headers: { Authorization: "Bearer #{login2.oauth2_token}" } }
 
     it 'returns a list of tour sets based on roles' do

@@ -22,7 +22,7 @@ class V3::TourStopsController < V3Controller
 
   # POST /stops
   def create
-    @tour_stop = Stop.new(tour_stop_params)
+    @tour_stop = TourStop.new(tour_stop_params)
     if @tour_stop.save
       render json: @tour_stop, status: :created, location: @tour_stop
     else

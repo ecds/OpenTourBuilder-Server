@@ -4,7 +4,7 @@
 class Stop < ApplicationRecord
   include HtmlSaintizer
 
-  has_many :tour_stops
+  has_many :tour_stops, dependent: :destroy
   has_many :tours, through: :tour_stops
   has_many :stop_media
   has_many :media, through: :stop_media
@@ -13,6 +13,8 @@ class Stop < ApplicationRecord
   validates :title, presence: true
 
   after_initialize :default_values
+
+  before_validation -> { self.title ||= 'untitled' }
 
   scope :not_in_tour, lambda { |tour_id| includes(:tour_stops).where.not(tour_stops: { tour_id: tour_id }) }
   scope :no_tours, lambda { includes(:tour_stops).where(tour_stops: { tour_id: nil }) }

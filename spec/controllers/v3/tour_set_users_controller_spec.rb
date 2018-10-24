@@ -23,10 +23,10 @@ require 'rails_helper'
 # removed from Rails core in Rails 5, but can be added back in via the
 # `rails-controller-testing` gem.
 
-RSpec.describe V3::TourSetUsersController, type: :controller do
+RSpec.describe V3::TourSetAdminsController, type: :controller do
 
   # This should return the minimal set of attributes required to create a valid
-  # TourSetUser. As you add validations to TourSetUser, be sure to
+  # TourSetAdmin. As you add validations to TourSetAdmin, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
     skip("Add a hash of attributes valid for your model")
@@ -38,12 +38,12 @@ RSpec.describe V3::TourSetUsersController, type: :controller do
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
-  # TourSetUsersController. Be sure to keep this updated too.
+  # TourSetAdminsController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
   describe "GET #index" do
     it "returns a success response" do
-      tour_set_user = TourSetUser.create! valid_attributes
+      tour_set_admin = TourSetAdmin.create! valid_attributes
       get :index, params: {}, session: valid_session
       expect(response).to be_success
     end
@@ -51,33 +51,33 @@ RSpec.describe V3::TourSetUsersController, type: :controller do
 
   describe "GET #show" do
     it "returns a success response" do
-      tour_set_user = TourSetUser.create! valid_attributes
-      get :show, params: {id: tour_set_user.to_param}, session: valid_session
+      tour_set_admin = TourSetAdmin.create! valid_attributes
+      get :show, params: {id: tour_set_admin.to_param}, session: valid_session
       expect(response).to be_success
     end
   end
 
   describe "POST #create" do
     context "with valid params" do
-      it "creates a new TourSetUser" do
+      it "creates a new TourSetAdmin" do
         expect {
-          post :create, params: {tour_set_user: valid_attributes}, session: valid_session
-        }.to change(TourSetUser, :count).by(1)
+          post :create, params: {tour_set_admin: valid_attributes}, session: valid_session
+        }.to change(TourSetAdmin, :count).by(1)
       end
 
-      it "renders a JSON response with the new tour_set_user" do
+      it "renders a JSON response with the new tour_set_admin" do
 
-        post :create, params: {tour_set_user: valid_attributes}, session: valid_session
+        post :create, params: {tour_set_admin: valid_attributes}, session: valid_session
         expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json')
-        expect(response.location).to eq(tour_set_user_url(TourSetUser.last))
+        expect(response.location).to eq(tour_set_admin_url(TourSetAdmin.last))
       end
     end
 
     context "with invalid params" do
-      it "renders a JSON response with errors for the new tour_set_user" do
+      it "renders a JSON response with errors for the new tour_set_admin" do
 
-        post :create, params: {tour_set_user: invalid_attributes}, session: valid_session
+        post :create, params: {tour_set_admin: invalid_attributes}, session: valid_session
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
       end
@@ -90,27 +90,27 @@ RSpec.describe V3::TourSetUsersController, type: :controller do
         skip("Add a hash of attributes valid for your model")
       }
 
-      it "updates the requested tour_set_user" do
-        tour_set_user = TourSetUser.create! valid_attributes
-        put :update, params: {id: tour_set_user.to_param, tour_set_user: new_attributes}, session: valid_session
-        tour_set_user.reload
+      it "updates the requested tour_set_admin" do
+        tour_set_admin = TourSetAdmin.create! valid_attributes
+        put :update, params: {id: tour_set_admin.to_param, tour_set_admin: new_attributes}, session: valid_session
+        tour_set_admin.reload
         skip("Add assertions for updated state")
       end
 
-      it "renders a JSON response with the tour_set_user" do
-        tour_set_user = TourSetUser.create! valid_attributes
+      it "renders a JSON response with the tour_set_admin" do
+        tour_set_admin = TourSetAdmin.create! valid_attributes
 
-        put :update, params: {id: tour_set_user.to_param, tour_set_user: valid_attributes}, session: valid_session
+        put :update, params: {id: tour_set_admin.to_param, tour_set_admin: valid_attributes}, session: valid_session
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to eq('application/json')
       end
     end
 
     context "with invalid params" do
-      it "renders a JSON response with errors for the tour_set_user" do
-        tour_set_user = TourSetUser.create! valid_attributes
+      it "renders a JSON response with errors for the tour_set_admin" do
+        tour_set_admin = TourSetAdmin.create! valid_attributes
 
-        put :update, params: {id: tour_set_user.to_param, tour_set_user: invalid_attributes}, session: valid_session
+        put :update, params: {id: tour_set_admin.to_param, tour_set_admin: invalid_attributes}, session: valid_session
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
       end
@@ -118,11 +118,11 @@ RSpec.describe V3::TourSetUsersController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    it "destroys the requested tour_set_user" do
-      tour_set_user = TourSetUser.create! valid_attributes
+    it "destroys the requested tour_set_admin" do
+      tour_set_admin = TourSetAdmin.create! valid_attributes
       expect {
-        delete :destroy, params: {id: tour_set_user.to_param}, session: valid_session
-      }.to change(TourSetUser, :count).by(-1)
+        delete :destroy, params: {id: tour_set_admin.to_param}, session: valid_session
+      }.to change(TourSetAdmin, :count).by(-1)
     end
   end
 

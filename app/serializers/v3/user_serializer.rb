@@ -2,7 +2,8 @@
 
 # app/serializer/user_serializer.rb
 class V3::UserSerializer < ActiveModel::Serializer
-  attributes :id, :display_name
-
-  # has_one :login
+  has_one :login
+  has_many :tours
+  has_many :tour_sets
+  attributes :id, :display_name, :super, :login
 end

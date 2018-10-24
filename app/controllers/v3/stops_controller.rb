@@ -43,8 +43,7 @@ class V3::StopsController < V3Controller
   # PATCH/PUT /stops/1
   def update
     if @stop.update(stop_params)
-      # render json: @stop
-      head :no_content
+      render json: @stop, location: "/#{Apartment::Tenant.current}/stops/#{@stop.id}"
     else
       render json: @stop.errors, status: :unprocessable_entity
     end

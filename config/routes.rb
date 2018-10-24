@@ -11,8 +11,8 @@
 
 Rails.application.routes.draw do
 
-  resources :tour_set_users
-  scope ':tenent' do
+  resources :tour_set_admins
+  scope ':tenant' do
     scope module: :v1, constraints: ApiVersion.new('v1') do
       resources :tours, only: :index
     end
@@ -20,7 +20,7 @@ Rails.application.routes.draw do
       resources :users
       resources :modes
       resources :tour_sets, path: 'tour-sets'
-      resources :tour_set_users, path: 'tour-set-users'
+      resources :tour_set_admins, path: 'tour-set-users'
       resources :tour_collections, path: 'tour-collections'
       resources :tour_media, path: 'tour-media'
       resources :themes

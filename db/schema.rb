@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_10_152432) do
+ActiveRecord::Schema.define(version: 2018_09_05_134943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 2018_07_10_152432) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "provider"
+    t.string "confirm_token"
     t.index ["user_id"], name: "index_logins_on_user_id"
   end
 
@@ -130,6 +131,13 @@ ActiveRecord::Schema.define(version: 2018_07_10_152432) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "tour_authors", force: :cascade do |t|
+    t.bigint "tour_id"
+    t.bigint "user_id"
+    t.index ["tour_id"], name: "index_tour_authors_on_tour_id"
+    t.index ["user_id"], name: "index_tour_authors_on_user_id"
+  end
+
   create_table "tour_collections", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -165,13 +173,14 @@ ActiveRecord::Schema.define(version: 2018_07_10_152432) do
     t.index ["tour_id"], name: "index_tour_modes_on_tour_id"
   end
 
-  create_table "tour_set_users", force: :cascade do |t|
+  create_table "tour_set_admins", force: :cascade do |t|
     t.bigint "tour_set_id"
     t.bigint "user_id"
     t.bigint "role_id"
-    t.index ["role_id"], name: "index_tour_set_users_on_role_id"
-    t.index ["tour_set_id"], name: "index_tour_set_users_on_tour_set_id"
-    t.index ["user_id"], name: "index_tour_set_users_on_user_id"
+    t.bigint "tour_id"
+    t.index ["role_id"], name: "index_tour_set_admins_on_role_id"
+    t.index ["tour_set_id"], name: "index_tour_set_admins_on_tour_set_id"
+    t.index ["user_id"], name: "index_tour_set_admins_on_user_id"
   end
 
   create_table "tour_sets", force: :cascade do |t|
@@ -179,6 +188,8 @@ ActiveRecord::Schema.define(version: 2018_07_10_152432) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "subdir"
+    t.bigint "tour_id"
+    t.index ["tour_id"], name: "index_tour_sets_on_tours_id"
   end
 
   create_table "tour_stops", force: :cascade do |t|
@@ -229,7 +240,8 @@ ActiveRecord::Schema.define(version: 2018_07_10_152432) do
   end
 
   add_foreign_key "stops", "media"
-  add_foreign_key "tour_set_users", "roles"
+  add_foreign_key "tour_set_admins", "roles"
+  add_foreign_key "tour_sets", "tours"
   add_foreign_key "tours", "media"
   add_foreign_key "tours", "media", column: "splash_image_medium_id"
   add_foreign_key "tours", "modes"

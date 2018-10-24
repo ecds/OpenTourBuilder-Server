@@ -5,11 +5,13 @@ require 'rails_helper'
 RSpec.describe 'V3::Tours', type: :request do
   Apartment::Tenant.switch! 'atlanta'
   let!(:user) { create(:user) }
-  let!(:login) { create(:login, user: user) }
+  let!(:admin) { create(:user, tour_sets: [TourSet.find_by(subdir: 'atlanta')]) }
+  # let!(:login) { create(:login, user: user) }
   let!(:theme) { create(:theme) }
   let!(:tours) { create_list(:tour_with_stops, 10, theme: theme) }
   let!(:tour_id) { tours.select { |t| t.published == true }.first.id }
   let!(:published_tours_count) { tours.select { |t| t.published == true }.length }
+
   Apartment::Tenant.reset
 
   describe 'GET /atlanta/tours unauthenticated' do
@@ -26,10 +28,16 @@ RSpec.describe 'V3::Tours', type: :request do
   end
 
   describe 'GET /atlanta/tours authenticated' do
-    before { get "/#{Apartment::Tenant.current}/tours", headers: { Authorization: "Bearer #{login.oauth2_token}" } }
+    before { Apartment::Tenant.switch! 'atlanta' }
+    before {
+      Tour.where(published: false).limit(2).each do |t|
+        t.update_attribute(:authors, [user])
+      end
+    }
+    before { get "/#{Apartment::Tenant.current}/tours", headers: { Authorization: "Bearer #{user.login.oauth2_token}" } }
 
     it 'returns all tours' do
-      expect(json.size).to eq(10)
+      expect(json.size).to eq(Tour.published.count + 2)
     end
   end
 
@@ -77,9 +85,18 @@ RSpec.describe 'V3::Tours', type: :request do
     let(:valid_attributes) do
       factory_to_json_api(FactoryBot.build(:tour, title: 'Learn Elm', published: true))
     end
-    before { post "/#{Apartment::Tenant.current}/tours", params: valid_attributes, headers: { Authorization: "Bearer #{login.oauth2_token}" } }
+    before { Apartment::Tenant.switch! 'atlanta' }
 
-    context 'when the post is valid and authenticated' do
+    context 'when the post is valid and authenticated as non-tour set admin' do
+      before { post "/#{Apartment::Tenant.current}/tours", params: valid_attributes, headers: { Authorization: "Bearer #{user.login.oauth2_token}" } }
+
+      it 'returns status code 401' do
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'when created by tour set admin' do
+      before { post "/#{Apartment::Tenant.current}/tours", params: valid_attributes, headers: { Authorization: "Bearer #{admin.login.oauth2_token}" } }
       it 'creates a tour' do
         expect(attributes['title']).to eq('Learn Elm')
       end
@@ -93,7 +110,7 @@ RSpec.describe 'V3::Tours', type: :request do
       let(:invalid_attributes) do
         hash_to_json_api('tours', invalid: 'Foobar')
       end
-      before { post "/#{Apartment::Tenant.current}/tours", params: invalid_attributes, headers: { Authorization: "Bearer #{login.oauth2_token}" } }
+      before { post "/#{Apartment::Tenant.current}/tours", params: invalid_attributes, headers: { Authorization: "Bearer #{admin.login.oauth2_token}" } }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)

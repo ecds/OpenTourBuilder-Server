@@ -14,19 +14,23 @@ module V3
     #   render json: @users
     # end
     def index
-      puts current_user.present?
-      # if current_user.present? && params['me']
-          render json: current_user
-      # elsif !current_user.confirmed
-      #     render json: { errors: "Check email for #{current_user.identifier} for confirmation email." }.to_json, status: 401
-      # else
-      #     render json: {}.to_json, status: 401
-      # end
+      logger.debug current_user.id
+      if current_user.present? && params['me']
+        render json: current_user
+      elsif current_user.super
+        render json: User.all
+      else
+        render json: { message: 'You are not autorized to to view this resource.' }.to_json, status: 401
+      end
     end
 
     # GET /users/1
     def show
-      render json: @user
+      if current_user == @user || current_user.super
+        render json: @user
+      else
+        render json: { message: 'You are not autorized to to view this resource.' }.to_json, status: 401
+      end
     end
 
     # POST /users

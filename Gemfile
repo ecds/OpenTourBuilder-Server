@@ -26,7 +26,7 @@ gem 'redis', '~> 3.0'
 
 # Social Auth
 # gem 'ecds_rails_auth_engine', path: '../ecds_auth_engine'
-gem 'ecds_rails_auth_engine', git: 'https://github.com/ecds/ecds_rails_auth_engine.git', tag: 'v0.1.3'
+gem 'ecds_rails_auth_engine', git: 'https://github.com/ecds/ecds_rails_auth_engine.git', branch: 'develop'
 gem 'cancancan', '~> 2.0'
 
 # Active Storage will land in 5.2

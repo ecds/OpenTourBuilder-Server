@@ -39,7 +39,7 @@ namespace :ImportOTB1 do
     tour_set = TourSet.create(name: options[:set])
 
     # Switch to TourSet
-    Apartment::Tenant.switch! tour_set.subdomain
+    Apartment::Tenant.switch! tour_set.subdir
 
     # Create the Modes
     p "Creating Modes"

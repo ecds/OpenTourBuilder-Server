@@ -4,9 +4,9 @@
 require 'directory_elevator'
 Apartment.configure do |config|
   # config.default_schema = 'public'
-  config.excluded_models = %w{ TourSet Login User Role TourSetUser }
+  config.excluded_models = %w{ TourSet Login User Role TourSetAdmin }
   config.tenant_names = -> { TourSet.pluck :subdir }
-  config.excluded_models = ['Login', 'User', 'Role', 'TourSetUser', 'TourSet']
+  config.excluded_models = ['Login', 'User', 'Role', 'TourSetAdmin', 'TourSet']
   # config.persistent_schemas = %w{ public }
 end
 DirectoryElevator
