@@ -30,7 +30,9 @@ module V3
       @tour_set = TourSet.new(tour_set_params)
 
       if @tour_set.save
-        render json: @tour_set, status: :created, location: @tour_set
+        # render json: @tour_set, status: :created, location: @tour_set
+        response = render json: @tour_set, status: :created, location: "/#{Apartment::Tenant.current}/#{@tour_set.id}"
+        return response
       else
         render json: @tour_set.errors, status: :unprocessable_entity
       end
@@ -60,7 +62,12 @@ module V3
 
     # Only allow a trusted parameter "white list" through.
     def tour_set_params
-      params.require(:tour).permit(:title)
+      ActiveModelSerializers::Deserialization
+          .jsonapi_parse(
+            params, only: [
+                  :name, :tours
+              ]
+          )
     end
   end
 end
