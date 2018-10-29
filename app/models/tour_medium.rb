@@ -4,6 +4,7 @@
 class TourMedium < ApplicationRecord
   belongs_to :medium
   belongs_to :tour
+  validates :position, presence: true
 
   after_create do
     self.position = self.tour.media.length + 1

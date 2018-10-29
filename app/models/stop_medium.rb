@@ -4,6 +4,7 @@
 class StopMedium < ApplicationRecord
   belongs_to :medium
   belongs_to :stop
+  validates :position, presence: true
 
   after_create do
     self.position = self.position.nil? ? self.stop.media.length : self.position

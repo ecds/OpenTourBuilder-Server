@@ -5,10 +5,9 @@ class TourStop < ApplicationRecord
   belongs_to :tour
   belongs_to :stop
 
-  before_create do |tour_stop|
-    tour_stop.position = Tour.find(tour_stop.tour_id).stops.length + 1
-    # position = tour.stops.length + 1
-  end
+  validates :position, presence: true
+
+  before_validation :_set_position
 
   def slug
     stop.title.parameterize
@@ -29,4 +28,10 @@ class TourStop < ApplicationRecord
     ts = self.class.where(tour_id: self.tour_id).where(position: self.position - 1).first
     ts.present? ? ts : nil
   end
+
+  private
+
+    def _set_position
+      self.position = self.position || self.tour.stops.length + 1
+    end
 end
