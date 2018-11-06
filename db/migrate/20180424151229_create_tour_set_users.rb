@@ -1,4 +1,4 @@
-class CreateTourSetAdmins < ActiveRecord::Migration[5.2]
+class CreateTourSetUsers < ActiveRecord::Migration[5.2]
   def change
     create_table :roles do |t|
       t.string :title

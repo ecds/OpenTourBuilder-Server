@@ -31,6 +31,7 @@ Rails.application.routes.draw do
       resources :tour_media, path: 'tour-media'
       resources :tour_stops, path: 'tour-stops'
       resources :flat_pages, path: 'flat-pages'
+      resources :tour_flat_pages, path: 'tour-flat-pages'
       resources :geojson_tours
     end
     post '/token', to: 'oauth2#create'

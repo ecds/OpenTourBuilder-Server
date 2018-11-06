@@ -17,7 +17,20 @@ class V3::ToursController < V3Controller
       Tour.published
     end
 
-    render json: @tours
+    render json: @tours,
+            include: [
+              'tour_stops',
+              'stops',
+              'stops.media',
+              'stops.stop_media',
+              'mode',
+              'modes',
+              'theme',
+              'media',
+              'tour_media',
+              'flat_pages',
+              'tour_flat_pages'
+            ]
   end
 
   # GET /tours/1
@@ -33,7 +46,8 @@ class V3::ToursController < V3Controller
                'theme',
                'media',
                'tour_media',
-               'flat_pages'
+               'flat_pages',
+               'tour_flat_pages'
            ]
   end
 

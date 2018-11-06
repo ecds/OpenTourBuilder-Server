@@ -38,8 +38,11 @@ namespace :ImportOTB1 do
     p "Createing #{options[:set]}"
     tour_set = TourSet.create(name: options[:set])
 
+    p "Switching to #{tour_set.subdir}"
     # Switch to TourSet
     Apartment::Tenant.switch! tour_set.subdir
+
+    p "Current tenant: #{Apartment::Tenant.current}"
 
     # Create the Modes
     p "Creating Modes"
