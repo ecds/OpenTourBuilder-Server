@@ -18,3 +18,5 @@ class User < ActiveRecord::Base
     tour_sets.collect(&:subdir).include? Apartment::Tenant.current
   end
 end
+
+

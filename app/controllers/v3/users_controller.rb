@@ -80,7 +80,8 @@ module V3
               .jsonapi_parse(
                 params, only: [
                       :displayname, :identification, :password,
-                      :password_confirmation, :uid
+                      :password_confirmation, :uid, :tour_sets,
+                      :tours, :super
                   ]
               )
         end

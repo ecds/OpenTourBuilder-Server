@@ -12,7 +12,7 @@ class V3::TourStopsController < V3Controller
     else
       TourStop.all
     end
-    render json: @tour_stops
+    render json: @tour_stops, include: ['stop']
   end
 
   # GET /stops/1
