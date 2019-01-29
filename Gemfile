@@ -57,9 +57,11 @@ group :development do
   gem 'capistrano-rbenv', '~> 2.0'
   gem 'capistrano-passenger'
 end
+  
+  gem "factory_bot"
 
 group :test do
-  gem "factory_bot"
+  gem 'factory_bot_rails'
   gem 'shoulda-matchers', git: 'https://github.com/thoughtbot/shoulda-matchers.git', branch: 'rails-5'
   gem 'faker', git: 'https://github.com/stympy/faker.git', branch: 'master'
   gem 'database_cleaner'

@@ -3,6 +3,10 @@
 # Trasportation modes depend on Google's avaliable options. Note, we are skipping flight directions.
 # Mode.destroy_all
 
+# include FactoryBot
+require 'factory_bot_rails'
+require 'faker'
+
 Mode.create!(
   [
     {
@@ -42,7 +46,7 @@ Role.create!(
 12.times { FactoryBot.create(:tour_set) }
 
 18.times do
-  User.create(display_name: Faker::Lebowski.character))
+  User.create(display_name: Faker::Lebowski.character)
 end
 
 TourSet.all.each do |ts|

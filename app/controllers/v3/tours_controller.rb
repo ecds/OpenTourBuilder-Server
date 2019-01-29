@@ -91,7 +91,7 @@ class V3::ToursController < V3Controller
                     :title, :description,
                     :is_geo, :modes, :published, :theme_id,
                     :mode_id, :meta_description, :stops,
-                    :medium, :authors
+                    :medium, :authors, :flat_pages
                 ]
             )
       end

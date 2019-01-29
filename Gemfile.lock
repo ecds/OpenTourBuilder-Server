@@ -116,6 +116,9 @@ GEM
     erubi (1.7.1)
     factory_bot (4.11.1)
       activesupport (>= 3.0.0)
+    factory_bot_rails (4.11.1)
+      factory_bot (~> 4.11.1)
+      railties (>= 3.0.0)
     ffi (1.9.25)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
@@ -266,6 +269,7 @@ DEPENDENCIES
   database_cleaner
   ecds_rails_auth_engine!
   factory_bot
+  factory_bot_rails
   faker!
   listen (>= 3.0.5, < 3.2)
   mini_magick

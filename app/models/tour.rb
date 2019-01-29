@@ -39,6 +39,10 @@ class Tour < ApplicationRecord
     Apartment::Tenant.current
   end
 
+  def tenant_title
+    Apartment::Tenant.current.titleize
+  end
+
   def theme_title
     theme.title
   end

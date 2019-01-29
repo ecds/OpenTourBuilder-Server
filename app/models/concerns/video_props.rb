@@ -23,7 +23,7 @@ module VideoProps
       medium.remote_original_image_url = "https://img.youtube.com/vi/#{medium.video}/0.jpg"
       medium.title = metadata.title
       medium.caption = metadata.description
-      medium.embed = "<iframe title='#{metadata.title} src='https://www.youtube.com/embed/#{medium.video}' frameborder='0' allowfullscreen>"
+      medium.embed = "<iframe title='#{metadata.title}' src='https://www.youtube.com/embed/#{medium.video}' frameborder='0' allowfullscreen>"
     end
   end
 
@@ -35,6 +35,8 @@ module VideoProps
   #   end
   #   medium.save
   # end
+
+  # <iframe title="Biological PPE: Ebola Virus Disease - PAPR Level - Doffing src=" https:="" www.youtube.com="" embed="" 8kwjszjrvg4'="" frameborder="0" allowfullscreen=""></iframe>
 
 
   def self.is_youtube(medium)
