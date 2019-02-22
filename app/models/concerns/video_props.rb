@@ -8,12 +8,12 @@ module VideoProps
     if self.is_vimeo(medium)
       medium.provider = 'vimeo'
       medium.video = vimeo_id(medium)
-      metadata = HTTParty.get("https://vimeo.com/api/oembed.json?url=https%3A//vimeo.com/#{medium.video}")
+      metadata = HTTParty.get("https://vimeo.com/api/oembed.json?url=https%3A//vimeo.com/video/#{medium.video}")
       medium.title = metadata['title']
       medium.caption = metadata['description']
       image = metadata['thumbnail_url']
       medium.remote_original_image_url = vimeo_image(medium).gsub(/\d\d\dx\d\d\d/, '640x480')
-      medium.embed = "<iframe title='#{metadata['title']} src='https://player.vimeo.com/video/#{medium.video}' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>"
+      medium.embed = "<iframe title='#{metadata['title']}' src='https://player.vimeo.com/video/#{medium.video}' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>"
 
     elsif self.is_youtube(medium)
       medium.provider = 'youtube'
@@ -23,7 +23,7 @@ module VideoProps
       medium.remote_original_image_url = "https://img.youtube.com/vi/#{medium.video}/0.jpg"
       medium.title = metadata.title
       medium.caption = metadata.description
-      medium.embed = "<iframe title='#{metadata.title}' src='https://www.youtube.com/embed/#{medium.video}' frameborder='0' allowfullscreen>"
+      medium.embed = %Q[<iframe title="#{metadata.title}" src='https://www.youtube.com/embed/#{medium.video}' frameborder='0' allowfullscreen>]
     end
   end
 
@@ -62,6 +62,7 @@ module VideoProps
       Nokogiri::HTML(medium.video).xpath('//iframe')[0]['src'].split('/')[-1]
     else
       /\d{7,10}/.match(medium.video)[0]
+      # /https?:\/\/{?:www\.}?vimeo.com\/{?:channels\/(?:\w+\/)?|groups\/([^/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/.match(medium.video)[0]
     end
   end
 

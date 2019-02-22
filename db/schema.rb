@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_05_154739) do
+ActiveRecord::Schema.define(version: 2019_02_20_164904) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "flat_pages", force: :cascade do |t|
@@ -65,6 +66,14 @@ ActiveRecord::Schema.define(version: 2018_11_05_154739) do
     t.string "title"
   end
 
+  create_table "slugs", force: :cascade do |t|
+    t.string "slug"
+    t.bigint "tour_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tour_id"], name: "index_slugs_on_tour_id"
+  end
+
   create_table "stop_media", force: :cascade do |t|
     t.bigint "stop_id"
     t.bigint "medium_id"
@@ -73,6 +82,14 @@ ActiveRecord::Schema.define(version: 2018_11_05_154739) do
     t.integer "position"
     t.index ["medium_id"], name: "index_stop_media_on_medium_id"
     t.index ["stop_id"], name: "index_stop_media_on_stop_id"
+  end
+
+  create_table "stop_slugs", force: :cascade do |t|
+    t.string "slug"
+    t.bigint "stop_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stop_id"], name: "index_stop_slugs_on_stop_id"
   end
 
   create_table "stop_tags", force: :cascade do |t|
@@ -226,6 +243,7 @@ ActiveRecord::Schema.define(version: 2018_11_05_154739) do
     t.integer "splash_image_medium_id"
     t.string "meta_description"
     t.bigint "medium_id"
+    t.string "map_type"
     t.index ["medium_id"], name: "index_tours_on_medium_id"
     t.index ["mode_id"], name: "index_tours_on_mode_id"
     t.index ["theme_id"], name: "index_tours_on_theme_id"

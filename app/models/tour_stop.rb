@@ -10,7 +10,7 @@ class TourStop < ApplicationRecord
   before_validation :_set_position
 
   def slug
-    stop.title.parameterize
+    stop.slug
   end
 
   def next
@@ -27,6 +27,10 @@ class TourStop < ApplicationRecord
   def previous
     ts = self.class.where(tour_id: self.tour_id).where(position: self.position - 1).first
     ts.present? ? ts : nil
+  end
+
+  def previous_slug
+    self.previous.nil? ? nil : self.previous.stop.slug
   end
 
   private

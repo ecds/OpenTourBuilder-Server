@@ -15,6 +15,7 @@ class Tour < ApplicationRecord
   has_many :flat_pages, through: :tour_flat_pages
   has_many :tour_authors
   has_many :authors, through: :tour_authors, source: :user
+  has_many :slugs, dependent: :delete_all
   # has_many :authors, through: :tour_authors, foreign_key: :user_id
 
   # belongs_to :splash_image_medium_id, class_name: 'Medium'
@@ -24,6 +25,7 @@ class Tour < ApplicationRecord
   before_validation -> { self.mode ||= Mode.last }
   before_validation -> { self.theme ||= Theme.first }
   before_validation -> { self.title ||= 'untitled' }
+  after_save :ensure_slug
 
   scope :published, -> { where(published: true) }
 
@@ -57,4 +59,10 @@ class Tour < ApplicationRecord
   def stop_count
     self.stops.count
   end
+
+  private
+
+    def ensure_slug
+      Slug.find_or_create_by(slug: self.slug, tour: self)
+    end
 end

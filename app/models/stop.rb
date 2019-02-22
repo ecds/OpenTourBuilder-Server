@@ -9,10 +9,12 @@ class Stop < ApplicationRecord
   has_many :stop_media
   has_many :media, through: :stop_media
   belongs_to :medium, optional: true
+  has_many :stop_slugs, dependent: :delete_all
 
   validates :title, presence: true
 
   after_initialize :default_values
+  after_save :ensure_slug
 
   before_validation -> { self.title ||= 'untitled' }
 
@@ -48,5 +50,9 @@ class Stop < ApplicationRecord
 
     def default_values
       self.metadescription ||= HtmlSaintizer.accessable_truncated(self.description)
+    end
+
+    def ensure_slug
+      StopSlug.find_or_create_by(slug: self.slug, stop: self)
     end
 end

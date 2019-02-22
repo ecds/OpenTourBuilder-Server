@@ -181,7 +181,6 @@ RSpec.describe 'V3::Media', type: :request do
       before { get "/#{Apartment::Tenant.current}/media/#{un_pub_tour_medium.id}" }
 
       it 'returns unauthorized' do
-        puts un_pub_tour_medium.published
         expect(response).to have_http_status(401)
       end
     end

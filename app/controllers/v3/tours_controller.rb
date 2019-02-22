@@ -8,8 +8,9 @@ class V3::ToursController < V3Controller
 
   # GET /tours
   def index
-
-    @tours = if (current_user.current_tenant_admin?)
+    @tours = if (params[:slug])
+      Slug.find_by(slug: params[:slug]).tour
+    elsif (current_user.current_tenant_admin?)
       Tour.all
     elsif (current_user.present?)
       Tour.published | current_user.tours
@@ -21,15 +22,15 @@ class V3::ToursController < V3Controller
             include: [
               'tour_stops',
               'stops',
-              # 'stops.media',
-              # 'stops.stop_media',
-              # 'mode',
-              # 'modes',
-              # 'theme',
-              # 'media',
-              # 'tour_media',
-              # 'flat_pages',
-              # 'tour_flat_pages'
+              'stops.media',
+              'stops.stop_media',
+              'mode',
+              'modes',
+              'theme',
+              'media',
+              'tour_media',
+              'flat_pages',
+              'tour_flat_pages'
             ]
   end
 
@@ -91,7 +92,7 @@ class V3::ToursController < V3Controller
                     :title, :description,
                     :is_geo, :modes, :published, :theme_id,
                     :mode_id, :meta_description, :stops,
-                    :medium, :authors, :flat_pages
+                    :media, :authors, :flat_pages, :map_type
                 ]
             )
       end

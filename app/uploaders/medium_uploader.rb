@@ -83,4 +83,4 @@ class MediumUploader < CarrierWave::Uploader::Base
         model.mobile_width, model.mobile_height = ::MiniMagick::Image.open(file.file)[:dimensions]
       end
     end
-  end
+end

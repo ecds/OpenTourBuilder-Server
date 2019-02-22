@@ -9,16 +9,18 @@ class V3::StopsController < V3Controller
 
   # GET /stops
   def index
-    if params[:tour_id]
+    @stops = if params[:tour_id]
       Stop.not_in_tour(params[:tour_id]).or(Stop.no_tours)
+    elsif params[:slug]
+      stop = StopSlug.find_by(slug: params[:slug]).stop
     else
-      @stops = Stop.all
-      render json: @stops,
-      include: [
-          'media',
-          'stop_media'
-      ]
+      Stop.all
     end
+    render json: @stops,
+    include: [
+        'media',
+        'stop_media'
+    ]
   end
 
   # GET /stops/1
@@ -63,7 +65,7 @@ class V3::StopsController < V3Controller
             params, only: [
                   :title, :description, :lat, :lng,
                   :parking_lat, :parking_lng, :media,
-                  :address, :tours
+                  :address, :tours, :direction_notes
               ]
           )
     end

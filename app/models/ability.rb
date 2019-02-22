@@ -11,10 +11,24 @@ class Ability
     can :read, TourMedium
     can :read, StopMedium
     can :read, Medium
+    can :read, FlatPage
     return unless user.present?
-    can [:edit, :update], user.tours
+    can [:read, :edit, :update], Tour
+    can [:manage], TourMedium
+    can [:manage], TourStop
+    can [:manage], Stop
+    can [:manage], StopMedium
+    can [:manage], FlatPage
+    can [:manage], TourFlatPage
+    can [:read], User
     return unless user.current_tenant_admin?
     can :manage, Tour
+    # can :manage, Stop
+    # can :manage, TourStop
+    # can :manage, TourMedium
+    # can :manage, StopMedium
+    # can :manage, Medium
+    # can :manage, FlatPage
     return unless user.super
     can :manage, :all
   end

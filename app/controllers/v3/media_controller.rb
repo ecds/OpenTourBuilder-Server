@@ -27,15 +27,11 @@ module V3
 
     # POST /media
     def create
-      puts '%%%%%%%%'
-      puts medium_params
-      puts '&&&&&&&'
       @medium = Medium.new(medium_params)
 
       if @medium.save
         render json: @medium, status: :created, location: "/#{Apartment::Tenant.current}/media/#{@medium.id}"
       else
-        puts @medium.errors.as_json
         render json: @medium.errors, status: :unprocessable_entity
       end
     end

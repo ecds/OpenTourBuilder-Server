@@ -14,10 +14,9 @@ module V3
     #   render json: @users
     # end
     def index
-      logger.debug current_user.id
       if current_user.present? && params['me']
-        render json: current_user
-      elsif current_user.super
+        render json: current_user, include: ['tours', 'tour_sets']
+      elsif current_user.current_tenant_admin?
         render json: User.all
       else
         render json: { message: 'You are not autorized to to view this resource.' }.to_json, status: 401
