@@ -10,7 +10,6 @@ end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.0'
-gem 'mysql2'
 gem 'pg'
 # Multitenancy for Rails and ActiveRecord
 gem 'apartment'
