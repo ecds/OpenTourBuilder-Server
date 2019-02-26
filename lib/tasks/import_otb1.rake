@@ -45,10 +45,10 @@ namespace :ImportOTB1 do
     p "Current tenant: #{Apartment::Tenant.current}"
 
     # Create the Modes
-    p "Creating Modes"
+    p 'Creating Modes'
     d.select { |d1| d1['model'] === 'tour.directionsmode' }.each do |mode|
       p mode['fields']['mode']
-      Mode.create(title: mode['fields']['mode'])
+      Mode.find_or_create_by(title: mode['fields']['mode'])
     end
 
     # create the themes
@@ -207,6 +207,114 @@ namespace :ImportOTB1 do
       stop_medium = StopMedium.where(medium_id: medium.id).where(stop_id: stop.id).first
       stop_medium.position = m['fields']['position']
       stop_medium.save
+    end
+    p 'DONE!!!!'
+  end
+
+  task import_jsonapi: :environment do
+    options = {
+      dump: nil,
+      set: nil
+    }
+
+    opts = OptionParser.new
+    opts.banner = 'Usage: rake add [options]'
+    opts.on('-d DUMP', '--dump DUMP') { |dump| options[:dump] = dump }
+    opts.on('-s SET', '--set SET') { |set| options[:set] = set }
+
+    args = opts.order!(ARGV) {}
+
+    opts.parse!(args)
+
+    p options[:dump]
+
+    file = File.read(options[:dump])
+    d = JSON.parse(file)
+
+    # Tour Stop
+    # d.select {|d1| d1['model']==='tour.tourstop' && d1['pk']===4}
+    # d.select {|d1| d1['model']==='tour.tourstop'}.each do |s|
+    #   p s['fields']['name']
+    # end
+
+    # t = d.select {|d1| d1['model']==='tour.directionsmode'}.find{ |mode| mode['fields']['mode']==='TRANSIT'}
+
+    # Create New TourSet
+    p "Createing #{options[:set]}"
+    tour_set = TourSet.find_or_create_by(name: options[:set])
+
+    p "Switching to #{tour_set.subdir}"
+    # Switch to TourSet
+    Apartment::Tenant.switch! tour_set.subdir
+
+    p "Current tenant: #{Apartment::Tenant.current}"
+
+    # Create the Modes
+    # p "Creating Modes"
+    # d.select { |d1| d1['model'] === 'tour.directionsmode' }.each do |mode|
+    #   p mode['fields']['mode']
+    #   Mode.create(title: mode['fields']['mode'])
+    # end
+
+    # create the themes
+    # Theme.create(title: 'default')
+    # Theme.create(title: 'dark')
+    # Theme.create(title: 'blu')
+
+    # Create Tours
+    p 'Creating tours'
+    p d['data']['attributes']['title']
+    tour = Tour.new
+    tour.title = d['data']['attributes']['title']
+    tour.description = d['data']['attributes']['description']
+    tour.meta_description = d['data']['attributes']['metadescription']
+    tour.published = d['data']['attributes']['published']
+    tour.is_geo = d['data']['attributes']['is_geo'] || true
+    tour.theme = Theme.first
+
+    tour.save
+
+    # Create the Stops
+    p 'Creating stops'
+    d['included'].select { |d1| d1['type'] === 'stops' }.each do |s|
+
+        p s['attributes']['title']
+        stop = Stop.new
+        stop.title = s['attributes']['title']
+        stop.description = s['attributes']['description']
+        stop.lat = s['attributes']['lat']
+        stop.lng = s['attributes']['lng']
+        # stop.address
+        stop.metadescription = s['attributes']['metadescription']
+        stop.article_link = s['attributes']['article_link']
+        stop.parking_lat = s['attributes']['park_lat']
+        stop.parking_lng = s['attributes']['park_lng']
+        stop.direction_intro = s['attributes']['directions_intro']
+        stop.direction_notes = s['attributes']['directions_notes']
+        stop.tours << tour
+        stop.save
+    end
+
+
+    # Create the Flat Pages
+    p 'Creating flat pages'
+    d.select { |d1| d1['type'] === 'flat_pages' }.each do |f|
+      p f['attributes']['title']
+      flat = FlatPage.new
+      flat.title = f['attributes']['title']
+      flat.content = f['attributes']['description']
+      flat.tours = [Tour.find(f['attributes']['tour'])]
+      flat.save
+    end
+
+    # Create Media
+    p 'Creating Media'
+    d['included'].select { |d1| d1['type'] === 'media' }.each do |m|
+      medium = Medium.new
+      medium.title = m['attributes']['title']
+      medium.caption = m['attributes']['caption']
+      medium.remote_original_image_url = "https://otp-api.ecdsdev.org#{m['attributes']['original_image']['ulr']}"
+      medium.save
     end
     p 'DONE!!!!'
   end
