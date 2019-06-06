@@ -12,7 +12,9 @@ class Medium < ApplicationRecord
   has_many :tour_media
   has_many :tours, through: :tour_media
 
-  # TODO: This ins not ideal, we use these `not_in_*` scopes to make the list of media avaliable to add
+  attr_accessor :insecure
+
+  # TODO: This is not ideal, we use these `not_in_*` scopes to make the list of media avaliable to add
   # to a stop or tour. But the paramerter does not make sense when just looking at it. Needs clearer language.
   scope :not_in_stop, lambda { |stop_id| includes(:stop_media).where.not(stop_media: { stop_id: stop_id }) }
   scope :not_in_tour, lambda { |tour_id| includes(:tour_media).where.not(tour_media: { tour_id: tour_id }) }
@@ -39,6 +41,10 @@ class Medium < ApplicationRecord
     original_image.mobile_list_thumb.url
   end
 
+  def mobile_thumb
+    original_image.mobile_list_thumb.url
+  end
+
   def published
     tours.published.present? || stops { |s| s.tours.published }.present?
   end
@@ -51,6 +57,10 @@ class Medium < ApplicationRecord
 
   def srcset_sizes
     "(max-width: 680px) #{mobile_width}px, (max-width: 880px) #{tablet_width}px, #{desktop_width}px"
+  end
+
+  def insecure
+    "#{ENV['INSECURE_IMAGE_BASE_URL']}#{self.desktop}"
   end
 end
 

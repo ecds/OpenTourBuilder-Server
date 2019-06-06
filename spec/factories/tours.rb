@@ -11,7 +11,7 @@ FactoryBot.define do
 
     factory :tour_with_stops do
       transient do
-        stops_count 5
+        stops_count { 5 }
       end
 
       # https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#transient-attributes
@@ -22,7 +22,7 @@ FactoryBot.define do
 
     factory :tour_with_media do
       transient do
-        media_count 2
+        media_count { 2 }
       end
 
       # https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#transient-attributes
@@ -33,7 +33,7 @@ FactoryBot.define do
 
     factory :tour_with_flat_pages do
       transient do
-        flat_pages_count 3
+        flat_pages_count { 3 }
       end
 
       # https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#transient-attributes

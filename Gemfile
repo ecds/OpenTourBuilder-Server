@@ -11,6 +11,7 @@ end
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.0'
 gem 'pg'
+gem 'uuidtools'
 # Multitenancy for Rails and ActiveRecord
 gem 'apartment'
 # For JSONAPI responses

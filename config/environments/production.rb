@@ -83,5 +83,6 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   ENV['BASE_URL'] = 'https://api.opentour.emory.edu'
+  ENV['INSECURE_IMAGE_BASE_URL'] = 'http://otbimages.ecdsdev.org'
 
 end

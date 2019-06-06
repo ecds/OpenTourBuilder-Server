@@ -11,7 +11,7 @@ FactoryBot.define do
 
     factory :stop_with_media do
       transient do
-        media_count 5
+        media_count { 5 }
       end
 
       # https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#transient-attributes

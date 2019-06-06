@@ -3,18 +3,20 @@
 require 'rails_helper'
 
 RSpec.describe 'V3::Tours', type: :request do
-  Apartment::Tenant.switch! 'atlanta'
-  let!(:user) { create(:user) }
-  let!(:admin) { create(:user, tour_sets: [TourSet.find_by(subdir: 'atlanta')]) }
-  # let!(:login) { create(:login, user: user) }
-  let!(:theme) { create(:theme) }
-  let!(:tours) { create_list(:tour_with_stops, 10, theme: theme) }
-  let!(:tour_id) { tours.select { |t| t.published == true }.first.id }
-  let!(:published_tours_count) { tours.select { |t| t.published == true }.length }
+  before {
+    Apartment::Tenant.switch! 'atlanta'
+    let!(:user) { create(:user) }
+    let!(:admin) { create(:user, tour_sets: [TourSet.find_by(subdir: 'atlanta')]) }
+    # let!(:login) { create(:login, user: user) }
+    let!(:theme) { create(:theme) }
+    let!(:tours) { create_list(:tour_with_stops, 10, theme: theme) }
+    let!(:tour_id) { tours.select { |t| t.published == true }.first.id }
+    let!(:published_tours_count) { tours.select { |t| t.published == true }.length }
 
-  Apartment::Tenant.reset
-
+    Apartment::Tenant.reset
+  }
   describe 'GET /atlanta/tours unauthenticated' do
+
     before { get "/#{Apartment::Tenant.current}/tours" }
 
     it 'returns only published tours' do

@@ -21,8 +21,9 @@ class Ability
     can [:manage], FlatPage
     can [:manage], TourFlatPage
     can [:read], User
+    can [:read], TourSet
     return unless user.current_tenant_admin?
-    can :manage, Tour
+    can [:manage], Tour
     # can :manage, Stop
     # can :manage, TourStop
     # can :manage, TourMedium

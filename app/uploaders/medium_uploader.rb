@@ -36,18 +36,22 @@ class MediumUploader < CarrierWave::Uploader::Base
 
   # Create different versions of your uploaded files:
   version :desktop do
-    process resize_to_fit: [992, 400]
+    process resize_to_fit: [1500, 1500]
     process :store_desktop_dimensions
   end
 
   version :tablet, from: :desktop do
-    process resize_to_fit: [768, 300]
+    process resize_to_fit: [750, 750]
     process :store_tablet_dimensions
+  end
+
+  version :mobile, from: :tablet do
+    process resize_to_fit: [300, 300]
+    process :store_mobile_dimensions
   end
 
   version :mobile_list_thumb do
     process resize_to_fill: [200, 200]
-    process :store_mobile_dimensions
   end
 
   # Add a white list of extensions which are allowed to be uploaded.

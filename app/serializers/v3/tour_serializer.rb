@@ -11,5 +11,5 @@ class V3::TourSerializer < ActiveModel::Serializer
   has_many :tour_media
   has_many :flat_pages
   has_many :tour_flat_pages
-  attributes :id, :title, :slug, :description, :is_geo, :published, :sanitized_description, :position, :theme_title, :meta_description, :splash, :tenant, :tenant_title, :stop_count, :map_type
+  attributes :id, :title, :slug, :description, :is_geo, :published, :sanitized_description, :position, :theme_title, :meta_description, :splash, :tenant, :tenant_title, :stop_count, :map_type, :external_url
 end

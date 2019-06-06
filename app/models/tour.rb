@@ -45,6 +45,10 @@ class Tour < ApplicationRecord
     Apartment::Tenant.current.titleize
   end
 
+  def external_url
+    TourSet.find_by(subdir: self.tenant).external_url
+  end
+
   def theme_title
     theme.title
   end

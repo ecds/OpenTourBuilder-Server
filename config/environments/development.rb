@@ -49,4 +49,5 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::FileUpdateChecker
 
   ENV['BASE_URL'] = 'https://otb.org:3000'
+  ENV['INSECURE_IMAGE_BASE_URL'] = 'http://otb.org:8080'
 end

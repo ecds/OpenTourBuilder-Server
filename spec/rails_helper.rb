@@ -49,9 +49,9 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   # start by truncating all the tables but then use the faster transaction strategy the rest of the time.
   config.before(:suite) do
-    load Rails.root + 'db/seeds.rb'
     DatabaseCleaner.clean_with(:truncation, except: [:modes, :roles])
     DatabaseCleaner.strategy = :transaction
+    p '$$$$$$$$$$$$$$$$$'
     # Truncating doesn't drop schemas, ensure we're clean here, app *may not* exist
     begin
       Apartment::Tenant.drop('atlanta')
@@ -60,6 +60,7 @@ RSpec.configure do |config|
     end
     # Create the default tenant for our tests
     TourSet.create!(name: 'Atlanta')
+    load Rails.root + 'db/seeds.rb'
   end
 
   # start the transaction strategy as examples are run
@@ -70,6 +71,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
+    puts 'before each'
     # Start transaction for this test
     DatabaseCleaner.start
     # Switch into the default tenant
