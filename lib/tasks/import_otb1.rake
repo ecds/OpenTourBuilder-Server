@@ -355,46 +355,45 @@ end
 #   end
 # end; nil
 
-require 'google/apis/sheets_v4'
-service = Google::Apis::SheetsV4::SheetsService.new
-spreadsheet_id = '1b1J0Gt9NPLsrfXJ-agc2GjCRb-7Upq7w1ddW40dV4i4'
-response = service.get_spreadsheet(spreadsheet_id, ranges: 'A2:E', include_grid_data: true)
-sheet = response.sheets[0]
+# require 'google/apis/sheets_v4'
+# service = Google::Apis::SheetsV4::SheetsService.new
+# spreadsheet_id = '1b1J0Gt9NPLsrfXJ-agc2GjCRb-7Upq7w1ddW40dV4i4'
+# response = service.get_spreadsheet(spreadsheet_id, ranges: 'A2:E', include_grid_data: true)
+# sheet = response.sheets[0]
 
-def format_column(column)
-  start_indicies = []
-  parts = []
-  italic_parts = []
-  # start indicies for each part
-  column.text_format_runs.each_with_index do |tr, index|
-    start_indicies.push(tr.start_index.to_i)
-    if tr.format.italic?
-      italic_parts.push(index)
-    end
-  end
+# def format_column(column)
+#   start_indicies = []
+#   parts = []
+#   italic_parts = []
+#   # start indicies for each part
+#   column.text_format_runs.each_with_index do |tr, index|
+#     start_indicies.push(tr.start_index.to_i)
+#     if tr.format.italic?
+#       italic_parts.push(index)
+#     end
+#   end
 
-  start_indicies.each_with_index do |start, index|
-    last = index != start_indicies.length - 1 ? start_indicies[index + 1] : column.formatted_value.length
-    parts.push(column.formatted_value[start...last])
-  end
+#   start_indicies.each_with_index do |start, index|
+#     last = index != start_indicies.length - 1 ? start_indicies[index + 1] : column.formatted_value.length
+#     parts.push(column.formatted_value[start...last])
+#   end
 
-  italic_parts.each do |part|
-    parts[part] = "<i>#{parts[part]}</i>"
-  end
+#   italic_parts.each do |part|
+#     parts[part] = "<i>#{parts[part]}</i>"
+#   end
 
-  parts.join
-end
+#   parts.join
+# end
 
-#
-# each row
-# sheet.data[0].row_data[65].values[2].text_format_runs.each do |tr|
-sheet.data[0].row_data.each do |row_data|
-  row_data.values.each do |column|
-    if column.text_format_runs
-      p format_column(column)
-    else
-      p column.formatted_value
-    end
-  end
-end
-
+# #
+# # each row
+# # sheet.data[0].row_data[65].values[2].text_format_runs.each do |tr|
+# sheet.data[0].row_data.each do |row_data|
+#   row_data.values.each do |column|
+#     if column.text_format_runs
+#       p format_column(column)
+#     else
+#       p column.formatted_value
+#     end
+#   end
+# end
