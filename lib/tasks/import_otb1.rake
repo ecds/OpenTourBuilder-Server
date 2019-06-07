@@ -90,16 +90,16 @@ namespace :ImportOTB1 do
         p s['fields']['name']
         stop = Stop.new
         stop.title = s['fields']['name']
-        stop.description = s['fields']['description']
-        stop.lat = s['fields']['lat']
-        stop.lng = s['fields']['lng']
+        v3_stop.description = ['fields']['description']
+        v3_stop.lat = ['fields']['lat']
+        v3_stop.lng = ['fields']['lng']
         # stop.address
-        stop.metadescription = s['fields']['metadescription']
-        stop.article_link = s['fields']['article_link']
-        stop.parking_lat = s['fields']['park_lat']
-        stop.parking_lng = s['fields']['park_lng']
-        stop.direction_intro = s['fields']['directions_intro']
-        stop.direction_notes = s['fields']['directions_notes']
+        v3_stop.metadescription = ['fields']['metadescription']
+        v3_stop.article_link = ['fields']['article_link']
+        v3_stop.parking_lat = ['fields']['park_lat']
+        v3_stop.parking_lng = ['fields']['park_lng']
+        v3_stop.direction_intro = ['fields']['directions_intro']
+        v3_stop.direction_notes = ['fields']['directions_notes']
         stop.tours = [tour]
         stop.save
 
@@ -354,3 +354,47 @@ end
 #     medium.save
 #   end
 # end; nil
+
+require 'google/apis/sheets_v4'
+service = Google::Apis::SheetsV4::SheetsService.new
+spreadsheet_id = '1b1J0Gt9NPLsrfXJ-agc2GjCRb-7Upq7w1ddW40dV4i4'
+response = service.get_spreadsheet(spreadsheet_id, ranges: 'A2:E', include_grid_data: true)
+sheet = response.sheets[0]
+
+def format_column(column)
+  start_indicies = []
+  parts = []
+  italic_parts = []
+  # start indicies for each part
+  column.text_format_runs.each_with_index do |tr, index|
+    start_indicies.push(tr.start_index.to_i)
+    if tr.format.italic?
+      italic_parts.push(index)
+    end
+  end
+
+  start_indicies.each_with_index do |start, index|
+    last = index != start_indicies.length - 1 ? start_indicies[index + 1] : column.formatted_value.length
+    parts.push(column.formatted_value[start...last])
+  end
+
+  italic_parts.each do |part|
+    parts[part] = "<i>#{parts[part]}</i>"
+  end
+
+  parts.join
+end
+
+#
+# each row
+# sheet.data[0].row_data[65].values[2].text_format_runs.each do |tr|
+sheet.data[0].row_data.each do |row_data|
+  row_data.values.each do |column|
+    if column.text_format_runs
+      p format_column(column)
+    else
+      p column.formatted_value
+    end
+  end
+end
+

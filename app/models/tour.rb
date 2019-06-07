@@ -54,12 +54,29 @@ class Tour < ApplicationRecord
   end
 
   def splash
-    if !tour_media.empty?
-      return medium.nil? ? tour_media.order(:position).first.medium : medium
+    if medium.present?
+      return medium
+    elsif tour_media.present?
+      return tour_media.order(:position).first.medium
     end
     nil
   end
 
+  def splash_height
+    splash.nil? ? nil : splash.desktop_height
+  end
+
+  def splash_width
+    splash.nil? ? nil : splash.desktop_width
+  end
+
+  def insecure_splash
+    if !tour_media.empty?
+      return medium.nil? ? tour_media.order(:position).first.medium.insecure : medium.insecure
+    end
+    nil
+  end
+  
   def stop_count
     self.stops.count
   end
