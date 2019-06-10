@@ -15,7 +15,8 @@ module V3
       elsif current_user.id.present?
         @tour_sets = current_user.tour_sets
       else
-        @tour_sets = TourSet.all
+        #TourSet.all.reject {|ts| p ts.tours.empty?}
+        @tour_sets = TourSet.all.reject { |ts| ts.published_tours.empty? }
       end
 
       render json: @tour_sets
