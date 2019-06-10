@@ -12,6 +12,7 @@ class Ability
     can :read, StopMedium
     can :read, Medium
     can :read, FlatPage
+    can [:read], TourSet
     return unless user.present?
     can [:read, :edit, :update], Tour
     can [:manage], TourMedium
@@ -21,7 +22,6 @@ class Ability
     can [:manage], FlatPage
     can [:manage], TourFlatPage
     can [:read], User
-    can [:read], TourSet
     return unless user.current_tenant_admin?
     can [:manage], Tour
     # can :manage, Stop

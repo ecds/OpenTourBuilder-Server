@@ -2,5 +2,5 @@
 
 class V3::TourSetSerializer < ActiveModel::Serializer
   # has_many :tours
-  attributes :id, :name, :subdir
+  attributes :id, :name, :subdir, :published_tours
 end

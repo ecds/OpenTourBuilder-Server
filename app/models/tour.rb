@@ -76,7 +76,7 @@ class Tour < ApplicationRecord
     end
     nil
   end
-  
+
   def stop_count
     self.stops.count
   end

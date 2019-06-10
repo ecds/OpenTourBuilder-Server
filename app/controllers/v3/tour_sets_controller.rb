@@ -10,11 +10,12 @@ module V3
     # GET /tour_sets
     def index
       @tour_sets = []
-
       if current_user.super
         @tour_sets = TourSet.all
-      elsif current_user
+      elsif current_user.id.present?
         @tour_sets = current_user.tour_sets
+      else
+        @tour_sets = TourSet.all
       end
 
       render json: @tour_sets

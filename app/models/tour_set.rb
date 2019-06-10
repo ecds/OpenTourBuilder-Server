@@ -10,13 +10,30 @@ class TourSet < ApplicationRecord
   after_create :create_tenant
   after_create :create_defaults
   before_destroy :drop_tenant
-  validates :name, presence: true, uniqueness: true
-  attr_accessor :footer_logo_width
-  attr_accessor :footer_logo_height
+  # validates :name, presence: true, uniqueness: true
+  # attr_accessor :footer_logo_width
+  # attr_accessor :footer_logo_height
+  attr_accessor :published_tours
+  # validate :validate_footer_logo_dimensions, if :uploading?
 
-  validate :validate_footer_logo_dimensions, if :uploading?
+  def published_tours
+    begin
+      Apartment::Tenant.switch! self.subdir
+      tours = []
+      Tour.published.each do |t|
+        tour = {
+          title: t.title,
+          slug: t.slug
+        }
+        tours.push(tour)
+      end
+      tours
+    rescue Apartment::TenantNotFound => error
+      # self.delete
+    end
+  end
 
-    private
+  private
 
     def set_subdir
       self.subdir = name.parameterize
@@ -75,5 +92,4 @@ class TourSet < ApplicationRecord
         errors.add :footer_logo, 'Footer logo should be square'
       end
     end
-  end
 end
