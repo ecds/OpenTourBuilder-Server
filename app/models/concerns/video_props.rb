@@ -22,9 +22,14 @@ module VideoProps
       Yt.configuration.api_key = 'AIzaSyCjSl_aNiDsWnNNdS6iSJ5JVklP1vmtcek'
       metadata = Yt::Video.new(id: medium.video)
       medium.remote_original_image_url = "https://img.youtube.com/vi/#{medium.video}/0.jpg"
-      medium.title = metadata.title
-      medium.caption = metadata.description
-      medium.embed = %Q[<iframe title="#{metadata.title}" src='https://www.youtube.com/embed/#{medium.video}' frameborder='0' allowfullscreen>]
+      begin
+        medium.title = metadata.title
+        medium.caption = metadata.description
+        medium.embed = %Q[<iframe title="#{metadata.title}" src='https://www.youtube.com/embed/#{medium.video}' frameborder='0' allowfullscreen>]
+      rescue Yt::Errors::NoItems
+        medium.provider = nil
+        medium.video = nil
+      end
     end
   end
 
@@ -41,6 +46,7 @@ module VideoProps
 
 
   def self.is_youtube(medium)
+    # FIXME Youtube is always going to return 200
     (medium.video.include? 'youtube.com') || (medium.video.include? 'youtu.be') || (!medium.video.include?('iframe') && HTTParty.get("https://www.youtube.com/watch?v=#{medium.video}").code == 200)
   end
 
