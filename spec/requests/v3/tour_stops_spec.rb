@@ -5,12 +5,11 @@ require 'rails_helper'
 
 RSpec.describe 'V3::Stops API' do
   # Initialize the test data
-  let!(:theme) { create(:theme) }
-  let!(:tours) { create(:tour_with_stops, stops_count: 20, theme: theme) }
-  let(:tour_stop_id) { tours.first.tour_stops.first.id }
 
   # Test suite for GET /stops
   describe 'GET /tour-stops' do
+    before { Apartment::Tenant.switch! TourSet.second.subdir }
+    # before { Tour.first.stops << Stop.last(5) }
     before { get "/#{Apartment::Tenant.current}/tour-stops" }
 
     context 'when stops exist' do
@@ -19,7 +18,7 @@ RSpec.describe 'V3::Stops API' do
       end
 
       it 'returns all tour stops' do
-        expect(json.size).to eq(20)
+        expect(json.size).to eq(TourStop.count)
       end
     end
 

@@ -6,5 +6,5 @@
 class TourSetAdmin < ApplicationRecord
   belongs_to :user
   belongs_to :tour_set
-  belongs_to :role, default: -> { Role.where(title: 'Author').first }
+  belongs_to :role, default: -> { Role.find_by(title: 'Tour Admin') }
 end

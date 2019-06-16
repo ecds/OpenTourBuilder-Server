@@ -12,8 +12,8 @@ class V3::ToursController < V3Controller
       Slug.find_by(slug: params[:slug]).tour
     elsif (current_user.current_tenant_admin?)
       Tour.all
-    elsif (current_user.present?)
-      Tour.published | current_user.tours
+    elsif (current_user.id)
+      current_user.tours
     else
       Tour.published
     end

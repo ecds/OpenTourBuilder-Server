@@ -51,15 +51,14 @@ RSpec.configure do |config|
   config.before(:suite) do
     DatabaseCleaner.clean_with(:truncation, except: [:modes, :roles])
     DatabaseCleaner.strategy = :transaction
-    p '$$$$$$$$$$$$$$$$$'
     # Truncating doesn't drop schemas, ensure we're clean here, app *may not* exist
-    begin
-      Apartment::Tenant.drop('atlanta')
-    rescue
-      nil
-    end
-    # Create the default tenant for our tests
-    TourSet.create!(name: 'Atlanta')
+    # begin
+    #   Apartment::Tenant.drop('atlanta')
+    # rescue
+    #   nil
+    # end
+    # # Create the default tenant for our tests
+    # TourSet.create(name: 'Atlanta')
     load Rails.root + 'db/seeds.rb'
   end
 
@@ -71,13 +70,12 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    puts 'before each'
     # Start transaction for this test
     DatabaseCleaner.start
     # Switch into the default tenant
-    Apartment::Tenant.switch! 'atlanta'
+    Apartment::Tenant.switch! TourSet.all.order(Arel.sql('random()')).first.subdir
     # host! 'atlanta.lvh.me'
-    load Rails.root + 'db/seeds.rb'
+    # load Rails.root + 'db/seeds.rb'
   end
 
   config.after(:each) do

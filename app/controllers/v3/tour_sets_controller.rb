@@ -10,7 +10,9 @@ module V3
     # GET /tour_sets
     def index
       @tour_sets = []
-      if current_user.super
+      if params[:subdir]
+        @tour_sets = TourSet.find_by(subdir: params[:subdir])
+      elsif current_user.super
         @tour_sets = TourSet.all
       elsif current_user.id.present?
         @tour_sets = current_user.tour_sets
@@ -18,8 +20,12 @@ module V3
         #TourSet.all.reject {|ts| p ts.tours.empty?}
         @tour_sets = TourSet.all.reject { |ts| ts.published_tours.empty? }
       end
-
-      render json: @tour_sets
+  
+      if current_user.current_tenant_admin? || current_user.super
+        render json: @tour_sets, include: [ 'admins' ]
+      else
+        render json: @tour_sets
+      end
     end
 
     # GET /tour_sets/1

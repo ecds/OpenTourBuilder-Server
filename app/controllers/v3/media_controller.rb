@@ -16,13 +16,16 @@ module V3
       else
         Medium.all
       end
-
       render json: @media
     end
-
+    
     # GET /media/1
     def show
-      render json: @medium
+      if @medium.published
+        render json: @medium
+      else
+        head 401
+      end
     end
 
     # POST /media

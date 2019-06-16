@@ -43,5 +43,6 @@ module OpenTourApi
     config.api_only = true
     config.middleware.use DirectoryElevator
     # config.relative_url_root = '/*'
+    config
   end
 end

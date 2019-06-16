@@ -6,6 +6,8 @@ class Ability
   def initialize(user)
     can :read, Tour, published: true
     can :read, Theme
+    can :read, Mode
+    can :read, TourMode
     can :read, Stop
     can :read, TourStop
     can :read, TourMedium
@@ -16,6 +18,7 @@ class Ability
     return unless user.present?
     can [:read, :edit, :update], Tour
     can [:manage], TourMedium
+    can [:manage], Medium
     can [:manage], TourStop
     can [:manage], Stop
     can [:manage], StopMedium

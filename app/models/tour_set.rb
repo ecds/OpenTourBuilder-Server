@@ -10,7 +10,7 @@ class TourSet < ApplicationRecord
   after_create :create_tenant
   after_create :create_defaults
   before_destroy :drop_tenant
-  # validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: true
   # attr_accessor :footer_logo_width
   # attr_accessor :footer_logo_height
   attr_accessor :published_tours
