@@ -1,0 +1,4 @@
+test:
+  adapter: postgresql
+  database: travis_ci_test
+  schema_search_path: "public,shared_extensions"

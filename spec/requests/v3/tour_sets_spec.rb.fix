@@ -1,0 +1,62 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe 'V3::TourSets', type: :request do
+  let!(:tour_set) { create(:tour_set, name: 'Reynoldstown') }
+  let!(:user1) { create(:user, super: true) }
+  let!(:login1) { create(:login, user: user1) }
+  let!(:user2) { create(:user) }
+  let!(:login2) { create(:login, user: user2) }
+  let(:role) { create(:role, title: 'Author') }
+
+  context 'get tour sets as super user' do
+    before { create_list(:tour_set, 5) }
+    before { create(:tour_set_admin, tour_set: tour_set, user: user1, role: Role.first) }
+    before { get "/#{Apartment::Tenant.current}/tour-sets", headers: { Authorization: "Bearer #{login1.oauth2_token}" } }
+
+    it 'returns a list of tour sets based on roles' do
+      expect(json.size).to eq(7)
+    end
+  end
+
+  context 'get tour sets as an author' do
+    before { create_list(:tour_set, 5) }
+    before { create(:tour_set_admin, tour_set: TourSet.first, user: user2, role: role) }
+    before { get "/#{Apartment::Tenant.current}/tour-sets", headers: { Authorization: "Bearer #{login2.oauth2_token}" } }
+
+    it 'returns a list of tour sets based on roles' do
+      puts login2.oauth2_token
+      expect(json.size).to eq(1)
+    end
+  end
+
+  context 'create tours in new tenant' do
+    before { Apartment::Tenant.switch! 'reynoldstown' }
+    before { create_list(:tour_with_stops, 5, theme: create(:theme), mode: create(:mode)) }
+    before { get "/#{Apartment::Tenant.current}/tours" }
+    after { Apartment::Tenant.reset }
+
+    it 'returns tours from new tenant' do
+      expect(json).not_to be_empty
+      expect(json.size).to eq(Tour.published.length)
+    end
+
+    it 'returns status code 200' do
+      expect(response).to have_http_status(200)
+    end
+  end
+
+  context 'switch back to default tenant' do
+    before { Apartment::Tenant.switch! 'reynoldstown' }
+    before { create_list(:tour_with_stops, 5, theme: create(:theme), mode: create(:mode)) }
+    before { Apartment::Tenant.switch! 'atlanta' }
+    before { get "/#{Apartment::Tenant.current}/tours" }
+    after { Apartment::Tenant.reset }
+    after { Apartment::Tenant.drop('reynoldstown') }
+
+    it 'returns tour from default tenant' do
+      expect(response).to have_http_status(204)
+    end
+  end
+end
