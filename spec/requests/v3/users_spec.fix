@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'V3::Users', type: :request do
   # initialize test data
-  let!(:name) { Faker::HitchhikersGuideToTheGalaxy.character }
+  let!(:name) { Faker::Movies::HitchhikersGuideToTheGalaxy.character }
   let!(:pw) { Faker::Internet.password(8) }
   let!(:email) { Faker::Internet.free_email }
   let!(:user) { create(:user, displayname: name) }
@@ -45,7 +45,7 @@ RSpec.describe 'V3::Users', type: :request do
   end
 
   describe 'POST /users with password' do
-    let!(:name2) { Faker::HitchhikersGuideToTheGalaxy.character }
+    let!(:name2) { Faker::Movies::HitchhikersGuideToTheGalaxy.character }
     let!(:pw2) { Faker::Internet.password(8) }
     let!(:email2) { Faker::Internet.free_email }
     # valid payload

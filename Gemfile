@@ -10,6 +10,7 @@ end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.0'
+gem "rack", ">= 2.0.6"
 gem 'pg'
 # Multitenancy for Rails and ActiveRecord
 gem 'apartment'
@@ -20,6 +21,7 @@ gem 'acts-as-taggable-on', '~> 5.0'
 gem 'puma', '~> 3.7'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 3.0'
+gem "actionview", ">= 5.2.2.1"
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

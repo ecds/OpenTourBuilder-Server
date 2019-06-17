@@ -46,9 +46,9 @@ Role.create!(
 3.times { FactoryBot.create(:tour_set) }
 
 4.times do
-  # User.create(display_name: Faker::Lebowski.character)
+  # User.create(display_name: Faker::Movies::Lebowski)
   FactoryBot.create(:login)
-  Login.last.user.update_attribute(:display_name, Faker::Lebowski.character)
+  Login.last.user.update_attribute(:display_name, Faker::Movies::Lebowski)
 end
 
 TourSet.all.each do |ts|
