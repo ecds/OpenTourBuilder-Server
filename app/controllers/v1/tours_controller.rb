@@ -4,6 +4,6 @@
 # This is only for testing calls to versioned endpoints.
 class V1::ToursController < ApplicationController
   def index
-    json_response(message: Faker::HitchhikersGuideToTheGalaxy.quote)
+    json_response(message: Faker::Movies::HitchhikersGuideToTheGalaxy.quote)
   end
 end
