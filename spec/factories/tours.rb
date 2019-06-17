@@ -3,8 +3,8 @@
 # spec/factories/tours.rb
 FactoryBot.define do
   factory :tour do
-    title { Faker::RickAndMorty.character }
-    description { "<p>#{Faker::RickAndMorty.quote}</p><p>#{Faker::RickAndMorty.quote}</p><p>#{Faker::RickAndMorty.quote}</p>" }
+    title { Faker::TvShows::RickAndMorty.character }
+    description { "<p>#{Faker::TvShows::RickAndMorty.quote}</p><p>#{Faker::TvShows::RickAndMorty.quote}</p><p>#{Faker::TvShows::RickAndMorty.quote}</p>" }
     published { Faker::Boolean.boolean(0.5) }
     theme { Theme.create! }
     mode { Mode.create! }

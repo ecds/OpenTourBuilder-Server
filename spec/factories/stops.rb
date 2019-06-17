@@ -3,7 +3,7 @@
 # spec/factories/stops.rb
 FactoryBot.define do
   factory :stop do
-    title { Faker::HitchhikersGuideToTheGalaxy.planet }
+    title { Faker::Movies::HitchhikersGuideToTheGalaxy.planet }
     description { Faker::Hipster.paragraph(2, true, 4) }
     lat { Faker::Address.latitude }
     lng { Faker::Address.longitude }
